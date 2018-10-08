@@ -1,0 +1,35 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "gitCompany": "",
+    "baseName": "form",
+    "packageName": "com.schinta",
+    "packageFolder": "com/schinta",
+    "serverPort": 8080,
+    "serviceDiscoveryType": false,
+    "authenticationType": "jwt",
+    "uaaBaseName": "../uaa",
+    "cacheProvider": "hazelcast",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "enableSwaggerCodegen": false,
+    "messageBroker": false,
+    "buildTool": "maven",
+    "useSass": false,
+    "clientPackageManager": "npm",
+    "testFrameworks": [],
+    "enableTranslation": false,
+    "nativeLanguage": "en",
+    "languages": [
+      "en"
+    ],
+    "clientFramework": "angularX",
+    "jhiPrefix": "jhi",
+    "jhipsterVersion": "5.4.0",
+    "jwtSecretKey": "NDI5YTU3ZWFhNTEwNmVkMzQxOTY5Nzk2Y2Q0OTQyZDg1YzFlOWY2NmE1NjUxMGU2M2M4Zjg4YzdjYzJjMjdmNTM3ODJkYmU3MWU5MGVkYzMyZTNjZjAzYzQ1OTAxNjU5Njk2ZjdkNDQ5ZWE4OTUwZGE2Mjc1OWYyMmIxZWFlYWU="
+  }
+}
