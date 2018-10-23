@@ -344,6 +344,12 @@
             <artifactId>spring-security-data</artifactId>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+        <!-- 微信服务号 -->
+        <dependency>
+            <groupId>cn.com.riversoft</groupId>
+            <artifactId>weixin-mp</artifactId>
+            <version>0.9.1</version>
+        </dependency>
     </dependencies>
 
     <build>
