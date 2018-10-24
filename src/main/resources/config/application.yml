@@ -112,3 +112,15 @@ logging:
 # ===================================================================
 
 # application:
+
+wx:
+  mp:
+    configs:
+      - appId: wx87d2791c2c3a3ded
+        secret: 2827a7f1d929db052ae57f9b8ce494a8
+        token: rysf1989
+        aesKey: 112131
+      - appId: 2222
+        secret: 1111
+        token: 111
+        aesKey: 111

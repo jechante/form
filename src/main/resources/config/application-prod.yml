@@ -18,6 +18,7 @@ logging:
         ROOT: INFO
         com.schinta: INFO
         io.github.jhipster: INFO
+        me.chanjar.weixin: INFO
 
 spring:
     devtools:
