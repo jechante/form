@@ -17,6 +17,6 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Repository
 public interface FormSubmitRepository extends JpaRepository<FormSubmit, Long> {
-    @Query(value = "select * from FormSubmit formSubmit where formSubmit.dealflag =:dealflag")
+    @Query(value = "select formSubmit from FormSubmit formSubmit where formSubmit.dealflag =:dealflag")
     List<FormSubmit> findByDealFlag(@Param("dealflag") String dealflag);
 }

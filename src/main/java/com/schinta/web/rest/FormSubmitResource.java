@@ -1,6 +1,8 @@
 package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.schinta.domain.FormData;
 import com.schinta.domain.FormSubmit;
 import com.schinta.repository.FormSubmitRepository;
 import com.schinta.web.rest.errors.BadRequestAlertException;
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -124,5 +127,84 @@ public class FormSubmitResource {
 
         formSubmitRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+
+//    // 以String作为参数类型
+//    @PostMapping("/jsj-submit")
+//    @Timed
+////    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
+//    public ResponseEntity<Object> jsjSubmit(@Valid @RequestBody String object) throws URISyntaxException, IOException {
+//        log.debug("REST request to save User : {}", object);
+////        return ResponseEntity.created(new URI("/api/test/1"))
+//////            .headers(HeaderUtil.createAlert( "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
+////            .body(object);
+//
+//
+//        FormSubmit formSubmit;
+//        try{
+//            formSubmit = new FormSubmit()
+//                .submitID("")
+//                .submitSource("1")
+//                .formID(1)
+//                .formName("1")
+//                .submitJosn(object) // 如果想直接存json字符串的话 接收参数类型用Sting。如果用object.toString()会导致json字符串中的双引号丢失
+//                .userID("X")
+//                .registerChannel("1")
+//                .submitDate(20181119)
+//                .submitTime(213500)
+//                .dealflag("0");
+//        }catch(Exception e){
+//            throw null;
+//        }
+//
+//        // 通过Jackson转化为自定义的FormData对象
+//        ObjectMapper mapper = new ObjectMapper();
+//        FormData formData = mapper.readValue(object, FormData.class);
+//
+//
+//
+//        if (!formSubmit.equals(null))
+//        {
+//            formSubmitRepository.save(formSubmit);
+//        }
+//        return new ResponseEntity<>(null, null, HttpStatus.OK);
+//    }
+
+    // 直接以FormData作为参数类型（Jackson会自动转换）
+    @PostMapping("/jsj-submit")
+    @Timed
+//    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Object> jsjSubmit(@Valid @RequestBody FormData object) throws URISyntaxException, IOException {
+        log.debug("REST request to save User : {}", object);
+//        return ResponseEntity.created(new URI("/api/test/1"))
+////            .headers(HeaderUtil.createAlert( "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
+//            .body(object);
+        ObjectMapper mapper = new ObjectMapper();
+        String formdataStr = mapper.writeValueAsString(object);
+
+        FormSubmit formSubmit;
+        try{
+            formSubmit = new FormSubmit()
+                .submitID("")
+                .submitSource("1")
+                .formID(1)
+                .formName("1")
+                .submitJosn(formdataStr) // 如果想直接存json字符串的话 接收参数类型用Sting。如果用object.toString()会导致json字符串中的双引号丢失
+                .userID("X")
+                .registerChannel("1")
+                .submitDate(20181119)
+                .submitTime(213500)
+                .dealflag("0");
+        }catch(Exception e){
+            throw null;
+        }
+
+
+        if (!formSubmit.equals(null))
+        {
+            formSubmitRepository.save(formSubmit);
+        }
+        return new ResponseEntity<>(null, null, HttpStatus.OK);
     }
 }

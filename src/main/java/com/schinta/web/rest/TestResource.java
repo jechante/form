@@ -66,43 +66,7 @@ public class TestResource {
     }
 
 
-    @PostMapping("/jsj-submit")
-    @Timed
-//    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Object> jsjSubmit(@Valid @RequestBody Object object) throws URISyntaxException {
-        log.debug("REST request to save User : {}", object);
-//        return ResponseEntity.created(new URI("/api/test/1"))
-////            .headers(HeaderUtil.createAlert( "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
-//            .body(object);
 
-
-        FormSubmit formSubmit;
-        try{
-            formSubmit = new FormSubmit()
-                .submitID("")
-                .submitSource("1")
-                .formID(1)
-                .formName("1")
-                .submitJosn(object.toString())
-                .userID("X")
-                .registerChannel("1")
-                .submitDate(20181119)
-                .submitTime(213500)
-                .dealflag("0");
-        }catch(Exception e){
-            throw null;
-        }
-
-
-
-
-        if (!formSubmit.equals(null))
-        {
-            String sr=sendPost("http://localhost:9000/api/form-submits", formSubmit.toString());
-            System.out.println(sr);
-        }
-        return new ResponseEntity<>(null, null, HttpStatus.OK);
-    }
 
 
     /**
