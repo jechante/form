@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="userProperty">
+            <h2><span>User Property</span> {{userProperty.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>User ID</span></dt>
+                <dd>
+                    <span>{{userProperty.userID}}</span>
+                </dd>
+                <dt><span>Property ID</span></dt>
+                <dd>
+                    <span>{{userProperty.propertyID}}</span>
+                </dd>
+                <dt><span>Property Value</span></dt>
+                <dd>
+                    <span>{{userProperty.propertyValue}}</span>
+                </dd>
+                <dt><span>Remark</span></dt>
+                <dd>
+                    <span>{{userProperty.remark}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/user-property', userProperty.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

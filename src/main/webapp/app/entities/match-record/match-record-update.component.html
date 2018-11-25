@@ -1,0 +1,121 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-match-record-heading">Create or edit a Match Record</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!matchRecord.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="matchRecord.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_recordID">Record ID</label>
+                    <input type="text" class="form-control" name="recordID" id="field_recordID"
+                        [(ngModel)]="matchRecord.recordID" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.recordID?.dirty && editForm.controls.recordID?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.recordID?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userA">User A</label>
+                    <input type="text" class="form-control" name="userA" id="field_userA"
+                        [(ngModel)]="matchRecord.userA" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.userA?.dirty && editForm.controls.userA?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.userA?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userB">User B</label>
+                    <input type="text" class="form-control" name="userB" id="field_userB"
+                        [(ngModel)]="matchRecord.userB" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.userB?.dirty && editForm.controls.userB?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.userB?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_algorithmID">Algorithm ID</label>
+                    <input type="text" class="form-control" name="algorithmID" id="field_algorithmID"
+                        [(ngModel)]="matchRecord.algorithmID" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.algorithmID?.dirty && editForm.controls.algorithmID?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.algorithmID?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_initiatorType">Initiator Type</label>
+                    <input type="text" class="form-control" name="initiatorType" id="field_initiatorType"
+                        [(ngModel)]="matchRecord.initiatorType" maxlength="1"/>
+                    <div [hidden]="!(editForm.controls.initiatorType?.dirty && editForm.controls.initiatorType?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.initiatorType?.errors?.maxlength">
+                        This field cannot be longer than 1 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreAtoB">Score Ato B</label>
+                    <input type="number" class="form-control" name="scoreAtoB" id="field_scoreAtoB"
+                        [(ngModel)]="matchRecord.scoreAtoB" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreBtoA">Score Bto A</label>
+                    <input type="number" class="form-control" name="scoreBtoA" id="field_scoreBtoA"
+                        [(ngModel)]="matchRecord.scoreBtoA" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreTotal">Score Total</label>
+                    <input type="number" class="form-control" name="scoreTotal" id="field_scoreTotal"
+                        [(ngModel)]="matchRecord.scoreTotal" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_genderWeight">Gender Weight</label>
+                    <input type="number" class="form-control" name="genderWeight" id="field_genderWeight"
+                        [(ngModel)]="matchRecord.genderWeight" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_propertyA">Property A</label>
+                    <input type="text" class="form-control" name="propertyA" id="field_propertyA"
+                        [(ngModel)]="matchRecord.propertyA" maxlength="2000"/>
+                    <div [hidden]="!(editForm.controls.propertyA?.dirty && editForm.controls.propertyA?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.propertyA?.errors?.maxlength">
+                        This field cannot be longer than 2000 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_propertyB">Property B</label>
+                    <input type="text" class="form-control" name="propertyB" id="field_propertyB"
+                        [(ngModel)]="matchRecord.propertyB" maxlength="2000"/>
+                    <div [hidden]="!(editForm.controls.propertyB?.dirty && editForm.controls.propertyB?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.propertyB?.errors?.maxlength">
+                        This field cannot be longer than 2000 characters.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

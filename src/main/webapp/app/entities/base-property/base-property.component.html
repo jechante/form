@@ -1,0 +1,66 @@
+<div>
+    <h2 id="page-heading">
+        <span>Base Properties</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-base-property" [routerLink]="['/base-property/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create new Base Property
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="baseProperties">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyID"><span>Property ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyName"><span>Property Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyDescribe"><span>Property Describe</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyType"><span>Property Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyScore"><span>Property Score</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formyType"><span>Formy Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="completionRate"><span>Completion Rate</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let baseProperty of baseProperties ;trackBy: trackId">
+                <td><a [routerLink]="['/base-property', baseProperty.id, 'view' ]">{{baseProperty.id}}</a></td>
+                <td>{{baseProperty.propertyID}}</td>
+                <td>{{baseProperty.propertyName}}</td>
+                <td>{{baseProperty.propertyDescribe}}</td>
+                <td>{{baseProperty.propertyType}}</td>
+                <td>{{baseProperty.propertyScore}}</td>
+                <td>{{baseProperty.formyType}}</td>
+                <td>{{baseProperty.completionRate}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/base-property', baseProperty.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/base-property', baseProperty.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'base-property/'+ baseProperty.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

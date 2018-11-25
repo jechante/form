@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="formSubmit">
+            <h2><span>Form Submit</span> {{formSubmit.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Submit ID</span></dt>
+                <dd>
+                    <span>{{formSubmit.submitID}}</span>
+                </dd>
+                <dt><span>Submit Source</span></dt>
+                <dd>
+                    <span>{{formSubmit.submitSource}}</span>
+                </dd>
+                <dt><span>Form ID</span></dt>
+                <dd>
+                    <span>{{formSubmit.formID}}</span>
+                </dd>
+                <dt><span>Form Name</span></dt>
+                <dd>
+                    <span>{{formSubmit.formName}}</span>
+                </dd>
+                <dt><span>Submit Josn</span></dt>
+                <dd>
+                    <span>{{formSubmit.submitJosn}}</span>
+                </dd>
+                <dt><span>User ID</span></dt>
+                <dd>
+                    <span>{{formSubmit.userID}}</span>
+                </dd>
+                <dt><span>Register Channel</span></dt>
+                <dd>
+                    <span>{{formSubmit.registerChannel}}</span>
+                </dd>
+                <dt><span>Submit Date</span></dt>
+                <dd>
+                    <span>{{formSubmit.submitDate}}</span>
+                </dd>
+                <dt><span>Submit Time</span></dt>
+                <dd>
+                    <span>{{formSubmit.submitTime}}</span>
+                </dd>
+                <dt><span>Dealflag</span></dt>
+                <dd>
+                    <span>{{formSubmit.dealflag}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/form-submit', formSubmit.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

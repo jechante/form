@@ -1,0 +1,67 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="matchRecord">
+            <h2><span>Match Record</span> {{matchRecord.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Record ID</span></dt>
+                <dd>
+                    <span>{{matchRecord.recordID}}</span>
+                </dd>
+                <dt><span>User A</span></dt>
+                <dd>
+                    <span>{{matchRecord.userA}}</span>
+                </dd>
+                <dt><span>User B</span></dt>
+                <dd>
+                    <span>{{matchRecord.userB}}</span>
+                </dd>
+                <dt><span>Algorithm ID</span></dt>
+                <dd>
+                    <span>{{matchRecord.algorithmID}}</span>
+                </dd>
+                <dt><span>Initiator Type</span></dt>
+                <dd>
+                    <span>{{matchRecord.initiatorType}}</span>
+                </dd>
+                <dt><span>Score Ato B</span></dt>
+                <dd>
+                    <span>{{matchRecord.scoreAtoB}}</span>
+                </dd>
+                <dt><span>Score Bto A</span></dt>
+                <dd>
+                    <span>{{matchRecord.scoreBtoA}}</span>
+                </dd>
+                <dt><span>Score Total</span></dt>
+                <dd>
+                    <span>{{matchRecord.scoreTotal}}</span>
+                </dd>
+                <dt><span>Gender Weight</span></dt>
+                <dd>
+                    <span>{{matchRecord.genderWeight}}</span>
+                </dd>
+                <dt><span>Property A</span></dt>
+                <dd>
+                    <span>{{matchRecord.propertyA}}</span>
+                </dd>
+                <dt><span>Property B</span></dt>
+                <dd>
+                    <span>{{matchRecord.propertyB}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/match-record', matchRecord.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

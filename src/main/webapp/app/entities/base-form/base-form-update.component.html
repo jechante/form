@@ -1,0 +1,62 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-base-form-heading">Create or edit a Base Form</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!baseForm.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="baseForm.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formID">Form ID</label>
+                    <input type="number" class="form-control" name="formID" id="field_formID"
+                        [(ngModel)]="baseForm.formID" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formName">Form Name</label>
+                    <input type="text" class="form-control" name="formName" id="field_formName"
+                        [(ngModel)]="baseForm.formName" maxlength="256"/>
+                    <div [hidden]="!(editForm.controls.formName?.dirty && editForm.controls.formName?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formName?.errors?.maxlength">
+                        This field cannot be longer than 256 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formDescribe">Form Describe</label>
+                    <input type="text" class="form-control" name="formDescribe" id="field_formDescribe"
+                        [(ngModel)]="baseForm.formDescribe" maxlength="512"/>
+                    <div [hidden]="!(editForm.controls.formDescribe?.dirty && editForm.controls.formDescribe?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formDescribe?.errors?.maxlength">
+                        This field cannot be longer than 512 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formWeb">Form Web</label>
+                    <input type="text" class="form-control" name="formWeb" id="field_formWeb"
+                        [(ngModel)]="baseForm.formWeb" maxlength="512"/>
+                    <div [hidden]="!(editForm.controls.formWeb?.dirty && editForm.controls.formWeb?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formWeb?.errors?.maxlength">
+                        This field cannot be longer than 512 characters.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

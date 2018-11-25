@@ -1,0 +1,120 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-form-submit-heading">Create or edit a Form Submit</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!formSubmit.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="formSubmit.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitID">Submit ID</label>
+                    <input type="text" class="form-control" name="submitID" id="field_submitID"
+                        [(ngModel)]="formSubmit.submitID" required maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.submitID?.dirty && editForm.controls.submitID?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitID?.errors?.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitID?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitSource">Submit Source</label>
+                    <input type="text" class="form-control" name="submitSource" id="field_submitSource"
+                        [(ngModel)]="formSubmit.submitSource" maxlength="1"/>
+                    <div [hidden]="!(editForm.controls.submitSource?.dirty && editForm.controls.submitSource?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitSource?.errors?.maxlength">
+                        This field cannot be longer than 1 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formID">Form ID</label>
+                    <input type="number" class="form-control" name="formID" id="field_formID"
+                        [(ngModel)]="formSubmit.formID" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formName">Form Name</label>
+                    <input type="text" class="form-control" name="formName" id="field_formName"
+                        [(ngModel)]="formSubmit.formName" maxlength="128"/>
+                    <div [hidden]="!(editForm.controls.formName?.dirty && editForm.controls.formName?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formName?.errors?.maxlength">
+                        This field cannot be longer than 128 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitJosn">Submit Josn</label>
+                    <input type="text" class="form-control" name="submitJosn" id="field_submitJosn"
+                        [(ngModel)]="formSubmit.submitJosn" maxlength="5000"/>
+                    <div [hidden]="!(editForm.controls.submitJosn?.dirty && editForm.controls.submitJosn?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitJosn?.errors?.maxlength">
+                        This field cannot be longer than 5000 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userID">User ID</label>
+                    <input type="text" class="form-control" name="userID" id="field_userID"
+                        [(ngModel)]="formSubmit.userID" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.userID?.dirty && editForm.controls.userID?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.userID?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_registerChannel">Register Channel</label>
+                    <input type="text" class="form-control" name="registerChannel" id="field_registerChannel"
+                        [(ngModel)]="formSubmit.registerChannel" maxlength="1"/>
+                    <div [hidden]="!(editForm.controls.registerChannel?.dirty && editForm.controls.registerChannel?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.registerChannel?.errors?.maxlength">
+                        This field cannot be longer than 1 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitDate">Submit Date</label>
+                    <input type="number" class="form-control" name="submitDate" id="field_submitDate"
+                        [(ngModel)]="formSubmit.submitDate" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitTime">Submit Time</label>
+                    <input type="number" class="form-control" name="submitTime" id="field_submitTime"
+                        [(ngModel)]="formSubmit.submitTime" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_dealflag">Dealflag</label>
+                    <input type="text" class="form-control" name="dealflag" id="field_dealflag"
+                        [(ngModel)]="formSubmit.dealflag" maxlength="1"/>
+                    <div [hidden]="!(editForm.controls.dealflag?.dirty && editForm.controls.dealflag?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.dealflag?.errors?.maxlength">
+                        This field cannot be longer than 1 characters.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

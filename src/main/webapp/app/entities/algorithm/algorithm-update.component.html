@@ -1,0 +1,73 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-algorithm-heading">Create or edit a Algorithm</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!algorithm.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="algorithm.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_algorithmID">Algorithm ID</label>
+                    <input type="text" class="form-control" name="algorithmID" id="field_algorithmID"
+                        [(ngModel)]="algorithm.algorithmID" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.algorithmID?.dirty && editForm.controls.algorithmID?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.algorithmID?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_filterStrings">Filter Strings</label>
+                    <input type="text" class="form-control" name="filterStrings" id="field_filterStrings"
+                        [(ngModel)]="algorithm.filterStrings" maxlength="2000"/>
+                    <div [hidden]="!(editForm.controls.filterStrings?.dirty && editForm.controls.filterStrings?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.filterStrings?.errors?.maxlength">
+                        This field cannot be longer than 2000 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreStrings">Score Strings</label>
+                    <input type="text" class="form-control" name="scoreStrings" id="field_scoreStrings"
+                        [(ngModel)]="algorithm.scoreStrings" maxlength="2000"/>
+                    <div [hidden]="!(editForm.controls.scoreStrings?.dirty && editForm.controls.scoreStrings?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.scoreStrings?.errors?.maxlength">
+                        This field cannot be longer than 2000 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_genderWeight">Gender Weight</label>
+                    <input type="number" class="form-control" name="genderWeight" id="field_genderWeight"
+                        [(ngModel)]="algorithm.genderWeight" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_remark">Remark</label>
+                    <input type="text" class="form-control" name="remark" id="field_remark"
+                        [(ngModel)]="algorithm.remark" maxlength="2000"/>
+                    <div [hidden]="!(editForm.controls.remark?.dirty && editForm.controls.remark?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.remark?.errors?.maxlength">
+                        This field cannot be longer than 2000 characters.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+
+entity WxInfo{
+	userID String maxlength(32),
+    wxOpenID String maxlength(32)
+}
+
+
+
+
+entity FormSubmit{
+	submitID String	required maxlength(32),
+    submitSource String maxlength(1),
+	formID	Integer,
+    formName String maxlength(128),
+    submitJosn String maxlength(5000),
+    userID String maxlength(32),
+    registerChannel String maxlength(1),
+    submitDate Integer,
+    SubmitTime Integer,
+    Dealflag String maxlength(1)
+}
+
+entity UserBase{
+	userID String required maxlength(32),
+    userName String maxlength(64),
+    userStatus String maxlength(1),
+    sex String maxlength(1),
+    registerChannel String maxlength(1),
+    registerBroker Integer,
+    registerDate Integer,
+    registerTime Integer
+}
+
+entity UserProperty{
+	userID String required maxlength(32),
+    propertyID String maxlength(32),
+    propertyValue String maxlength(64),
+    remark String maxlength(2000)
+}
+
+entity BaseProperty{
+    propertyID String maxlength(32),
+    propertyName String maxlength(64),
+    propertyDescribe String maxlength(256),
+    propertyType String maxlength(1),
+    propertyScore Integer,
+    formyType String maxlength(1),
+    completionRate Integer
+}
+
+entity Algorithm{
+	algorithmID String maxlength(32),
+    filterStrings String maxlength(2000),
+    scoreStrings String	maxlength(2000),
+    genderWeight Double,
+    remark String maxlength(2000)
+}
+
+entity MatchRecord{
+	recordID String maxlength(32),
+    userA String maxlength(32),
+    userB String maxlength(32),
+    algorithmID String maxlength(32),
+    initiatorType String maxlength(1),
+    scoreAtoB Integer,
+    scoreBtoA Integer,
+    scoreTotal Integer,
+    genderWeight Double,
+    propertyA String maxlength(2000),
+    propertyB String maxlength(2000)
+}
+
+entity FormToProperty{
+	formID Integer,
+    keyName String maxlength(64),
+    keyType String maxlength(1),
+    propertyId String maxlength(32)
+}
+
+entity BaseForm{
+	formID Integer,
+    formName String maxlength(256),
+    formDescribe String maxlength(512),
+    formWeb String maxlength(512)
+}
+
+// Set pagination options
+paginate WxInfo with infinite-scroll
+paginate UserBase with infinite-scroll
+paginate Algorithm with infinite-scroll
+paginate BaseProperty with infinite-scroll
+paginate BaseForm with infinite-scroll
+paginate UserProperty with pagination
+paginate MatchRecord with pagination
+paginate FormSubmit with pagination
+paginate FormToProperty with pagination
+

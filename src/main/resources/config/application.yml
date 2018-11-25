@@ -116,8 +116,8 @@ logging:
 wx:
   mp:
     configs:
-      - appId: wx87d2791c2c3a3ded
-        secret: 2827a7f1d929db052ae57f9b8ce494a8
+      - appId: wxa42c65d55074e14f
+        secret: 3c1e90a626830ad083660c6b0f1c50ae
         token: rysf1989
         aesKey: 112131
       - appId: 2222
