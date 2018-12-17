@@ -6,74 +6,133 @@ entity WxUser{
     wxProvince String maxlength(32) /**微信省*/
     wxCity String maxlength(32) /**微信市*/
     wxHeadimgurl String maxlength(250) /**微信头像图片地址*/
-    wxUnionid String maxlength(64) /**微信unionid*/
+    wxUnionid String maxlength(29) /**微信unionid*/
     wxLanguage String maxlength(32) /**微信语言*/
+    gender Gender /**表单填报性别（部分用户的微信性别可能不是实际性别）*/
 	userStatus UserStatus /**用户状态*/
     registerChannel RegisterChannel /**注册渠道*/
-    registerTime ZonedDateTime /**注册时间*/
-    
+    registerDateTime ZonedDateTime /**注册时间*/
 }
 
 enum UserStatus {
-	ACTIVE, UNACTIVE, FORBIDDEN
-} 
+	ACTIVE, // 活跃的
+    UNACTIVE, // 不活跃
+    LEFT, // 取关了
+    FORBIDDEN // 被拉黑
+}
 
 enum Gender {
 	MALE, FEMALE
 }
 
 enum RegisterChannel {
-	POSTER, SITE, BUSSTATION, WECHAT, QQ
+	POSTER, // 海报
+    SITE, // 定点宣传
+    BUSSTATION, // 公交站广告
+    WECHAT, // 微信推广
+    QQ // QQ推广
 }
 
-enetity Broker{
+entity Broker{
 	name String maxlength(32) /**广告经济商名称*/
 }
 
-entity FormSubmit{
-	submitID String	required maxlength(32),
-    submitSource String maxlength(1),
-	formID	Integer,
-    formName String maxlength(128),
-    submitJosn String maxlength(5000),
-    userID String maxlength(32),
-    registerChannel String maxlength(1),
-    submitDate Integer,
-    SubmitTime Integer,
-    Dealflag String maxlength(1)
-}
-
-entity UserBase{
-	
-}
-
-entity UserProperty{
-	userID String required maxlength(32),
-    propertyID String maxlength(32),
-    propertyValue String maxlength(64),
-    remark String maxlength(2000)
-}
-
-entity UserDemand{
-	userID String required maxlength(32),
-    propertyID String maxlength(32),
-    propertyValue String maxlength(64),
-    remark String maxlength(2000)
+relationship OneToMany {
+	/**广告经济商-微信用户*/
+    Broker{wxUsers} to WxUser{broker(name)}
 }
 
 entity BaseProperty{
-    
     propertyName String maxlength(64) /**属性名称：身高等*/
     propertyDescribe String maxlength(256) /**属性描述*/
     propertyType PropertyType /**属性类型：三观、性格、外貌等*/
     propertyScore Integer /**属性分值*/
     propertyMaxScore Integer /**属性最高分*/
-    formyType String maxlength(1) /**广告经济商名称*/
-    completionRate Integer /**广告经济商名称*/
+    formyType FormyType /**匹配类型：1对1、1对多、多对多、其他(不计分项，例如照片等)*/
+    completionRate Integer /**对完成率所占比重：5等*/
 }
 
 enum PropertyType {
-	BASIC, VALUES, CHARACTER, LOOKS, ASSET
+	BASIC, // 基础
+    VALUES, // 三观
+    CHARACTER, // 性格
+    LOOKS, // 外貌
+    ASSET // 资产
+}
+enum FormyType {
+	ONETOONE, ONETOMANY, MANYTOMANY,
+    ONETORANGE, // 身高等
+    LOCATION, // 家乡、当前所在地等
+    SCHOOL, // 学校（其实可以改表单变成ONETOMANY）
+    OTHER // 照片等
+}
+
+entity UserProperty{
+    propertyValue String maxlength(128) /**属性值:男等*/
+    remark String maxlength(2000) /**记录更新情况*/
+}
+
+entity UserDemand{
+    propertyValue String maxlength(128) /**属性值:男等*/
+    remark String maxlength(2000) /**记录更新情况*/
+}
+
+relationship OneToMany {
+	/**微信用户-用户属性值*/
+    WxUser{properties} to UserProperty{wxUser(wxNickName)}
+    /**属性-用户属性值*/
+    BaseProperty{values} to UserProperty{base(propertyName)}
+    /**微信用户-用户需求值*/
+    WxUser{properties} to UserDemand{wxUser(wxNickName)}
+    /**属性-用户需求值*/
+    BaseProperty{values} to UserDemand{base(propertyName)}
+}
+
+entity BaseForm{
+	formCode String maxlength(64) /**金数据等表单的编号*/
+    formName String maxlength(256) /**金数据等表单的名称*/
+    formDescribe String maxlength(512) /**金数据等表单的描述*/
+    formWeb String maxlength(512) /**金数据等表单的发布地址*/
+    submit_url String maxlength(512) /**金数据等表单数据结果的第三方推送地址*/
+    vendor FormVendor /**第三方表单的提供商*/
+}
+
+enum FormVendor {
+	SELF, //自主表单
+    JIN, //金数据
+    OTHER //其他
+}
+
+entity FormSubmit{
+    submitJosn String maxlength(5000) /**提交的数据*/
+    serialNumber Integer /**金数据表单中的字段，代表数据表的主键*/
+    creatorName String maxlength(64) /**金数据表单中的字段，创建者*/
+    createdDateTime ZonedDateTime /**金数据表单中的字段，创建时间*/
+    updatedDateTime ZonedDateTime /**金数据表单中的字段，更新时间*/
+    infoRemoteIp String maxlength(20) /**金数据表单中的字段，提交人ip*/
+    dealflag Boolean /**结果是否已处理*/
+}
+
+entity FormField{
+    fieldName String maxlength(64) /**变量名称，基本为field_1等*/
+    fieldType FieldType
+}
+
+enum FieldType {
+	PROPERTY, // 自身属性
+    DEMAND // 需求
+}
+
+relationship OneToMany {
+	/**微信用户-用户提交表单*/
+    WxUser{submits} to FormSubmit{wxUser(wxNickName)}
+    /**表单-用户提交表单*/
+    BaseForm{submits} to FormSubmit{base(formName)}
+
+    /**表单-表单字段*/
+    BaseForm{fields} to FormField{baseForm(formName)}
+    /**属性-表单字段*/
+    BaseProperty{fields} to FormField{baseProperty(propertyName)}
 }
 
 entity Algorithm{
@@ -98,52 +157,8 @@ entity MatchRecord{
     propertyB String maxlength(2000)
 }
 
-entity FormToProperty{
-	formID Integer,
-    keyName String maxlength(64),
-    keyType String maxlength(1),
-    propertyId String maxlength(32)
-}
-
-entity BaseForm{
-	formID Integer,
-    formName String maxlength(256),
-    formDescribe String maxlength(512),
-    formWeb String maxlength(512)
-}
-
-
-relationship OneToOne {
-	WxInfo{userID} to UserBase
-}
-
-relationship OneToMany {
-	UserBase{userID} to UserProperty,
-    UserBase{userID} to FormSubmit,
-    UserBase{userID} to MatchRecord
-}
-
-relationship OneToMany {
-	Algorithm{algorithmID} to MatchRecord
-}
-
-relationship ManyToMany {
-	BaseProperty{propertyID} to UserProperty,
-    BaseProperty{propertyID} to FormToProperty
-}
-
-relationship OneToMany {
-	BaseForm{formID} to FormToProperty,
-    BaseForm{formID} to FormSubmit
-}
-
-
-
-
-
-
 
 // Set pagination options
-paginate WxInfo, UserBase, Algorithm, BaseProperty, BaseForm with infinite-scroll
-paginate UserProperty, MatchRecord, FormSubmit, FormToProperty with pagination
+// paginate WxInfo, UserBase, Algorithm, BaseProperty, BaseForm with infinite-scroll
+// paginate UserProperty, MatchRecord, FormSubmit, FormToProperty with pagination
 
