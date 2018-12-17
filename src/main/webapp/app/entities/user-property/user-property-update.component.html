@@ -1,0 +1,60 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-user-property-heading">Create or edit a User Property</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!userProperty.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="userProperty.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_propertyValue" ngbTooltip="属性值:男等">Property Value</label>
+                    <input type="text" class="form-control" name="propertyValue" id="field_propertyValue"
+                        [(ngModel)]="userProperty.propertyValue" maxlength="128"/>
+                    <div [hidden]="!(editForm.controls.propertyValue?.dirty && editForm.controls.propertyValue?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.propertyValue?.errors?.maxlength">
+                        This field cannot be longer than 128 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_remark" ngbTooltip="记录更新情况">Remark</label>
+                    <input type="text" class="form-control" name="remark" id="field_remark"
+                        [(ngModel)]="userProperty.remark" maxlength="2000"/>
+                    <div [hidden]="!(editForm.controls.remark?.dirty && editForm.controls.remark?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.remark?.errors?.maxlength">
+                        This field cannot be longer than 2000 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxUser">Wx User</label>
+                    <select class="form-control" id="field_wxUser" name="wxUser" [(ngModel)]="userProperty.wxUser" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="wxUserOption.id === userProperty.wxUser?.id ? userProperty.wxUser : wxUserOption" *ngFor="let wxUserOption of wxusers; trackBy: trackWxUserById">{{wxUserOption.wxNickName}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_base">Base</label>
+                    <select class="form-control" id="field_base" name="base" [(ngModel)]="userProperty.base" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="basePropertyOption.id === userProperty.base?.id ? userProperty.base : basePropertyOption" *ngFor="let basePropertyOption of baseproperties; trackBy: trackBasePropertyById">{{basePropertyOption.propertyName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

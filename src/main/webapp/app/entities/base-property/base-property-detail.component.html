@@ -1,0 +1,51 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="baseProperty">
+            <h2><span>Base Property</span> {{baseProperty.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="属性名称：身高等">Property Name</span></dt>
+                <dd>
+                    <span>{{baseProperty.propertyName}}</span>
+                </dd>
+                <dt><span ngbTooltip="属性描述">Property Describe</span></dt>
+                <dd>
+                    <span>{{baseProperty.propertyDescribe}}</span>
+                </dd>
+                <dt><span ngbTooltip="属性类型：三观、性格、外貌等">Property Type</span></dt>
+                <dd>
+                    <span>{{baseProperty.propertyType}}</span>
+                </dd>
+                <dt><span ngbTooltip="属性分值">Property Score</span></dt>
+                <dd>
+                    <span>{{baseProperty.propertyScore}}</span>
+                </dd>
+                <dt><span ngbTooltip="属性最高分">Property Max Score</span></dt>
+                <dd>
+                    <span>{{baseProperty.propertyMaxScore}}</span>
+                </dd>
+                <dt><span ngbTooltip="匹配类型：1对1、1对多、多对多、其他(不计分项，例如照片等)">Formy Type</span></dt>
+                <dd>
+                    <span>{{baseProperty.formyType}}</span>
+                </dd>
+                <dt><span ngbTooltip="对完成率所占比重：5等">Completion Rate</span></dt>
+                <dd>
+                    <span>{{baseProperty.completionRate}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/base-property', baseProperty.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

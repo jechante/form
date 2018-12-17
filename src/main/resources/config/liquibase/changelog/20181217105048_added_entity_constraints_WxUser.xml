@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity WxUser.
+    -->
+    <changeSet id="20181217105048-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="broker_id"
+                                 baseTableName="wx_user"
+                                 constraintName="fk_wx_user_broker_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="broker"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,82 @@
+{
+    "name": "BaseForm",
+    "fields": [
+        {
+            "fieldName": "formCode",
+            "javadoc": "金数据等表单的编号",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 64
+        },
+        {
+            "fieldName": "formName",
+            "javadoc": "金数据等表单的名称",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 256
+        },
+        {
+            "fieldName": "formDescribe",
+            "javadoc": "金数据等表单的描述",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 512
+        },
+        {
+            "fieldName": "formWeb",
+            "javadoc": "金数据等表单的发布地址",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 512
+        },
+        {
+            "fieldName": "submitUrl",
+            "javadoc": "金数据等表单数据结果的第三方推送地址",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 512
+        },
+        {
+            "fieldName": "vendor",
+            "javadoc": "第三方表单的提供商",
+            "fieldType": "FormVendor",
+            "fieldValues": "SELF,JIN,OTHER"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "表单-用户提交表单",
+            "relationshipName": "submits",
+            "otherEntityName": "formSubmit",
+            "otherEntityRelationshipName": "base"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "表单-表单字段",
+            "relationshipName": "fields",
+            "otherEntityName": "formField",
+            "otherEntityRelationshipName": "baseForm"
+        }
+    ],
+    "changelogDate": "20181217105053",
+    "entityTableName": "base_form",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

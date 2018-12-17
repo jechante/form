@@ -1,0 +1,99 @@
+{
+    "name": "BaseProperty",
+    "fields": [
+        {
+            "fieldName": "propertyName",
+            "javadoc": "属性名称：身高等",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 64
+        },
+        {
+            "fieldName": "propertyDescribe",
+            "javadoc": "属性描述",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 256
+        },
+        {
+            "fieldName": "propertyType",
+            "javadoc": "属性类型：三观、性格、外貌等",
+            "fieldType": "PropertyType",
+            "fieldValues": "BASIC,VALUES,CHARACTER,LOOKS,ASSET"
+        },
+        {
+            "fieldName": "propertyScore",
+            "javadoc": "属性分值",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "propertyMaxScore",
+            "javadoc": "属性最高分",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "formyType",
+            "javadoc": "匹配类型：1对1、1对多、多对多、其他(不计分项，例如照片等)",
+            "fieldType": "FormyType",
+            "fieldValues": "ONETOONE,ONETOMANY,MANYTOMANY,ONETORANGE,LOCATION,SCHOOL,OTHER"
+        },
+        {
+            "fieldName": "completionRate",
+            "javadoc": "对完成率所占比重：5等",
+            "fieldType": "Integer"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "属性-用户属性值",
+            "relationshipName": "values",
+            "otherEntityName": "userProperty",
+            "otherEntityRelationshipName": "base"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "属性-用户需求值",
+            "relationshipName": "values",
+            "otherEntityName": "userDemand",
+            "otherEntityRelationshipName": "base"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "属性-表单字段",
+            "relationshipName": "fields",
+            "otherEntityName": "formField",
+            "otherEntityRelationshipName": "baseProperty"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "javadoc": "作为过滤属性参与的算法",
+            "relationshipName": "filterAlgorithms",
+            "otherEntityName": "algorithm",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "filterProperties"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "javadoc": "作为计分属性参与的算法",
+            "relationshipName": "scoreAlgorithms",
+            "otherEntityName": "algorithm",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "scoreProperties"
+        }
+    ],
+    "changelogDate": "20181217105050",
+    "entityTableName": "base_property",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

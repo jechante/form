@@ -1,0 +1,81 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="wxUser">
+            <h2><span>Wx User</span> {{wxUser.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="微信昵称">Wx Nick Name</span></dt>
+                <dd>
+                    <span>{{wxUser.wxNickName}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信性别">Wx Gender</span></dt>
+                <dd>
+                    <span>{{wxUser.wxGender}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信国家">Wx Country</span></dt>
+                <dd>
+                    <span>{{wxUser.wxCountry}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信省">Wx Province</span></dt>
+                <dd>
+                    <span>{{wxUser.wxProvince}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信市">Wx City</span></dt>
+                <dd>
+                    <span>{{wxUser.wxCity}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信头像图片地址">Wx Headimgurl</span></dt>
+                <dd>
+                    <span>{{wxUser.wxHeadimgurl}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信unionid">Wx Unionid</span></dt>
+                <dd>
+                    <span>{{wxUser.wxUnionid}}</span>
+                </dd>
+                <dt><span ngbTooltip="微信语言">Wx Language</span></dt>
+                <dd>
+                    <span>{{wxUser.wxLanguage}}</span>
+                </dd>
+                <dt><span ngbTooltip="表单填报性别（部分用户的微信性别可能不是实际性别）">Gender</span></dt>
+                <dd>
+                    <span>{{wxUser.gender}}</span>
+                </dd>
+                <dt><span ngbTooltip="用户状态">User Status</span></dt>
+                <dd>
+                    <span>{{wxUser.userStatus}}</span>
+                </dd>
+                <dt><span ngbTooltip="注册渠道">Register Channel</span></dt>
+                <dd>
+                    <span>{{wxUser.registerChannel}}</span>
+                </dd>
+                <dt><span ngbTooltip="注册时间">Register Date Time</span></dt>
+                <dd>
+                    <span>{{wxUser.registerDateTime}}</span>
+                </dd>
+                <dt><span ngbTooltip="每日主动匹配记录数限制，默认为1。特权用户可以上调该限制">Push Limit</span></dt>
+                <dd>
+                    <span>{{wxUser.pushLimit}}</span>
+                </dd>
+                <dt><span>Broker</span></dt>
+                <dd>
+                    <div *ngIf="wxUser.broker">
+                        <a [routerLink]="['/broker', wxUser.broker?.id, 'view']">{{wxUser.broker?.name}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/wx-user', wxUser.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

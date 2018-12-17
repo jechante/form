@@ -1,0 +1,154 @@
+{
+    "name": "WxUser",
+    "fields": [
+        {
+            "fieldName": "wxNickName",
+            "javadoc": "微信昵称",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 64
+        },
+        {
+            "fieldName": "wxGender",
+            "javadoc": "微信性别",
+            "fieldType": "Gender",
+            "fieldValues": "MALE,FEMALE"
+        },
+        {
+            "fieldName": "wxCountry",
+            "javadoc": "微信国家",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
+        },
+        {
+            "fieldName": "wxProvince",
+            "javadoc": "微信省",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
+        },
+        {
+            "fieldName": "wxCity",
+            "javadoc": "微信市",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
+        },
+        {
+            "fieldName": "wxHeadimgurl",
+            "javadoc": "微信头像图片地址",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 250
+        },
+        {
+            "fieldName": "wxUnionid",
+            "javadoc": "微信unionid",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 29
+        },
+        {
+            "fieldName": "wxLanguage",
+            "javadoc": "微信语言",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
+        },
+        {
+            "fieldName": "gender",
+            "javadoc": "表单填报性别（部分用户的微信性别可能不是实际性别）",
+            "fieldType": "Gender",
+            "fieldValues": "MALE,FEMALE"
+        },
+        {
+            "fieldName": "userStatus",
+            "javadoc": "用户状态",
+            "fieldType": "UserStatus",
+            "fieldValues": "ACTIVE,UNACTIVE,LEFT,FORBIDDEN"
+        },
+        {
+            "fieldName": "registerChannel",
+            "javadoc": "注册渠道",
+            "fieldType": "RegisterChannel",
+            "fieldValues": "POSTER,SITE,BUSSTATION,WECHAT,QQ"
+        },
+        {
+            "fieldName": "registerDateTime",
+            "javadoc": "注册时间",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "pushLimit",
+            "javadoc": "每日主动匹配记录数限制，默认为1。特权用户可以上调该限制",
+            "fieldType": "Integer"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "微信用户-用户属性值",
+            "relationshipName": "properties",
+            "otherEntityName": "userProperty",
+            "otherEntityRelationshipName": "wxUser"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "微信用户-用户需求值",
+            "relationshipName": "properties",
+            "otherEntityName": "userDemand",
+            "otherEntityRelationshipName": "wxUser"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "微信用户-用户提交表单",
+            "relationshipName": "submits",
+            "otherEntityName": "formSubmit",
+            "otherEntityRelationshipName": "wxUser"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "微信用户-用户配对绩效结果（位于后）",
+            "relationshipName": "aMatches",
+            "otherEntityName": "userMatch",
+            "otherEntityRelationshipName": "userA"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "微信用户-结果推送",
+            "relationshipName": "pushRecords",
+            "otherEntityName": "pushRecord",
+            "otherEntityRelationshipName": "user"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "broker",
+            "otherEntityName": "broker",
+            "otherEntityField": "name"
+        }
+    ],
+    "changelogDate": "20181217105048",
+    "entityTableName": "wx_user",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

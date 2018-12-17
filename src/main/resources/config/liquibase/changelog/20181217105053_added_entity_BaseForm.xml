@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="autoIncrement" value="true"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity BaseForm.
+    -->
+    <changeSet id="20181217105053-1" author="jhipster">
+        <createTable tableName="base_form">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="form_code" type="varchar(64)" remarks="金数据等表单的编号">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="form_name" type="varchar(256)" remarks="金数据等表单的名称">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="form_describe" type="varchar(512)" remarks="金数据等表单的描述">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="form_web" type="varchar(512)" remarks="金数据等表单的发布地址">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="submit_url" type="varchar(512)" remarks="金数据等表单数据结果的第三方推送地址">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="vendor" type="varchar(255)" remarks="第三方表单的提供商">
+                <constraints nullable="true" />
+            </column>
+
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+        
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>

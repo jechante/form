@@ -1,0 +1,50 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-push-record-heading">Create or edit a Push Record</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!pushRecord.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="pushRecord.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_pushType">Push Type</label>
+                    <select class="form-control" name="pushType" [(ngModel)]="pushRecord.pushType" id="field_pushType" >
+                        <option value="ASK">ASK</option>
+                        <option value="Regular">Regular</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_pushDateTime" ngbTooltip="推送时间">Push Date Time</label>
+                    <div class="d-flex">
+                        <input id="field_pushDateTime" type="datetime-local" class="form-control" name="pushDateTime" [(ngModel)]="pushDateTime"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_success" ngbTooltip="是否推送成功">Success</label>
+                    <input type="checkbox" class="form-control" name="success" id="field_success"
+                        [(ngModel)]="pushRecord.success" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_user">User</label>
+                    <select class="form-control" id="field_user" name="user" [(ngModel)]="pushRecord.user" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="wxUserOption.id === pushRecord.user?.id ? pushRecord.user : wxUserOption" *ngFor="let wxUserOption of wxusers; trackBy: trackWxUserById">{{wxUserOption.wxNickName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="autoIncrement" value="true"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity FormSubmit.
+    -->
+    <changeSet id="20181217105054-1" author="jhipster">
+        <createTable tableName="form_submit">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="submit_josn" type="varchar(5000)" remarks="提交的数据">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="serial_number" type="integer" remarks="金数据表单中的字段，代表数据表的主键">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="creator_name" type="varchar(64)" remarks="金数据表单中的字段，创建者">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="created_date_time" type="datetime" remarks="金数据表单中的字段，创建时间">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="updated_date_time" type="datetime" remarks="金数据表单中的字段，更新时间">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="info_remote_ip" type="varchar(20)" remarks="金数据表单中的字段，提交人ip">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="dealflag" type="bit" remarks="结果是否已处理">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_user_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="base_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+        <dropDefaultValue tableName="form_submit" columnName="created_date_time" columnDataType="datetime"/>
+        <dropDefaultValue tableName="form_submit" columnName="updated_date_time" columnDataType="datetime"/>
+        
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>

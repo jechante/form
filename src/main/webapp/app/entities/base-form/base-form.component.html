@@ -1,0 +1,64 @@
+<div>
+    <h2 id="page-heading">
+        <span>Base Forms</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-base-form" [routerLink]="['/base-form/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create new Base Form
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="baseForms">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formCode"><span>Form Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formName"><span>Form Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formDescribe"><span>Form Describe</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formWeb"><span>Form Web</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="submitUrl"><span>Submit Url</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="vendor"><span>Vendor</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let baseForm of baseForms ;trackBy: trackId">
+                <td><a [routerLink]="['/base-form', baseForm.id, 'view' ]">{{baseForm.id}}</a></td>
+                <td>{{baseForm.formCode}}</td>
+                <td>{{baseForm.formName}}</td>
+                <td>{{baseForm.formDescribe}}</td>
+                <td>{{baseForm.formWeb}}</td>
+                <td>{{baseForm.submitUrl}}</td>
+                <td>{{baseForm.vendor}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/base-form', baseForm.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/base-form', baseForm.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'base-form/'+ baseForm.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

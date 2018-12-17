@@ -44,7 +44,7 @@ relationship OneToMany {
 }
 
 entity BaseProperty{
-    propertyName String maxlength(64) /**属性名称：身高等*/
+    propertyName String required maxlength(64) /**属性名称：身高等*/
     propertyDescribe String maxlength(256) /**属性描述*/
     propertyType PropertyType /**属性类型：三观、性格、外貌等*/
     propertyScore Integer /**属性分值*/
@@ -90,11 +90,11 @@ relationship OneToMany {
 }
 
 entity BaseForm{
-	formCode String maxlength(64) /**金数据等表单的编号*/
+	formCode String required maxlength(64) /**金数据等表单的编号*/
     formName String maxlength(256) /**金数据等表单的名称*/
     formDescribe String maxlength(512) /**金数据等表单的描述*/
     formWeb String maxlength(512) /**金数据等表单的发布地址*/
-    submit_url String maxlength(512) /**金数据等表单数据结果的第三方推送地址*/
+    submitUrl String maxlength(512) /**金数据等表单数据结果的第三方推送地址*/
     vendor FormVendor /**第三方表单的提供商*/
 }
 
@@ -105,8 +105,8 @@ enum FormVendor {
 }
 
 entity FormSubmit{
-    submitJosn String maxlength(5000) /**提交的数据*/
-    serialNumber Integer /**金数据表单中的字段，代表数据表的主键*/
+    submitJosn String required maxlength(5000) /**提交的数据*/
+    serialNumber Integer required /**金数据表单中的字段，代表数据表的主键*/
     creatorName String maxlength(64) /**金数据表单中的字段，创建者*/
     createdDateTime ZonedDateTime /**金数据表单中的字段，创建时间*/
     updatedDateTime ZonedDateTime /**金数据表单中的字段，更新时间*/
@@ -115,7 +115,7 @@ entity FormSubmit{
 }
 
 entity FormField{
-    fieldName String maxlength(64) /**变量名称，基本为field_1等*/
+    fieldName String required maxlength(64) /**变量名称，基本为field_1等*/
     fieldType FieldType
 }
 
@@ -137,7 +137,7 @@ relationship OneToMany {
 }
 
 entity Algorithm{
-	name String maxlength(64) /**算法名*/
+	name String required maxlength(64) /**算法名*/
     filterStrings String maxlength(2000) /**过滤属性*/
     scoreStrings String	maxlength(2000) /**计分属性*/
     genderWeight Double /**需求权重*/
@@ -147,8 +147,6 @@ entity Algorithm{
 }
 
 entity UserMatch{
-    userA String maxlength(32)
-    userB String maxlength(32)
     scoreAtoB Integer /**以A的需求对B打分*/
     scoreBtoA Integer
     scoreTotal Integer
@@ -185,10 +183,13 @@ enum PushType {
 
 
 relationship OneToMany {
-	/**算法-用户配对绩效结果*/
-    Algorithm{matches} to UserMatch{algorithm(name)}
+	/**用户配对绩效结果*/
+    Algorithm{matches}
+    to
+    /**算法*/
+    UserMatch{algorithm(name)}
 
-    /**微信用户-用户配对绩效结果（前后之和才为该用户的全部匹配）*/
+    // /**微信用户-用户配对绩效结果（前后之和才为该用户的全部匹配）*/
     /**微信用户-用户配对绩效结果（位于前）*/
     WxUser{aMatches} to UserMatch{userA(wxNickName)}
     /**微信用户-用户配对绩效结果（位于后）*/
@@ -201,10 +202,24 @@ relationship OneToMany {
 }
 
 relationship ManyToMany {
+	/**用户配对绩效结果-结果推送*/
 	UserMatch{pushRecords} to PushRecord{userMatches}
+
+    /**过滤属性*/
+    Algorithm{filterProperties}
+    to
+    /**作为过滤属性参与的算法*/
+    BaseProperty{filterAlgorithms(name)}
+
+    /**计分属性*/
+    Algorithm{scoreProperties}
+    to
+    /**作为计分属性参与的算法*/
+    BaseProperty{scoreAlgorithms(name)}
 }
 
 // Set pagination options
-// paginate WxInfo, UserBase, Algorithm, BaseProperty, BaseForm with infinite-scroll
-// paginate UserProperty, MatchRecord, FormSubmit, FormToProperty with pagination
+paginate * with pagination except WxUser, Algorithm, BaseProperty, BaseForm
+paginate WxUser, Algorithm, BaseProperty, BaseForm with infinite-scroll
+service * with serviceClass
 

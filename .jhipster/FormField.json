@@ -1,0 +1,43 @@
+{
+    "name": "FormField",
+    "fields": [
+        {
+            "fieldName": "fieldName",
+            "javadoc": "变量名称，基本为field_1等",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 64
+        },
+        {
+            "fieldName": "fieldType",
+            "fieldType": "FieldType",
+            "fieldValues": "PROPERTY,DEMAND"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "baseForm",
+            "otherEntityName": "baseForm",
+            "otherEntityField": "formName"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "baseProperty",
+            "otherEntityName": "baseProperty",
+            "otherEntityField": "propertyName"
+        }
+    ],
+    "changelogDate": "20181217105055",
+    "entityTableName": "form_field",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

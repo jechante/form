@@ -1,0 +1,44 @@
+{
+    "name": "PushRecord",
+    "fields": [
+        {
+            "fieldName": "pushType",
+            "fieldType": "PushType",
+            "fieldValues": "ASK,Regular"
+        },
+        {
+            "fieldName": "pushDateTime",
+            "javadoc": "推送时间",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "success",
+            "javadoc": "是否推送成功",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "user",
+            "otherEntityName": "wxUser",
+            "otherEntityField": "wxNickName"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "userMatches",
+            "otherEntityName": "userMatch",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "pushRecords"
+        }
+    ],
+    "changelogDate": "20181217105058",
+    "entityTableName": "push_record",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

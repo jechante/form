@@ -1,0 +1,90 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-user-match-heading">Create or edit a User Match</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!userMatch.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="userMatch.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreAtoB" ngbTooltip="以A的需求对B打分">Score Ato B</label>
+                    <input type="number" class="form-control" name="scoreAtoB" id="field_scoreAtoB"
+                        [(ngModel)]="userMatch.scoreAtoB" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreBtoA">Score Bto A</label>
+                    <input type="number" class="form-control" name="scoreBtoA" id="field_scoreBtoA"
+                        [(ngModel)]="userMatch.scoreBtoA" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_scoreTotal">Score Total</label>
+                    <input type="number" class="form-control" name="scoreTotal" id="field_scoreTotal"
+                        [(ngModel)]="userMatch.scoreTotal" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_ratio" ngbTooltip="匹配度，即匹配分除以可能的最高分">Ratio</label>
+                    <input type="number" class="form-control" name="ratio" id="field_ratio"
+                        [(ngModel)]="userMatch.ratio" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_rankA" ngbTooltip="如果是a对b的主动配对，b的排名数（位于1~pushLimit之间）">Rank A</label>
+                    <input type="number" class="form-control" name="rankA" id="field_rankA"
+                        [(ngModel)]="userMatch.rankA" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_rankB">Rank B</label>
+                    <input type="number" class="form-control" name="rankB" id="field_rankB"
+                        [(ngModel)]="userMatch.rankB" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_matchType">Match Type</label>
+                    <select class="form-control" name="matchType" [(ngModel)]="userMatch.matchType" id="field_matchType" >
+                        <option value="ATOB">ATOB</option>
+                        <option value="BTOA">BTOA</option>
+                        <option value="BIDIRECTIONAL">BIDIRECTIONAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_pushStatus">Push Status</label>
+                    <select class="form-control" name="pushStatus" [(ngModel)]="userMatch.pushStatus" id="field_pushStatus" >
+                        <option value="NEITHER">NEITHER</option>
+                        <option value="EITHER">EITHER</option>
+                        <option value="BOTH">BOTH</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="field_pushRecords">Push Records</label>
+                    <select class="form-control" id="field_pushRecords" multiple name="pushRecords" [(ngModel)]="userMatch.pushRecords">
+                        <option [ngValue]="getSelected(userMatch.pushRecords, pushRecordOption)" *ngFor="let pushRecordOption of pushrecords; trackBy: trackPushRecordById">{{pushRecordOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_algorithm">Algorithm</label>
+                    <select class="form-control" id="field_algorithm" name="algorithm" [(ngModel)]="userMatch.algorithm" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="algorithmOption.id === userMatch.algorithm?.id ? userMatch.algorithm : algorithmOption" *ngFor="let algorithmOption of algorithms; trackBy: trackAlgorithmById">{{algorithmOption.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userA">User A</label>
+                    <select class="form-control" id="field_userA" name="userA" [(ngModel)]="userMatch.userA" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="wxUserOption.id === userMatch.userA?.id ? userMatch.userA : wxUserOption" *ngFor="let wxUserOption of wxusers; trackBy: trackWxUserById">{{wxUserOption.wxNickName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

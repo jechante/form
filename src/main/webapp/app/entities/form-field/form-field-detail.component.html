@@ -1,0 +1,43 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="formField">
+            <h2><span>Form Field</span> {{formField.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="变量名称，基本为field_1等">Field Name</span></dt>
+                <dd>
+                    <span>{{formField.fieldName}}</span>
+                </dd>
+                <dt><span>Field Type</span></dt>
+                <dd>
+                    <span>{{formField.fieldType}}</span>
+                </dd>
+                <dt><span>Base Form</span></dt>
+                <dd>
+                    <div *ngIf="formField.baseForm">
+                        <a [routerLink]="['/base-form', formField.baseForm?.id, 'view']">{{formField.baseForm?.formName}}</a>
+                    </div>
+                </dd>
+                <dt><span>Base Property</span></dt>
+                <dd>
+                    <div *ngIf="formField.baseProperty">
+                        <a [routerLink]="['/base-property', formField.baseProperty?.id, 'view']">{{formField.baseProperty?.propertyName}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/form-field', formField.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+{
+    "name": "UserProperty",
+    "fields": [
+        {
+            "fieldName": "propertyValue",
+            "javadoc": "属性值:男等",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 128
+        },
+        {
+            "fieldName": "remark",
+            "javadoc": "记录更新情况",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 2000
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "wxUser",
+            "otherEntityName": "wxUser",
+            "otherEntityField": "wxNickName"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "base",
+            "otherEntityName": "baseProperty",
+            "otherEntityField": "propertyName"
+        }
+    ],
+    "changelogDate": "20181217105051",
+    "entityTableName": "user_property",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

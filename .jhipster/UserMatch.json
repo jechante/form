@@ -1,0 +1,75 @@
+{
+    "name": "UserMatch",
+    "fields": [
+        {
+            "fieldName": "scoreAtoB",
+            "javadoc": "以A的需求对B打分",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "scoreBtoA",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "scoreTotal",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "ratio",
+            "javadoc": "匹配度，即匹配分除以可能的最高分",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "rankA",
+            "javadoc": "如果是a对b的主动配对，b的排名数（位于1~pushLimit之间）",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "rankB",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "matchType",
+            "fieldType": "MatchType",
+            "fieldValues": "ATOB,BTOA,BIDIRECTIONAL"
+        },
+        {
+            "fieldName": "pushStatus",
+            "fieldType": "PushStatus",
+            "fieldValues": "NEITHER,EITHER,BOTH"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "javadoc": "用户配对绩效结果-结果推送",
+            "otherEntityRelationshipName": "userMatches",
+            "relationshipName": "pushRecords",
+            "otherEntityName": "pushRecord",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-one",
+            "javadoc": "算法",
+            "relationshipName": "algorithm",
+            "otherEntityName": "algorithm",
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "userA",
+            "otherEntityName": "wxUser",
+            "otherEntityField": "wxNickName"
+        }
+    ],
+    "changelogDate": "20181217105057",
+    "entityTableName": "user_match",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

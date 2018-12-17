@@ -1,0 +1,153 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-wx-user-heading">Create or edit a Wx User</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!wxUser.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="wxUser.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxNickName" ngbTooltip="微信昵称">Wx Nick Name</label>
+                    <input type="text" class="form-control" name="wxNickName" id="field_wxNickName"
+                        [(ngModel)]="wxUser.wxNickName" maxlength="64"/>
+                    <div [hidden]="!(editForm.controls.wxNickName?.dirty && editForm.controls.wxNickName?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxNickName?.errors?.maxlength">
+                        This field cannot be longer than 64 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxGender" ngbTooltip="微信性别">Wx Gender</label>
+                    <select class="form-control" name="wxGender" [(ngModel)]="wxUser.wxGender" id="field_wxGender" >
+                        <option value="MALE">MALE</option>
+                        <option value="FEMALE">FEMALE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxCountry" ngbTooltip="微信国家">Wx Country</label>
+                    <input type="text" class="form-control" name="wxCountry" id="field_wxCountry"
+                        [(ngModel)]="wxUser.wxCountry" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.wxCountry?.dirty && editForm.controls.wxCountry?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxCountry?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxProvince" ngbTooltip="微信省">Wx Province</label>
+                    <input type="text" class="form-control" name="wxProvince" id="field_wxProvince"
+                        [(ngModel)]="wxUser.wxProvince" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.wxProvince?.dirty && editForm.controls.wxProvince?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxProvince?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxCity" ngbTooltip="微信市">Wx City</label>
+                    <input type="text" class="form-control" name="wxCity" id="field_wxCity"
+                        [(ngModel)]="wxUser.wxCity" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.wxCity?.dirty && editForm.controls.wxCity?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxCity?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxHeadimgurl" ngbTooltip="微信头像图片地址">Wx Headimgurl</label>
+                    <input type="text" class="form-control" name="wxHeadimgurl" id="field_wxHeadimgurl"
+                        [(ngModel)]="wxUser.wxHeadimgurl" maxlength="250"/>
+                    <div [hidden]="!(editForm.controls.wxHeadimgurl?.dirty && editForm.controls.wxHeadimgurl?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxHeadimgurl?.errors?.maxlength">
+                        This field cannot be longer than 250 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxUnionid" ngbTooltip="微信unionid">Wx Unionid</label>
+                    <input type="text" class="form-control" name="wxUnionid" id="field_wxUnionid"
+                        [(ngModel)]="wxUser.wxUnionid" maxlength="29"/>
+                    <div [hidden]="!(editForm.controls.wxUnionid?.dirty && editForm.controls.wxUnionid?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxUnionid?.errors?.maxlength">
+                        This field cannot be longer than 29 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxLanguage" ngbTooltip="微信语言">Wx Language</label>
+                    <input type="text" class="form-control" name="wxLanguage" id="field_wxLanguage"
+                        [(ngModel)]="wxUser.wxLanguage" maxlength="32"/>
+                    <div [hidden]="!(editForm.controls.wxLanguage?.dirty && editForm.controls.wxLanguage?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.wxLanguage?.errors?.maxlength">
+                        This field cannot be longer than 32 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_gender" ngbTooltip="表单填报性别（部分用户的微信性别可能不是实际性别）">Gender</label>
+                    <select class="form-control" name="gender" [(ngModel)]="wxUser.gender" id="field_gender" >
+                        <option value="MALE">MALE</option>
+                        <option value="FEMALE">FEMALE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userStatus" ngbTooltip="用户状态">User Status</label>
+                    <select class="form-control" name="userStatus" [(ngModel)]="wxUser.userStatus" id="field_userStatus" >
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="UNACTIVE">UNACTIVE</option>
+                        <option value="LEFT">LEFT</option>
+                        <option value="FORBIDDEN">FORBIDDEN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_registerChannel" ngbTooltip="注册渠道">Register Channel</label>
+                    <select class="form-control" name="registerChannel" [(ngModel)]="wxUser.registerChannel" id="field_registerChannel" >
+                        <option value="POSTER">POSTER</option>
+                        <option value="SITE">SITE</option>
+                        <option value="BUSSTATION">BUSSTATION</option>
+                        <option value="WECHAT">WECHAT</option>
+                        <option value="QQ">QQ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_registerDateTime" ngbTooltip="注册时间">Register Date Time</label>
+                    <div class="d-flex">
+                        <input id="field_registerDateTime" type="datetime-local" class="form-control" name="registerDateTime" [(ngModel)]="registerDateTime"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_pushLimit" ngbTooltip="每日主动匹配记录数限制，默认为1。特权用户可以上调该限制">Push Limit</label>
+                    <input type="number" class="form-control" name="pushLimit" id="field_pushLimit"
+                        [(ngModel)]="wxUser.pushLimit" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_broker">Broker</label>
+                    <select class="form-control" id="field_broker" name="broker" [(ngModel)]="wxUser.broker" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="brokerOption.id === wxUser.broker?.id ? wxUser.broker : brokerOption" *ngFor="let brokerOption of brokers; trackBy: trackBrokerById">{{brokerOption.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-base-form-heading">Create or edit a Base Form</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!baseForm.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="baseForm.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formCode" ngbTooltip="金数据等表单的编号">Form Code</label>
+                    <input type="text" class="form-control" name="formCode" id="field_formCode"
+                        [(ngModel)]="baseForm.formCode" required maxlength="64"/>
+                    <div [hidden]="!(editForm.controls.formCode?.dirty && editForm.controls.formCode?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formCode?.errors?.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formCode?.errors?.maxlength">
+                        This field cannot be longer than 64 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formName" ngbTooltip="金数据等表单的名称">Form Name</label>
+                    <input type="text" class="form-control" name="formName" id="field_formName"
+                        [(ngModel)]="baseForm.formName" maxlength="256"/>
+                    <div [hidden]="!(editForm.controls.formName?.dirty && editForm.controls.formName?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formName?.errors?.maxlength">
+                        This field cannot be longer than 256 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formDescribe" ngbTooltip="金数据等表单的描述">Form Describe</label>
+                    <input type="text" class="form-control" name="formDescribe" id="field_formDescribe"
+                        [(ngModel)]="baseForm.formDescribe" maxlength="512"/>
+                    <div [hidden]="!(editForm.controls.formDescribe?.dirty && editForm.controls.formDescribe?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formDescribe?.errors?.maxlength">
+                        This field cannot be longer than 512 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_formWeb" ngbTooltip="金数据等表单的发布地址">Form Web</label>
+                    <input type="text" class="form-control" name="formWeb" id="field_formWeb"
+                        [(ngModel)]="baseForm.formWeb" maxlength="512"/>
+                    <div [hidden]="!(editForm.controls.formWeb?.dirty && editForm.controls.formWeb?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.formWeb?.errors?.maxlength">
+                        This field cannot be longer than 512 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitUrl" ngbTooltip="金数据等表单数据结果的第三方推送地址">Submit Url</label>
+                    <input type="text" class="form-control" name="submitUrl" id="field_submitUrl"
+                        [(ngModel)]="baseForm.submitUrl" maxlength="512"/>
+                    <div [hidden]="!(editForm.controls.submitUrl?.dirty && editForm.controls.submitUrl?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitUrl?.errors?.maxlength">
+                        This field cannot be longer than 512 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_vendor" ngbTooltip="第三方表单的提供商">Vendor</label>
+                    <select class="form-control" name="vendor" [(ngModel)]="baseForm.vendor" id="field_vendor" >
+                        <option value="SELF">SELF</option>
+                        <option value="JIN">JIN</option>
+                        <option value="OTHER">OTHER</option>
+                    </select>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

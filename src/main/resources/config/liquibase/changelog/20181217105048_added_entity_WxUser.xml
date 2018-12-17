@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="autoIncrement" value="true"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity WxUser.
+    -->
+    <changeSet id="20181217105048-1" author="jhipster">
+        <createTable tableName="wx_user">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="wx_nick_name" type="varchar(64)" remarks="微信昵称">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_gender" type="varchar(255)" remarks="微信性别">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_country" type="varchar(32)" remarks="微信国家">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_province" type="varchar(32)" remarks="微信省">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_city" type="varchar(32)" remarks="微信市">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_headimgurl" type="varchar(250)" remarks="微信头像图片地址">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_unionid" type="varchar(29)" remarks="微信unionid">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="wx_language" type="varchar(32)" remarks="微信语言">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="gender" type="varchar(255)" remarks="表单填报性别（部分用户的微信性别可能不是实际性别）">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="user_status" type="varchar(255)" remarks="用户状态">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="register_channel" type="varchar(255)" remarks="注册渠道">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="register_date_time" type="datetime" remarks="注册时间">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="push_limit" type="integer" remarks="每日主动匹配记录数限制，默认为1。特权用户可以上调该限制">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="broker_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+        <dropDefaultValue tableName="wx_user" columnName="register_date_time" columnDataType="datetime"/>
+        
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>

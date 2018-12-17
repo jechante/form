@@ -1,0 +1,32 @@
+{
+    "name": "Broker",
+    "fields": [
+        {
+            "fieldName": "name",
+            "javadoc": "广告经济商名称",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 32
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "广告经济商-微信用户",
+            "relationshipName": "wxUsers",
+            "otherEntityName": "wxUser",
+            "otherEntityRelationshipName": "broker"
+        }
+    ],
+    "changelogDate": "20181217105049",
+    "entityTableName": "broker",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

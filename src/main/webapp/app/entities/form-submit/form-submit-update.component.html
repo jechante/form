@@ -1,0 +1,109 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-form-submit-heading">Create or edit a Form Submit</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!formSubmit.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="formSubmit.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_submitJosn" ngbTooltip="提交的数据">Submit Josn</label>
+                    <input type="text" class="form-control" name="submitJosn" id="field_submitJosn"
+                        [(ngModel)]="formSubmit.submitJosn" required maxlength="5000"/>
+                    <div [hidden]="!(editForm.controls.submitJosn?.dirty && editForm.controls.submitJosn?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitJosn?.errors?.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.submitJosn?.errors?.maxlength">
+                        This field cannot be longer than 5000 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_serialNumber" ngbTooltip="金数据表单中的字段，代表数据表的主键">Serial Number</label>
+                    <input type="number" class="form-control" name="serialNumber" id="field_serialNumber"
+                        [(ngModel)]="formSubmit.serialNumber" required/>
+                    <div [hidden]="!(editForm.controls.serialNumber?.dirty && editForm.controls.serialNumber?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.serialNumber?.errors?.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.serialNumber?.errors?.number">
+                            This field should be a number.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_creatorName" ngbTooltip="金数据表单中的字段，创建者">Creator Name</label>
+                    <input type="text" class="form-control" name="creatorName" id="field_creatorName"
+                        [(ngModel)]="formSubmit.creatorName" maxlength="64"/>
+                    <div [hidden]="!(editForm.controls.creatorName?.dirty && editForm.controls.creatorName?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.creatorName?.errors?.maxlength">
+                        This field cannot be longer than 64 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_createdDateTime" ngbTooltip="金数据表单中的字段，创建时间">Created Date Time</label>
+                    <div class="d-flex">
+                        <input id="field_createdDateTime" type="datetime-local" class="form-control" name="createdDateTime" [(ngModel)]="createdDateTime"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_updatedDateTime" ngbTooltip="金数据表单中的字段，更新时间">Updated Date Time</label>
+                    <div class="d-flex">
+                        <input id="field_updatedDateTime" type="datetime-local" class="form-control" name="updatedDateTime" [(ngModel)]="updatedDateTime"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_infoRemoteIp" ngbTooltip="金数据表单中的字段，提交人ip">Info Remote Ip</label>
+                    <input type="text" class="form-control" name="infoRemoteIp" id="field_infoRemoteIp"
+                        [(ngModel)]="formSubmit.infoRemoteIp" maxlength="20"/>
+                    <div [hidden]="!(editForm.controls.infoRemoteIp?.dirty && editForm.controls.infoRemoteIp?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.infoRemoteIp?.errors?.maxlength">
+                        This field cannot be longer than 20 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_dealflag" ngbTooltip="结果是否已处理">Dealflag</label>
+                    <input type="checkbox" class="form-control" name="dealflag" id="field_dealflag"
+                        [(ngModel)]="formSubmit.dealflag" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_wxUser">Wx User</label>
+                    <select class="form-control" id="field_wxUser" name="wxUser" [(ngModel)]="formSubmit.wxUser" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="wxUserOption.id === formSubmit.wxUser?.id ? formSubmit.wxUser : wxUserOption" *ngFor="let wxUserOption of wxusers; trackBy: trackWxUserById">{{wxUserOption.wxNickName}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_base">Base</label>
+                    <select class="form-control" id="field_base" name="base" [(ngModel)]="formSubmit.base" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="baseFormOption.id === formSubmit.base?.id ? formSubmit.base : baseFormOption" *ngFor="let baseFormOption of baseforms; trackBy: trackBaseFormById">{{baseFormOption.formName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

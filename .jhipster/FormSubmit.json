@@ -1,0 +1,79 @@
+{
+    "name": "FormSubmit",
+    "fields": [
+        {
+            "fieldName": "submitJosn",
+            "javadoc": "提交的数据",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 5000
+        },
+        {
+            "fieldName": "serialNumber",
+            "javadoc": "金数据表单中的字段，代表数据表的主键",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "creatorName",
+            "javadoc": "金数据表单中的字段，创建者",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 64
+        },
+        {
+            "fieldName": "createdDateTime",
+            "javadoc": "金数据表单中的字段，创建时间",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "updatedDateTime",
+            "javadoc": "金数据表单中的字段，更新时间",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "infoRemoteIp",
+            "javadoc": "金数据表单中的字段，提交人ip",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 20
+        },
+        {
+            "fieldName": "dealflag",
+            "javadoc": "结果是否已处理",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "wxUser",
+            "otherEntityName": "wxUser",
+            "otherEntityField": "wxNickName"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "base",
+            "otherEntityName": "baseForm",
+            "otherEntityField": "formName"
+        }
+    ],
+    "changelogDate": "20181217105054",
+    "entityTableName": "form_submit",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

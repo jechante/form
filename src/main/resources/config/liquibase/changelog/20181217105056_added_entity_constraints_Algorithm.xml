@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity Algorithm.
+    -->
+    <changeSet id="20181217105056-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="algorithms_id"
+                                 baseTableName="algorithm_filter_properties"
+                                 constraintName="fk_algorithm_filter_properties_algorithms_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="algorithm"/>
+        <addForeignKeyConstraint baseColumnNames="filter_properties_id"
+                                 baseTableName="algorithm_filter_properties"
+                                 constraintName="fk_algorithm_filter_properties_filter_properties_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="base_property"/>
+        
+        <addForeignKeyConstraint baseColumnNames="algorithms_id"
+                                 baseTableName="algorithm_score_properties"
+                                 constraintName="fk_algorithm_score_properties_algorithms_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="algorithm"/>
+        <addForeignKeyConstraint baseColumnNames="score_properties_id"
+                                 baseTableName="algorithm_score_properties"
+                                 constraintName="fk_algorithm_score_properties_score_properties_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="base_property"/>
+        
+    </changeSet>
+</databaseChangeLog>

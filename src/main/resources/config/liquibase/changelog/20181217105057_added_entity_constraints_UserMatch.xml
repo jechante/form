@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity UserMatch.
+    -->
+    <changeSet id="20181217105057-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="user_matches_id"
+                                 baseTableName="user_match_push_records"
+                                 constraintName="fk_user_match_push_records_user_matches_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_match"/>
+        <addForeignKeyConstraint baseColumnNames="push_records_id"
+                                 baseTableName="user_match_push_records"
+                                 constraintName="fk_user_match_push_records_push_records_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="push_record"/>
+        
+        <addForeignKeyConstraint baseColumnNames="algorithm_id"
+                                 baseTableName="user_match"
+                                 constraintName="fk_user_match_algorithm_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="algorithm"/>
+
+        <addForeignKeyConstraint baseColumnNames="usera_id"
+                                 baseTableName="user_match"
+                                 constraintName="fk_user_match_usera_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wx_user"/>
+
+    </changeSet>
+</databaseChangeLog>

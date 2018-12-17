@@ -1,0 +1,88 @@
+<div>
+    <h2 id="page-heading">
+        <span>User Matches</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-user-match" [routerLink]="['/user-match/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create new User Match
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="userMatches">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="scoreAtoB"><span>Score Ato B</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="scoreBtoA"><span>Score Bto A</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="scoreTotal"><span>Score Total</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="ratio"><span>Ratio</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="rankA"><span>Rank A</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="rankB"><span>Rank B</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="matchType"><span>Match Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="pushStatus"><span>Push Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="algorithm.name"><span>Algorithm</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="userA.wxNickName"><span>User A</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let userMatch of userMatches ;trackBy: trackId">
+                <td><a [routerLink]="['/user-match', userMatch.id, 'view' ]">{{userMatch.id}}</a></td>
+                <td>{{userMatch.scoreAtoB}}</td>
+                <td>{{userMatch.scoreBtoA}}</td>
+                <td>{{userMatch.scoreTotal}}</td>
+                <td>{{userMatch.ratio}}</td>
+                <td>{{userMatch.rankA}}</td>
+                <td>{{userMatch.rankB}}</td>
+                <td>{{userMatch.matchType}}</td>
+                <td>{{userMatch.pushStatus}}</td>
+                <td>
+                    <div *ngIf="userMatch.algorithm">
+                        <a [routerLink]="['../algorithm', userMatch.algorithm?.id, 'view' ]" >{{userMatch.algorithm?.name}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="userMatch.userA">
+                        <a [routerLink]="['../wx-user', userMatch.userA?.id, 'view' ]" >{{userMatch.userA?.wxNickName}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/user-match', userMatch.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/user-match', userMatch.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'user-match/'+ userMatch.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="userMatches && userMatches.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

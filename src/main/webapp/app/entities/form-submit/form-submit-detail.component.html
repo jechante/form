@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="formSubmit">
+            <h2><span>Form Submit</span> {{formSubmit.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="提交的数据">Submit Josn</span></dt>
+                <dd>
+                    <span>{{formSubmit.submitJosn}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据表单中的字段，代表数据表的主键">Serial Number</span></dt>
+                <dd>
+                    <span>{{formSubmit.serialNumber}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据表单中的字段，创建者">Creator Name</span></dt>
+                <dd>
+                    <span>{{formSubmit.creatorName}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据表单中的字段，创建时间">Created Date Time</span></dt>
+                <dd>
+                    <span>{{formSubmit.createdDateTime}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据表单中的字段，更新时间">Updated Date Time</span></dt>
+                <dd>
+                    <span>{{formSubmit.updatedDateTime}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据表单中的字段，提交人ip">Info Remote Ip</span></dt>
+                <dd>
+                    <span>{{formSubmit.infoRemoteIp}}</span>
+                </dd>
+                <dt><span ngbTooltip="结果是否已处理">Dealflag</span></dt>
+                <dd>
+                    <span>{{formSubmit.dealflag}}</span>
+                </dd>
+                <dt><span>Wx User</span></dt>
+                <dd>
+                    <div *ngIf="formSubmit.wxUser">
+                        <a [routerLink]="['/wx-user', formSubmit.wxUser?.id, 'view']">{{formSubmit.wxUser?.wxNickName}}</a>
+                    </div>
+                </dd>
+                <dt><span>Base</span></dt>
+                <dd>
+                    <div *ngIf="formSubmit.base">
+                        <a [routerLink]="['/base-form', formSubmit.base?.id, 'view']">{{formSubmit.base?.formName}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/form-submit', formSubmit.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

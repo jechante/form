@@ -1,0 +1,93 @@
+{
+    "name": "Algorithm",
+    "fields": [
+        {
+            "fieldName": "name",
+            "javadoc": "算法名",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 64
+        },
+        {
+            "fieldName": "filterStrings",
+            "javadoc": "过滤属性",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 2000
+        },
+        {
+            "fieldName": "scoreStrings",
+            "javadoc": "计分属性",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 2000
+        },
+        {
+            "fieldName": "genderWeight",
+            "javadoc": "需求权重",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "kValue",
+            "javadoc": "分块数",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "remark",
+            "javadoc": "算法说明",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 2000
+        },
+        {
+            "fieldName": "enabled",
+            "javadoc": "是否启用",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "用户配对绩效结果",
+            "relationshipName": "matches",
+            "otherEntityName": "userMatch",
+            "otherEntityRelationshipName": "algorithm"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "javadoc": "过滤属性",
+            "otherEntityRelationshipName": "filterAlgorithms",
+            "relationshipName": "filterProperties",
+            "otherEntityName": "baseProperty",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "javadoc": "计分属性",
+            "otherEntityRelationshipName": "scoreAlgorithms",
+            "relationshipName": "scoreProperties",
+            "otherEntityName": "baseProperty",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20181217105056",
+    "entityTableName": "algorithm",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

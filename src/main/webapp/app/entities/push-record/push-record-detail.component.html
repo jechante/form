@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="pushRecord">
+            <h2><span>Push Record</span> {{pushRecord.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Push Type</span></dt>
+                <dd>
+                    <span>{{pushRecord.pushType}}</span>
+                </dd>
+                <dt><span ngbTooltip="推送时间">Push Date Time</span></dt>
+                <dd>
+                    <span>{{pushRecord.pushDateTime}}</span>
+                </dd>
+                <dt><span ngbTooltip="是否推送成功">Success</span></dt>
+                <dd>
+                    <span>{{pushRecord.success}}</span>
+                </dd>
+                <dt><span>User</span></dt>
+                <dd>
+                    <div *ngIf="pushRecord.user">
+                        <a [routerLink]="['/wx-user', pushRecord.user?.id, 'view']">{{pushRecord.user?.wxNickName}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/push-record', pushRecord.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

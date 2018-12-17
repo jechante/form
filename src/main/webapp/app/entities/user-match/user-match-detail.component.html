@@ -1,0 +1,73 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="userMatch">
+            <h2><span>User Match</span> {{userMatch.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="以A的需求对B打分">Score Ato B</span></dt>
+                <dd>
+                    <span>{{userMatch.scoreAtoB}}</span>
+                </dd>
+                <dt><span>Score Bto A</span></dt>
+                <dd>
+                    <span>{{userMatch.scoreBtoA}}</span>
+                </dd>
+                <dt><span>Score Total</span></dt>
+                <dd>
+                    <span>{{userMatch.scoreTotal}}</span>
+                </dd>
+                <dt><span ngbTooltip="匹配度，即匹配分除以可能的最高分">Ratio</span></dt>
+                <dd>
+                    <span>{{userMatch.ratio}}</span>
+                </dd>
+                <dt><span ngbTooltip="如果是a对b的主动配对，b的排名数（位于1~pushLimit之间）">Rank A</span></dt>
+                <dd>
+                    <span>{{userMatch.rankA}}</span>
+                </dd>
+                <dt><span>Rank B</span></dt>
+                <dd>
+                    <span>{{userMatch.rankB}}</span>
+                </dd>
+                <dt><span>Match Type</span></dt>
+                <dd>
+                    <span>{{userMatch.matchType}}</span>
+                </dd>
+                <dt><span>Push Status</span></dt>
+                <dd>
+                    <span>{{userMatch.pushStatus}}</span>
+                </dd>
+                <dt><span>Push Records</span></dt>
+                <dd>
+                    <span *ngFor="let pushRecords of userMatch.pushRecords; let last = last">
+                        <a [routerLink]="['/push-record', pushRecords?.id, 'view' ]">{{pushRecords.id}}</a>{{last ? '' : ', '}}
+                    </span>
+                </dd>
+                <dt><span>Algorithm</span></dt>
+                <dd>
+                    <div *ngIf="userMatch.algorithm">
+                        <a [routerLink]="['/algorithm', userMatch.algorithm?.id, 'view']">{{userMatch.algorithm?.name}}</a>
+                    </div>
+                </dd>
+                <dt><span>User A</span></dt>
+                <dd>
+                    <div *ngIf="userMatch.userA">
+                        <a [routerLink]="['/wx-user', userMatch.userA?.id, 'view']">{{userMatch.userA?.wxNickName}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/user-match', userMatch.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

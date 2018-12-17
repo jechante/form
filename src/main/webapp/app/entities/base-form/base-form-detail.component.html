@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="baseForm">
+            <h2><span>Base Form</span> {{baseForm.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="金数据等表单的编号">Form Code</span></dt>
+                <dd>
+                    <span>{{baseForm.formCode}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据等表单的名称">Form Name</span></dt>
+                <dd>
+                    <span>{{baseForm.formName}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据等表单的描述">Form Describe</span></dt>
+                <dd>
+                    <span>{{baseForm.formDescribe}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据等表单的发布地址">Form Web</span></dt>
+                <dd>
+                    <span>{{baseForm.formWeb}}</span>
+                </dd>
+                <dt><span ngbTooltip="金数据等表单数据结果的第三方推送地址">Submit Url</span></dt>
+                <dd>
+                    <span>{{baseForm.submitUrl}}</span>
+                </dd>
+                <dt><span ngbTooltip="第三方表单的提供商">Vendor</span></dt>
+                <dd>
+                    <span>{{baseForm.vendor}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/base-form', baseForm.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

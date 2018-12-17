@@ -1,0 +1,43 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="userDemand">
+            <h2><span>User Demand</span> {{userDemand.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span ngbTooltip="属性值:男等">Property Value</span></dt>
+                <dd>
+                    <span>{{userDemand.propertyValue}}</span>
+                </dd>
+                <dt><span ngbTooltip="记录更新情况">Remark</span></dt>
+                <dd>
+                    <span>{{userDemand.remark}}</span>
+                </dd>
+                <dt><span>Wx User</span></dt>
+                <dd>
+                    <div *ngIf="userDemand.wxUser">
+                        <a [routerLink]="['/wx-user', userDemand.wxUser?.id, 'view']">{{userDemand.wxUser?.wxNickName}}</a>
+                    </div>
+                </dd>
+                <dt><span>Base</span></dt>
+                <dd>
+                    <div *ngIf="userDemand.base">
+                        <a [routerLink]="['/base-property', userDemand.base?.id, 'view']">{{userDemand.base?.propertyName}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/user-demand', userDemand.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

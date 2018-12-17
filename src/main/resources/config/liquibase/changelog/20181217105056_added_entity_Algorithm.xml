@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="autoIncrement" value="true"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity Algorithm.
+    -->
+    <changeSet id="20181217105056-1" author="jhipster">
+        <createTable tableName="algorithm">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(64)" remarks="算法名">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="filter_strings" type="varchar(2000)" remarks="过滤属性">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="score_strings" type="varchar(2000)" remarks="计分属性">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="gender_weight" type="double" remarks="需求权重">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="k_value" type="integer" remarks="分块数">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="remark" type="varchar(2000)" remarks="算法说明">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="enabled" type="bit" remarks="是否启用">
+                <constraints nullable="true" />
+            </column>
+
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+        
+        <createTable tableName="algorithm_filter_properties">
+            <column name="filter_properties_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="algorithms_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="algorithms_id, filter_properties_id" tableName="algorithm_filter_properties"/>
+        
+        <createTable tableName="algorithm_score_properties">
+            <column name="score_properties_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="algorithms_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="algorithms_id, score_properties_id" tableName="algorithm_score_properties"/>
+        
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>
