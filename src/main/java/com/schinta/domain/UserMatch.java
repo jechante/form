@@ -88,6 +88,9 @@ public class UserMatch implements Serializable {
     @ManyToOne    @JsonIgnoreProperties("aMatches")
     private WxUser userA;
 
+    @ManyToOne    @JsonIgnoreProperties("bMatches")
+    private WxUser userB;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -250,6 +253,19 @@ public class UserMatch implements Serializable {
 
     public void setUserA(WxUser wxUser) {
         this.userA = wxUser;
+    }
+
+    public WxUser getUserB() {
+        return userB;
+    }
+
+    public UserMatch userB(WxUser wxUser) {
+        this.userB = wxUser;
+        return this;
+    }
+
+    public void setUserB(WxUser wxUser) {
+        this.userB = wxUser;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

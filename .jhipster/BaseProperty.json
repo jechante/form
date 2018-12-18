@@ -52,14 +52,14 @@
         {
             "relationshipType": "one-to-many",
             "javadoc": "属性-用户属性值",
-            "relationshipName": "values",
+            "relationshipName": "propertyValues",
             "otherEntityName": "userProperty",
             "otherEntityRelationshipName": "base"
         },
         {
             "relationshipType": "one-to-many",
             "javadoc": "属性-用户需求值",
-            "relationshipName": "values",
+            "relationshipName": "demandValues",
             "otherEntityName": "userDemand",
             "otherEntityRelationshipName": "base"
         },

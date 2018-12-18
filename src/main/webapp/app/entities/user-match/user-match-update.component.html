@@ -76,6 +76,13 @@
                         <option [ngValue]="wxUserOption.id === userMatch.userA?.id ? userMatch.userA : wxUserOption" *ngFor="let wxUserOption of wxusers; trackBy: trackWxUserById">{{wxUserOption.wxNickName}}</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userB">User B</label>
+                    <select class="form-control" id="field_userB" name="userB" [(ngModel)]="userMatch.userB" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="wxUserOption.id === userMatch.userB?.id ? userMatch.userB : wxUserOption" *ngFor="let wxUserOption of wxusers; trackBy: trackWxUserById">{{wxUserOption.wxNickName}}</option>
+                    </select>
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

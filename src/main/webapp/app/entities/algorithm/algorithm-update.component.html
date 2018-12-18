@@ -25,28 +25,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_filterStrings" ngbTooltip="过滤属性">Filter Strings</label>
-                    <input type="text" class="form-control" name="filterStrings" id="field_filterStrings"
-                        [(ngModel)]="algorithm.filterStrings" maxlength="2000"/>
-                    <div [hidden]="!(editForm.controls.filterStrings?.dirty && editForm.controls.filterStrings?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.filterStrings?.errors?.maxlength">
-                        This field cannot be longer than 2000 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_scoreStrings" ngbTooltip="计分属性">Score Strings</label>
-                    <input type="text" class="form-control" name="scoreStrings" id="field_scoreStrings"
-                        [(ngModel)]="algorithm.scoreStrings" maxlength="2000"/>
-                    <div [hidden]="!(editForm.controls.scoreStrings?.dirty && editForm.controls.scoreStrings?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.scoreStrings?.errors?.maxlength">
-                        This field cannot be longer than 2000 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="form-control-label" for="field_genderWeight" ngbTooltip="需求权重">Gender Weight</label>
                     <input type="number" class="form-control" name="genderWeight" id="field_genderWeight"
                         [(ngModel)]="algorithm.genderWeight" />

@@ -16,8 +16,6 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span>Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="filterStrings"><span>Filter Strings</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="scoreStrings"><span>Score Strings</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="genderWeight"><span>Gender Weight</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="kValue"><span>K Value</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="remark"><span>Remark</span> <fa-icon [icon]="'sort'"></fa-icon></th>
@@ -29,8 +27,6 @@
             <tr *ngFor="let algorithm of algorithms ;trackBy: trackId">
                 <td><a [routerLink]="['/algorithm', algorithm.id, 'view' ]">{{algorithm.id}}</a></td>
                 <td>{{algorithm.name}}</td>
-                <td>{{algorithm.filterStrings}}</td>
-                <td>{{algorithm.scoreStrings}}</td>
                 <td>{{algorithm.genderWeight}}</td>
                 <td>{{algorithm.kValue}}</td>
                 <td>{{algorithm.remark}}</td>

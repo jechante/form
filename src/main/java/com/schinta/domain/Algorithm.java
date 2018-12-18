@@ -37,22 +37,6 @@ public class Algorithm implements Serializable {
     private String name;
 
     /**
-     * 过滤属性
-     */
-    @Size(max = 2000)
-    @ApiModelProperty(value = "过滤属性")
-    @Column(name = "filter_strings", length = 2000)
-    private String filterStrings;
-
-    /**
-     * 计分属性
-     */
-    @Size(max = 2000)
-    @ApiModelProperty(value = "计分属性")
-    @Column(name = "score_strings", length = 2000)
-    private String scoreStrings;
-
-    /**
      * 需求权重
      */
     @ApiModelProperty(value = "需求权重")
@@ -128,32 +112,6 @@ public class Algorithm implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getFilterStrings() {
-        return filterStrings;
-    }
-
-    public Algorithm filterStrings(String filterStrings) {
-        this.filterStrings = filterStrings;
-        return this;
-    }
-
-    public void setFilterStrings(String filterStrings) {
-        this.filterStrings = filterStrings;
-    }
-
-    public String getScoreStrings() {
-        return scoreStrings;
-    }
-
-    public Algorithm scoreStrings(String scoreStrings) {
-        this.scoreStrings = scoreStrings;
-        return this;
-    }
-
-    public void setScoreStrings(String scoreStrings) {
-        this.scoreStrings = scoreStrings;
     }
 
     public Double getGenderWeight() {
@@ -309,8 +267,6 @@ public class Algorithm implements Serializable {
         return "Algorithm{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", filterStrings='" + getFilterStrings() + "'" +
-            ", scoreStrings='" + getScoreStrings() + "'" +
             ", genderWeight=" + getGenderWeight() +
             ", kValue=" + getkValue() +
             ", remark='" + getRemark() + "'" +

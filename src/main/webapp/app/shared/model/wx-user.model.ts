@@ -42,9 +42,10 @@ export interface IWxUser {
     registerDateTime?: Moment;
     pushLimit?: number;
     properties?: IUserProperty[];
-    properties?: IUserDemand[];
+    demands?: IUserDemand[];
     submits?: IFormSubmit[];
     aMatches?: IUserMatch[];
+    bMatches?: IUserMatch[];
     pushRecords?: IPushRecord[];
     broker?: IBroker;
 }
@@ -66,9 +67,10 @@ export class WxUser implements IWxUser {
         public registerDateTime?: Moment,
         public pushLimit?: number,
         public properties?: IUserProperty[],
-        public properties?: IUserDemand[],
+        public demands?: IUserDemand[],
         public submits?: IFormSubmit[],
         public aMatches?: IUserMatch[],
+        public bMatches?: IUserMatch[],
         public pushRecords?: IPushRecord[],
         public broker?: IBroker
     ) {}

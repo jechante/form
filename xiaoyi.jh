@@ -82,11 +82,12 @@ relationship OneToMany {
 	/**微信用户-用户属性值*/
     WxUser{properties} to UserProperty{wxUser(wxNickName)}
     /**属性-用户属性值*/
-    BaseProperty{values} to UserProperty{base(propertyName)}
+    BaseProperty{propertyValues} to UserProperty{base(propertyName)}
+
     /**微信用户-用户需求值*/
-    WxUser{properties} to UserDemand{wxUser(wxNickName)}
+    WxUser{demands} to UserDemand{wxUser(wxNickName)}
     /**属性-用户需求值*/
-    BaseProperty{values} to UserDemand{base(propertyName)}
+    BaseProperty{demandValues} to UserDemand{base(propertyName)}
 }
 
 entity BaseForm{
@@ -138,8 +139,6 @@ relationship OneToMany {
 
 entity Algorithm{
 	name String required maxlength(64) /**算法名*/
-    filterStrings String maxlength(2000) /**过滤属性*/
-    scoreStrings String	maxlength(2000) /**计分属性*/
     genderWeight Double /**需求权重*/
     kValue Integer /**分块数*/
     remark String maxlength(2000) /**算法说明*/
@@ -193,7 +192,7 @@ relationship OneToMany {
     /**微信用户-用户配对绩效结果（位于前）*/
     WxUser{aMatches} to UserMatch{userA(wxNickName)}
     /**微信用户-用户配对绩效结果（位于后）*/
-    WxUser{aMatches} to UserMatch{userA(wxNickName)}
+    WxUser{bMatches} to UserMatch{userB(wxNickName)}
 
     /**微信用户-结果推送*/
     WxUser{pushRecords} to PushRecord{user(wxNickName)}

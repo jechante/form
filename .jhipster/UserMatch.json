@@ -61,6 +61,12 @@
             "relationshipName": "userA",
             "otherEntityName": "wxUser",
             "otherEntityField": "wxNickName"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "userB",
+            "otherEntityName": "wxUser",
+            "otherEntityField": "wxNickName"
         }
     ],
     "changelogDate": "20181217105057",

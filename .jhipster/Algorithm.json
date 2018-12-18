@@ -12,24 +12,6 @@
             "fieldValidateRulesMaxlength": 64
         },
         {
-            "fieldName": "filterStrings",
-            "javadoc": "过滤属性",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 2000
-        },
-        {
-            "fieldName": "scoreStrings",
-            "javadoc": "计分属性",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "maxlength"
-            ],
-            "fieldValidateRulesMaxlength": 2000
-        },
-        {
             "fieldName": "genderWeight",
             "javadoc": "需求权重",
             "fieldType": "Double"

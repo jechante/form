@@ -4,8 +4,6 @@ import { IBaseProperty } from 'app/shared/model//base-property.model';
 export interface IAlgorithm {
     id?: number;
     name?: string;
-    filterStrings?: string;
-    scoreStrings?: string;
     genderWeight?: number;
     kValue?: number;
     remark?: string;
@@ -19,8 +17,6 @@ export class Algorithm implements IAlgorithm {
     constructor(
         public id?: number,
         public name?: string,
-        public filterStrings?: string,
-        public scoreStrings?: string,
         public genderWeight?: number,
         public kValue?: number,
         public remark?: string,

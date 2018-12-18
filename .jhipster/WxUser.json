@@ -110,7 +110,7 @@
         {
             "relationshipType": "one-to-many",
             "javadoc": "微信用户-用户需求值",
-            "relationshipName": "properties",
+            "relationshipName": "demands",
             "otherEntityName": "userDemand",
             "otherEntityRelationshipName": "wxUser"
         },
@@ -123,10 +123,17 @@
         },
         {
             "relationshipType": "one-to-many",
-            "javadoc": "微信用户-用户配对绩效结果（位于后）",
+            "javadoc": "微信用户-用户配对绩效结果（位于前）",
             "relationshipName": "aMatches",
             "otherEntityName": "userMatch",
             "otherEntityRelationshipName": "userA"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "javadoc": "微信用户-用户配对绩效结果（位于后）",
+            "relationshipName": "bMatches",
+            "otherEntityName": "userMatch",
+            "otherEntityRelationshipName": "userB"
         },
         {
             "relationshipType": "one-to-many",

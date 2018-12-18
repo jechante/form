@@ -25,6 +25,7 @@
             <th jhiSortBy="pushStatus"><span>Push Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="algorithm.name"><span>Algorithm</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="userA.wxNickName"><span>User A</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="userB.wxNickName"><span>User B</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -47,6 +48,11 @@
                 <td>
                     <div *ngIf="userMatch.userA">
                         <a [routerLink]="['../wx-user', userMatch.userA?.id, 'view' ]" >{{userMatch.userA?.wxNickName}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="userMatch.userB">
+                        <a [routerLink]="['../wx-user', userMatch.userB?.id, 'view' ]" >{{userMatch.userB?.wxNickName}}</a>
                     </div>
                 </td>
                 <td class="text-right">

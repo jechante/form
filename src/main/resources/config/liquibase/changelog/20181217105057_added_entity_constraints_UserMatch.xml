@@ -31,5 +31,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="wx_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="userb_id"
+                                 baseTableName="user_match"
+                                 constraintName="fk_user_match_userb_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wx_user"/>
+
     </changeSet>
 </databaseChangeLog>

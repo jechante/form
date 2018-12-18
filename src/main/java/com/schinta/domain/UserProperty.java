@@ -44,7 +44,7 @@ public class UserProperty implements Serializable {
     @ManyToOne    @JsonIgnoreProperties("properties")
     private WxUser wxUser;
 
-    @ManyToOne    @JsonIgnoreProperties("values")
+    @ManyToOne    @JsonIgnoreProperties("propertyValues")
     private BaseProperty base;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

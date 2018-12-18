@@ -55,6 +55,12 @@
                         <a [routerLink]="['/wx-user', userMatch.userA?.id, 'view']">{{userMatch.userA?.wxNickName}}</a>
                     </div>
                 </dd>
+                <dt><span>User B</span></dt>
+                <dd>
+                    <div *ngIf="userMatch.userB">
+                        <a [routerLink]="['/wx-user', userMatch.userB?.id, 'view']">{{userMatch.userB?.wxNickName}}</a>
+                    </div>
+                </dd>
             </dl>
 
             <button type="submit"

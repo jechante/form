@@ -91,14 +91,14 @@ public class BaseProperty implements Serializable {
     @ApiModelProperty(value = "属性-用户属性值")
     @OneToMany(mappedBy = "base")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<UserProperty> values = new HashSet<>();
+    private Set<UserProperty> propertyValues = new HashSet<>();
     /**
      * 属性-用户需求值
      */
     @ApiModelProperty(value = "属性-用户需求值")
     @OneToMany(mappedBy = "base")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<UserDemand> values = new HashSet<>();
+    private Set<UserDemand> demandValues = new HashSet<>();
     /**
      * 属性-表单字段
      */
@@ -220,54 +220,54 @@ public class BaseProperty implements Serializable {
         this.completionRate = completionRate;
     }
 
-    public Set<UserProperty> getValues() {
-        return values;
+    public Set<UserProperty> getPropertyValues() {
+        return propertyValues;
     }
 
-    public BaseProperty values(Set<UserProperty> userProperties) {
-        this.values = userProperties;
+    public BaseProperty propertyValues(Set<UserProperty> userProperties) {
+        this.propertyValues = userProperties;
         return this;
     }
 
-    public BaseProperty addValues(UserProperty userProperty) {
-        this.values.add(userProperty);
+    public BaseProperty addPropertyValues(UserProperty userProperty) {
+        this.propertyValues.add(userProperty);
         userProperty.setBase(this);
         return this;
     }
 
-    public BaseProperty removeValues(UserProperty userProperty) {
-        this.values.remove(userProperty);
+    public BaseProperty removePropertyValues(UserProperty userProperty) {
+        this.propertyValues.remove(userProperty);
         userProperty.setBase(null);
         return this;
     }
 
-    public void setValues(Set<UserProperty> userProperties) {
-        this.values = userProperties;
+    public void setPropertyValues(Set<UserProperty> userProperties) {
+        this.propertyValues = userProperties;
     }
 
-    public Set<UserDemand> getValues() {
-        return values;
+    public Set<UserDemand> getDemandValues() {
+        return demandValues;
     }
 
-    public BaseProperty values(Set<UserDemand> userDemands) {
-        this.values = userDemands;
+    public BaseProperty demandValues(Set<UserDemand> userDemands) {
+        this.demandValues = userDemands;
         return this;
     }
 
-    public BaseProperty addValues(UserDemand userDemand) {
-        this.values.add(userDemand);
+    public BaseProperty addDemandValues(UserDemand userDemand) {
+        this.demandValues.add(userDemand);
         userDemand.setBase(this);
         return this;
     }
 
-    public BaseProperty removeValues(UserDemand userDemand) {
-        this.values.remove(userDemand);
+    public BaseProperty removeDemandValues(UserDemand userDemand) {
+        this.demandValues.remove(userDemand);
         userDemand.setBase(null);
         return this;
     }
 
-    public void setValues(Set<UserDemand> userDemands) {
-        this.values = userDemands;
+    public void setDemandValues(Set<UserDemand> userDemands) {
+        this.demandValues = userDemands;
     }
 
     public Set<FormField> getFields() {

@@ -27,6 +27,7 @@ export interface IUserMatch {
     pushRecords?: IPushRecord[];
     algorithm?: IAlgorithm;
     userA?: IWxUser;
+    userB?: IWxUser;
 }
 
 export class UserMatch implements IUserMatch {
@@ -42,6 +43,7 @@ export class UserMatch implements IUserMatch {
         public pushStatus?: PushStatus,
         public pushRecords?: IPushRecord[],
         public algorithm?: IAlgorithm,
-        public userA?: IWxUser
+        public userA?: IWxUser,
+        public userB?: IWxUser
     ) {}
 }

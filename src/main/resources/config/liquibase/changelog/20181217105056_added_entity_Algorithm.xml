@@ -26,14 +26,6 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="filter_strings" type="varchar(2000)" remarks="过滤属性">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="score_strings" type="varchar(2000)" remarks="计分属性">
-                <constraints nullable="true" />
-            </column>
-
             <column name="gender_weight" type="double" remarks="需求权重">
                 <constraints nullable="true" />
             </column>

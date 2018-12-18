@@ -30,8 +30,8 @@ export interface IBaseProperty {
     propertyMaxScore?: number;
     formyType?: FormyType;
     completionRate?: number;
-    values?: IUserProperty[];
-    values?: IUserDemand[];
+    propertyValues?: IUserProperty[];
+    demandValues?: IUserDemand[];
     fields?: IFormField[];
     filterAlgorithms?: IAlgorithm[];
     scoreAlgorithms?: IAlgorithm[];
@@ -47,8 +47,8 @@ export class BaseProperty implements IBaseProperty {
         public propertyMaxScore?: number,
         public formyType?: FormyType,
         public completionRate?: number,
-        public values?: IUserProperty[],
-        public values?: IUserDemand[],
+        public propertyValues?: IUserProperty[],
+        public demandValues?: IUserDemand[],
         public fields?: IFormField[],
         public filterAlgorithms?: IAlgorithm[],
         public scoreAlgorithms?: IAlgorithm[]

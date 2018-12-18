@@ -48,12 +48,6 @@ public class AlgorithmResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_FILTER_STRINGS = "AAAAAAAAAA";
-    private static final String UPDATED_FILTER_STRINGS = "BBBBBBBBBB";
-
-    private static final String DEFAULT_SCORE_STRINGS = "AAAAAAAAAA";
-    private static final String UPDATED_SCORE_STRINGS = "BBBBBBBBBB";
-
     private static final Double DEFAULT_GENDER_WEIGHT = 1D;
     private static final Double UPDATED_GENDER_WEIGHT = 2D;
 
@@ -115,8 +109,6 @@ public class AlgorithmResourceIntTest {
     public static Algorithm createEntity(EntityManager em) {
         Algorithm algorithm = new Algorithm()
             .name(DEFAULT_NAME)
-            .filterStrings(DEFAULT_FILTER_STRINGS)
-            .scoreStrings(DEFAULT_SCORE_STRINGS)
             .genderWeight(DEFAULT_GENDER_WEIGHT)
             .kValue(DEFAULT_K_VALUE)
             .remark(DEFAULT_REMARK)
@@ -145,8 +137,6 @@ public class AlgorithmResourceIntTest {
         assertThat(algorithmList).hasSize(databaseSizeBeforeCreate + 1);
         Algorithm testAlgorithm = algorithmList.get(algorithmList.size() - 1);
         assertThat(testAlgorithm.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testAlgorithm.getFilterStrings()).isEqualTo(DEFAULT_FILTER_STRINGS);
-        assertThat(testAlgorithm.getScoreStrings()).isEqualTo(DEFAULT_SCORE_STRINGS);
         assertThat(testAlgorithm.getGenderWeight()).isEqualTo(DEFAULT_GENDER_WEIGHT);
         assertThat(testAlgorithm.getkValue()).isEqualTo(DEFAULT_K_VALUE);
         assertThat(testAlgorithm.getRemark()).isEqualTo(DEFAULT_REMARK);
@@ -202,8 +192,6 @@ public class AlgorithmResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(algorithm.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].filterStrings").value(hasItem(DEFAULT_FILTER_STRINGS.toString())))
-            .andExpect(jsonPath("$.[*].scoreStrings").value(hasItem(DEFAULT_SCORE_STRINGS.toString())))
             .andExpect(jsonPath("$.[*].genderWeight").value(hasItem(DEFAULT_GENDER_WEIGHT.doubleValue())))
             .andExpect(jsonPath("$.[*].kValue").value(hasItem(DEFAULT_K_VALUE)))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
@@ -253,8 +241,6 @@ public class AlgorithmResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(algorithm.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.filterStrings").value(DEFAULT_FILTER_STRINGS.toString()))
-            .andExpect(jsonPath("$.scoreStrings").value(DEFAULT_SCORE_STRINGS.toString()))
             .andExpect(jsonPath("$.genderWeight").value(DEFAULT_GENDER_WEIGHT.doubleValue()))
             .andExpect(jsonPath("$.kValue").value(DEFAULT_K_VALUE))
             .andExpect(jsonPath("$.remark").value(DEFAULT_REMARK.toString()))
@@ -283,8 +269,6 @@ public class AlgorithmResourceIntTest {
         em.detach(updatedAlgorithm);
         updatedAlgorithm
             .name(UPDATED_NAME)
-            .filterStrings(UPDATED_FILTER_STRINGS)
-            .scoreStrings(UPDATED_SCORE_STRINGS)
             .genderWeight(UPDATED_GENDER_WEIGHT)
             .kValue(UPDATED_K_VALUE)
             .remark(UPDATED_REMARK)
@@ -300,8 +284,6 @@ public class AlgorithmResourceIntTest {
         assertThat(algorithmList).hasSize(databaseSizeBeforeUpdate);
         Algorithm testAlgorithm = algorithmList.get(algorithmList.size() - 1);
         assertThat(testAlgorithm.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testAlgorithm.getFilterStrings()).isEqualTo(UPDATED_FILTER_STRINGS);
-        assertThat(testAlgorithm.getScoreStrings()).isEqualTo(UPDATED_SCORE_STRINGS);
         assertThat(testAlgorithm.getGenderWeight()).isEqualTo(UPDATED_GENDER_WEIGHT);
         assertThat(testAlgorithm.getkValue()).isEqualTo(UPDATED_K_VALUE);
         assertThat(testAlgorithm.getRemark()).isEqualTo(UPDATED_REMARK);

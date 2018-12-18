@@ -150,7 +150,7 @@ public class WxUser implements Serializable {
     @ApiModelProperty(value = "微信用户-用户需求值")
     @OneToMany(mappedBy = "wxUser")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<UserDemand> properties = new HashSet<>();
+    private Set<UserDemand> demands = new HashSet<>();
     /**
      * 微信用户-用户提交表单
      */
@@ -159,12 +159,19 @@ public class WxUser implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<FormSubmit> submits = new HashSet<>();
     /**
-     * 微信用户-用户配对绩效结果（位于后）
+     * 微信用户-用户配对绩效结果（位于前）
      */
-    @ApiModelProperty(value = "微信用户-用户配对绩效结果（位于后）")
+    @ApiModelProperty(value = "微信用户-用户配对绩效结果（位于前）")
     @OneToMany(mappedBy = "userA")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserMatch> aMatches = new HashSet<>();
+    /**
+     * 微信用户-用户配对绩效结果（位于后）
+     */
+    @ApiModelProperty(value = "微信用户-用户配对绩效结果（位于后）")
+    @OneToMany(mappedBy = "userB")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<UserMatch> bMatches = new HashSet<>();
     /**
      * 微信用户-结果推送
      */
@@ -378,29 +385,29 @@ public class WxUser implements Serializable {
         this.properties = userProperties;
     }
 
-    public Set<UserDemand> getProperties() {
-        return properties;
+    public Set<UserDemand> getDemands() {
+        return demands;
     }
 
-    public WxUser properties(Set<UserDemand> userDemands) {
-        this.properties = userDemands;
+    public WxUser demands(Set<UserDemand> userDemands) {
+        this.demands = userDemands;
         return this;
     }
 
-    public WxUser addProperties(UserDemand userDemand) {
-        this.properties.add(userDemand);
+    public WxUser addDemands(UserDemand userDemand) {
+        this.demands.add(userDemand);
         userDemand.setWxUser(this);
         return this;
     }
 
-    public WxUser removeProperties(UserDemand userDemand) {
-        this.properties.remove(userDemand);
+    public WxUser removeDemands(UserDemand userDemand) {
+        this.demands.remove(userDemand);
         userDemand.setWxUser(null);
         return this;
     }
 
-    public void setProperties(Set<UserDemand> userDemands) {
-        this.properties = userDemands;
+    public void setDemands(Set<UserDemand> userDemands) {
+        this.demands = userDemands;
     }
 
     public Set<FormSubmit> getSubmits() {
@@ -451,6 +458,31 @@ public class WxUser implements Serializable {
 
     public void setAMatches(Set<UserMatch> userMatches) {
         this.aMatches = userMatches;
+    }
+
+    public Set<UserMatch> getBMatches() {
+        return bMatches;
+    }
+
+    public WxUser bMatches(Set<UserMatch> userMatches) {
+        this.bMatches = userMatches;
+        return this;
+    }
+
+    public WxUser addBMatches(UserMatch userMatch) {
+        this.bMatches.add(userMatch);
+        userMatch.setUserB(this);
+        return this;
+    }
+
+    public WxUser removeBMatches(UserMatch userMatch) {
+        this.bMatches.remove(userMatch);
+        userMatch.setUserB(null);
+        return this;
+    }
+
+    public void setBMatches(Set<UserMatch> userMatches) {
+        this.bMatches = userMatches;
     }
 
     public Set<PushRecord> getPushRecords() {
