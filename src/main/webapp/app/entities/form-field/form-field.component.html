@@ -16,6 +16,7 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="fieldName"><span>字段名</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="fieldDesc"><span>字段描述</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="fieldType"><span>字段类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="baseForm.formName"><span>所属表单</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="baseProperty.propertyName"><span>对应属性</span> <fa-icon [icon]="'sort'"></fa-icon></th>
@@ -26,6 +27,7 @@
             <tr *ngFor="let formField of formFields ;trackBy: trackId">
                 <td><a [routerLink]="['/form-field', formField.id, 'view' ]">{{formField.id}}</a></td>
                 <td>{{formField.fieldName}}</td>
+                <td>{{formField.fieldDesc}}</td>
                 <td>{{formField.fieldType}}</td>
                 <td>
                     <div *ngIf="formField.baseForm">

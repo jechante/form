@@ -12,6 +12,15 @@
             "fieldValidateRulesMaxlength": 64
         },
         {
+            "fieldName": "fieldDesc",
+            "javadoc": "变量描述，你的性别等",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 200
+        },
+        {
             "fieldName": "fieldType",
             "fieldType": "FieldType",
             "fieldValues": "PROPERTY,DEMAND"

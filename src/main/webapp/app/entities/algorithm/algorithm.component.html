@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Algorithms</span>
+        <span>算法</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-algorithm" [routerLink]="['/algorithm/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Algorithm
+            创建新的算法
             </span>
         </button>
     </h2>
@@ -15,11 +15,11 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span>Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="genderWeight"><span>Gender Weight</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="kValue"><span>K Value</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="remark"><span>Remark</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="enabled"><span>Enabled</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="name"><span>算法名</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="genderWeight"><span>需求权重</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="kValue"><span>分块数</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="remark"><span>算法说明</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="enabled"><span>是否启用</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>

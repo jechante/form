@@ -1,13 +1,17 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="formField">
-            <h2><span>Form Field</span> {{formField.id}}</h2>
+            <h2><span>表单字段</span> {{formField.id}}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
                 <dt><span ngbTooltip="变量名称，基本为field_1等">字段名</span></dt>
                 <dd>
                     <span>{{formField.fieldName}}</span>
+                </dd>
+                <dt><span ngbTooltip="变量描述，你的性别等">字段描述</span></dt>
+                <dd>
+                    <span>{{formField.fieldDesc}}</span>
                 </dd>
                 <dt><span>字段类型</span></dt>
                 <dd>

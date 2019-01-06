@@ -76,6 +76,19 @@ public class FormField implements Serializable {
         this.fieldName = fieldName;
     }
 
+    public String getFieldDesc() {
+        return fieldDesc;
+    }
+
+    public FormField fieldDesc(String fieldDesc) {
+        this.fieldDesc = fieldDesc;
+        return this;
+    }
+
+    public void setFieldDesc(String fieldDesc) {
+        this.fieldDesc = fieldDesc;
+    }
+
     public FieldType getFieldType() {
         return fieldType;
     }
@@ -141,6 +154,7 @@ public class FormField implements Serializable {
         return "FormField{" +
             "id=" + getId() +
             ", fieldName='" + getFieldName() + "'" +
+            ", fieldDesc='" + getFieldDesc() + "'" +
             ", fieldType='" + getFieldType() + "'" +
             "}";
     }

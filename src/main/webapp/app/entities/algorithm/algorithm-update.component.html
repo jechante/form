@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-algorithm-heading">Create or edit a Algorithm</h2>
+            <h2 id="jhi-algorithm-heading">创建或编辑算法</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!algorithm.id">
@@ -10,7 +10,7 @@
                         [(ngModel)]="algorithm.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_name" ngbTooltip="算法名">Name</label>
+                    <label class="form-control-label" for="field_name" ngbTooltip="算法名">算法名</label>
                     <input type="text" class="form-control" name="name" id="field_name"
                         [(ngModel)]="algorithm.name" required maxlength="64"/>
                     <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
@@ -25,17 +25,17 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_genderWeight" ngbTooltip="需求权重">Gender Weight</label>
+                    <label class="form-control-label" for="field_genderWeight" ngbTooltip="需求权重">需求权重</label>
                     <input type="number" class="form-control" name="genderWeight" id="field_genderWeight"
                         [(ngModel)]="algorithm.genderWeight" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_kValue" ngbTooltip="分块数">K Value</label>
+                    <label class="form-control-label" for="field_kValue" ngbTooltip="分块数">分块数</label>
                     <input type="number" class="form-control" name="kValue" id="field_kValue"
                         [(ngModel)]="algorithm.kValue" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_remark" ngbTooltip="算法说明">Remark</label>
+                    <label class="form-control-label" for="field_remark" ngbTooltip="算法说明">算法说明</label>
                     <input type="text" class="form-control" name="remark" id="field_remark"
                         [(ngModel)]="algorithm.remark" maxlength="2000"/>
                     <div [hidden]="!(editForm.controls.remark?.dirty && editForm.controls.remark?.invalid)">
@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_enabled" ngbTooltip="是否启用">Enabled</label>
+                    <label class="form-control-label" for="field_enabled" ngbTooltip="是否启用">是否启用</label>
                     <input type="checkbox" class="form-control" name="enabled" id="field_enabled"
                         [(ngModel)]="algorithm.enabled" />
                 </div>

@@ -9,6 +9,7 @@ export const enum FieldType {
 export interface IFormField {
     id?: number;
     fieldName?: string;
+    fieldDesc?: string;
     fieldType?: FieldType;
     baseForm?: IBaseForm;
     baseProperty?: IBaseProperty;
@@ -18,6 +19,7 @@ export class FormField implements IFormField {
     constructor(
         public id?: number,
         public fieldName?: string,
+        public fieldDesc?: string,
         public fieldType?: FieldType,
         public baseForm?: IBaseForm,
         public baseProperty?: IBaseProperty

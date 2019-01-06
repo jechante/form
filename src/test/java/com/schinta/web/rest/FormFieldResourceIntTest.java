@@ -44,6 +44,9 @@ public class FormFieldResourceIntTest {
     private static final String DEFAULT_FIELD_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIELD_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_FIELD_DESC = "AAAAAAAAAA";
+    private static final String UPDATED_FIELD_DESC = "BBBBBBBBBB";
+
     private static final FieldType DEFAULT_FIELD_TYPE = FieldType.PROPERTY;
     private static final FieldType UPDATED_FIELD_TYPE = FieldType.DEMAND;
 
@@ -89,6 +92,7 @@ public class FormFieldResourceIntTest {
     public static FormField createEntity(EntityManager em) {
         FormField formField = new FormField()
             .fieldName(DEFAULT_FIELD_NAME)
+            .fieldDesc(DEFAULT_FIELD_DESC)
             .fieldType(DEFAULT_FIELD_TYPE);
         return formField;
     }
@@ -114,6 +118,7 @@ public class FormFieldResourceIntTest {
         assertThat(formFieldList).hasSize(databaseSizeBeforeCreate + 1);
         FormField testFormField = formFieldList.get(formFieldList.size() - 1);
         assertThat(testFormField.getFieldName()).isEqualTo(DEFAULT_FIELD_NAME);
+        assertThat(testFormField.getFieldDesc()).isEqualTo(DEFAULT_FIELD_DESC);
         assertThat(testFormField.getFieldType()).isEqualTo(DEFAULT_FIELD_TYPE);
     }
 
@@ -166,6 +171,7 @@ public class FormFieldResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(formField.getId().intValue())))
             .andExpect(jsonPath("$.[*].fieldName").value(hasItem(DEFAULT_FIELD_NAME.toString())))
+            .andExpect(jsonPath("$.[*].fieldDesc").value(hasItem(DEFAULT_FIELD_DESC.toString())))
             .andExpect(jsonPath("$.[*].fieldType").value(hasItem(DEFAULT_FIELD_TYPE.toString())));
     }
     
@@ -181,6 +187,7 @@ public class FormFieldResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(formField.getId().intValue()))
             .andExpect(jsonPath("$.fieldName").value(DEFAULT_FIELD_NAME.toString()))
+            .andExpect(jsonPath("$.fieldDesc").value(DEFAULT_FIELD_DESC.toString()))
             .andExpect(jsonPath("$.fieldType").value(DEFAULT_FIELD_TYPE.toString()));
     }
 
@@ -206,6 +213,7 @@ public class FormFieldResourceIntTest {
         em.detach(updatedFormField);
         updatedFormField
             .fieldName(UPDATED_FIELD_NAME)
+            .fieldDesc(UPDATED_FIELD_DESC)
             .fieldType(UPDATED_FIELD_TYPE);
 
         restFormFieldMockMvc.perform(put("/api/form-fields")
@@ -218,6 +226,7 @@ public class FormFieldResourceIntTest {
         assertThat(formFieldList).hasSize(databaseSizeBeforeUpdate);
         FormField testFormField = formFieldList.get(formFieldList.size() - 1);
         assertThat(testFormField.getFieldName()).isEqualTo(UPDATED_FIELD_NAME);
+        assertThat(testFormField.getFieldDesc()).isEqualTo(UPDATED_FIELD_DESC);
         assertThat(testFormField.getFieldType()).isEqualTo(UPDATED_FIELD_TYPE);
     }
 
