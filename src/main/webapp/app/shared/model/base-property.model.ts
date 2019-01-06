@@ -8,7 +8,8 @@ export const enum PropertyType {
     VALUES = 'VALUES',
     CHARACTER = 'CHARACTER',
     LOOKS = 'LOOKS',
-    ASSET = 'ASSET'
+    ASSET = 'ASSET',
+    INTEREST = 'INTEREST'
 }
 
 export const enum FormyType {

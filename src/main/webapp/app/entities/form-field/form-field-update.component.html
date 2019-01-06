@@ -10,7 +10,7 @@
                         [(ngModel)]="formField.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_fieldName" ngbTooltip="变量名称，基本为field_1等">Field Name</label>
+                    <label class="form-control-label" for="field_fieldName" ngbTooltip="变量名称，基本为field_1等">字段名</label>
                     <input type="text" class="form-control" name="fieldName" id="field_fieldName"
                         [(ngModel)]="formField.fieldName" required maxlength="64"/>
                     <div [hidden]="!(editForm.controls.fieldName?.dirty && editForm.controls.fieldName?.invalid)">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_fieldType">Field Type</label>
+                    <label class="form-control-label" for="field_fieldType">字段类型</label>
                     <select class="form-control" name="fieldType" [(ngModel)]="formField.fieldType" id="field_fieldType" >
                         <option value="PROPERTY">PROPERTY</option>
                         <option value="DEMAND">DEMAND</option>
@@ -33,14 +33,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_baseForm">Base Form</label>
+                    <label class="form-control-label" for="field_baseForm">所属表单</label>
                     <select class="form-control" id="field_baseForm" name="baseForm" [(ngModel)]="formField.baseForm" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="baseFormOption.id === formField.baseForm?.id ? formField.baseForm : baseFormOption" *ngFor="let baseFormOption of baseforms; trackBy: trackBaseFormById">{{baseFormOption.formName}}</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_baseProperty">Base Property</label>
+                    <label class="form-control-label" for="field_baseProperty">对应属性</label>
                     <select class="form-control" id="field_baseProperty" name="baseProperty" [(ngModel)]="formField.baseProperty" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="basePropertyOption.id === formField.baseProperty?.id ? formField.baseProperty : basePropertyOption" *ngFor="let basePropertyOption of baseproperties; trackBy: trackBasePropertyById">{{basePropertyOption.propertyName}}</option>

@@ -36,6 +36,14 @@ public class FormField implements Serializable {
     @Column(name = "field_name", length = 64, nullable = false)
     private String fieldName;
 
+    /**
+     * 变量描述，你的性别等
+     */
+    @Size(max = 200)
+    @ApiModelProperty(value = "变量描述，你的性别等")
+    @Column(name = "field_desc", length = 200)
+    private String fieldDesc;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "field_type")
     private FieldType fieldType;

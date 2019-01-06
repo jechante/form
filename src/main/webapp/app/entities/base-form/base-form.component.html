@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Base Forms</span>
+        <span>表单基础信息</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-base-form" [routerLink]="['/base-form/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Base Form
+            创建新的表单
             </span>
         </button>
     </h2>
@@ -15,12 +15,12 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="formCode"><span>Form Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="formName"><span>Form Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="formDescribe"><span>Form Describe</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="formWeb"><span>Form Web</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="submitUrl"><span>Submit Url</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="vendor"><span>Vendor</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formCode"><span>表单编号</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formName"><span>表单名称</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formDescribe"><span>表单描述</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formWeb"><span>表单发布地址</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="submitUrl"><span>提交结果第三方推送地址</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="vendor"><span>表单提供商</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>

@@ -5,7 +5,7 @@
         </a>
         <a class="navbar-brand logo float-left" routerLink="/" (click)="collapseNavbar()">
             <span class="logo-img"></span>
-            <span class="navbar-title">Form</span> <span class="navbar-version">{{version}}</span>
+            <span class="navbar-title">小伊配对中心管理后台</span> <span class="navbar-version">{{version}}</span>
         </a>
     </div>
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
@@ -44,7 +44,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="base-property" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                            <span>Base Property</span>
+                            <span>属性</span>
                         </a>
                     </li>
                     <li>
@@ -62,7 +62,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="base-form" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                            <span>Base Form</span>
+                            <span>表单</span>
                         </a>
                     </li>
                     <li>
@@ -74,7 +74,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="form-field" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                            <span>Form Field</span>
+                            <span>表单字段</span>
                         </a>
                     </li>
                     <li>

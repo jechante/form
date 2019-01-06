@@ -58,7 +58,8 @@ enum PropertyType {
     VALUES, // 三观
     CHARACTER, // 性格
     LOOKS, // 外貌
-    ASSET // 资产
+    ASSET, // 资产
+    INTEREST // 兴趣
 }
 enum FormyType {
 	ONETOONE, ONETOMANY, MANYTOMANY,
@@ -117,6 +118,7 @@ entity FormSubmit{
 
 entity FormField{
     fieldName String required maxlength(64) /**变量名称，基本为field_1等*/
+    fieldDesc String maxlength(200) /**变量描述，你的性别等*/
     fieldType FieldType
 }
 

@@ -36,14 +36,26 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:h2:file:./target/h2db/db/form;DB_CLOSE_DELAY=-1
-        username: form
-        password:
+        url: jdbc:mysql://47.99.44.77:3306/xiaoyi?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: root
+        password: zml@123456
         hikari:
             auto-commit: false
-    h2:
-        console:
-            enabled: false
+            data-source-properties:
+                cachePrepStmts: true
+                prepStmtCacheSize: 250
+                prepStmtCacheSqlLimit: 2048
+                useServerPrepStmts: true
+#    datasource:
+#        type: com.zaxxer.hikari.HikariDataSource
+#        url: jdbc:h2:file:./target/h2db/db/form;DB_CLOSE_DELAY=-1
+#        username: form
+#        password:
+#        hikari:
+#            auto-commit: false
+#    h2:
+#        console:
+#            enabled: false
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedH2Dialect
         database: H2

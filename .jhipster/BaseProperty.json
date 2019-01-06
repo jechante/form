@@ -24,7 +24,7 @@
             "fieldName": "propertyType",
             "javadoc": "属性类型：三观、性格、外貌等",
             "fieldType": "PropertyType",
-            "fieldValues": "BASIC,VALUES,CHARACTER,LOOKS,ASSET"
+            "fieldValues": "BASIC,VALUES,CHARACTER,LOOKS,ASSET,INTEREST"
         },
         {
             "fieldName": "propertyScore",

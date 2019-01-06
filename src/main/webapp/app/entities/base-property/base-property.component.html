@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Base Properties</span>
+        <span>基础属性</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-base-property" [routerLink]="['/base-property/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Base Property
+            创建新的基础属性
             </span>
         </button>
     </h2>
@@ -15,13 +15,13 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="propertyName"><span>Property Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="propertyDescribe"><span>Property Describe</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="propertyType"><span>Property Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="propertyScore"><span>Property Score</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="propertyMaxScore"><span>Property Max Score</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="formyType"><span>Formy Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="completionRate"><span>Completion Rate</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyName"><span>属性名称</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyDescribe"><span>属性描述</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyType"><span>属性类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyScore"><span>属性分值</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="propertyMaxScore"><span>属性最高分</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="formyType"><span>匹配类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="completionRate"><span>对完成率占比</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>

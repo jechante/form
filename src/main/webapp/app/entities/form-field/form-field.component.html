@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Form Fields</span>
+        <span>表单字段</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-form-field" [routerLink]="['/form-field/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Form Field
+            创建新的表单字段
             </span>
         </button>
     </h2>
@@ -15,10 +15,10 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="fieldName"><span>Field Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="fieldType"><span>Field Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="baseForm.formName"><span>Base Form</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="baseProperty.propertyName"><span>Base Property</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="fieldName"><span>字段名</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="fieldType"><span>字段类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="baseForm.formName"><span>所属表单</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="baseProperty.propertyName"><span>对应属性</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>

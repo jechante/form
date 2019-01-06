@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-base-property-heading">Create or edit a Base Property</h2>
+            <h2 id="jhi-base-property-heading">创建或编辑基础属性</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!baseProperty.id">
@@ -10,7 +10,7 @@
                         [(ngModel)]="baseProperty.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_propertyName" ngbTooltip="属性名称：身高等">Property Name</label>
+                    <label class="form-control-label" for="field_propertyName" ngbTooltip="属性名称：身高等">属性名称</label>
                     <input type="text" class="form-control" name="propertyName" id="field_propertyName"
                         [(ngModel)]="baseProperty.propertyName" required maxlength="64"/>
                     <div [hidden]="!(editForm.controls.propertyName?.dirty && editForm.controls.propertyName?.invalid)">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_propertyDescribe" ngbTooltip="属性描述">Property Describe</label>
+                    <label class="form-control-label" for="field_propertyDescribe" ngbTooltip="属性描述">属性描述</label>
                     <input type="text" class="form-control" name="propertyDescribe" id="field_propertyDescribe"
                         [(ngModel)]="baseProperty.propertyDescribe" maxlength="256"/>
                     <div [hidden]="!(editForm.controls.propertyDescribe?.dirty && editForm.controls.propertyDescribe?.invalid)">
@@ -36,27 +36,28 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_propertyType" ngbTooltip="属性类型：三观、性格、外貌等">Property Type</label>
+                    <label class="form-control-label" for="field_propertyType" ngbTooltip="属性类型：三观、性格、外貌等">属性类型</label>
                     <select class="form-control" name="propertyType" [(ngModel)]="baseProperty.propertyType" id="field_propertyType" >
                         <option value="BASIC">BASIC</option>
                         <option value="VALUES">VALUES</option>
                         <option value="CHARACTER">CHARACTER</option>
                         <option value="LOOKS">LOOKS</option>
                         <option value="ASSET">ASSET</option>
+                        <option value="INTEREST">INTEREST</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_propertyScore" ngbTooltip="属性分值">Property Score</label>
+                    <label class="form-control-label" for="field_propertyScore" ngbTooltip="属性分值">属性分值</label>
                     <input type="number" class="form-control" name="propertyScore" id="field_propertyScore"
                         [(ngModel)]="baseProperty.propertyScore" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_propertyMaxScore" ngbTooltip="属性最高分">Property Max Score</label>
+                    <label class="form-control-label" for="field_propertyMaxScore" ngbTooltip="属性最高分">属性最高分</label>
                     <input type="number" class="form-control" name="propertyMaxScore" id="field_propertyMaxScore"
                         [(ngModel)]="baseProperty.propertyMaxScore" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_formyType" ngbTooltip="匹配类型：1对1、1对多、多对多、其他(不计分项，例如照片等)">Formy Type</label>
+                    <label class="form-control-label" for="field_formyType" ngbTooltip="匹配类型：1对1、1对多、多对多、其他(不计分项，例如照片等)">匹配类型</label>
                     <select class="form-control" name="formyType" [(ngModel)]="baseProperty.formyType" id="field_formyType" >
                         <option value="ONETOONE">ONETOONE</option>
                         <option value="ONETOMANY">ONETOMANY</option>
@@ -68,7 +69,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_completionRate" ngbTooltip="对完成率所占比重：5等">Completion Rate</label>
+                    <label class="form-control-label" for="field_completionRate" ngbTooltip="对完成率所占比重：5等">对完成率占比</label>
                     <input type="number" class="form-control" name="completionRate" id="field_completionRate"
                         [(ngModel)]="baseProperty.completionRate" />
                 </div>
@@ -76,10 +77,10 @@
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>取消</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>保存</span>
                 </button>
             </div>
         </form>
