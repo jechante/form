@@ -50,7 +50,7 @@
             "otherEntityRelationshipName": "filterAlgorithms",
             "relationshipName": "filterProperties",
             "otherEntityName": "baseProperty",
-            "otherEntityField": "id",
+            "otherEntityField": "propertyName",
             "ownerSide": true
         },
         {
@@ -59,7 +59,7 @@
             "otherEntityRelationshipName": "scoreAlgorithms",
             "relationshipName": "scoreProperties",
             "otherEntityName": "baseProperty",
-            "otherEntityField": "id",
+            "otherEntityField": "propertyName",
             "ownerSide": true
         }
     ],

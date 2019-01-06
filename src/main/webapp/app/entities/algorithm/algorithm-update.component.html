@@ -52,15 +52,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="field_filterProperties">Filter Properties</label>
+                    <label for="field_filterProperties">过滤属性</label>
                     <select class="form-control" id="field_filterProperties" multiple name="filterProperties" [(ngModel)]="algorithm.filterProperties">
-                        <option [ngValue]="getSelected(algorithm.filterProperties, basePropertyOption)" *ngFor="let basePropertyOption of baseproperties; trackBy: trackBasePropertyById">{{basePropertyOption.id}}</option>
+                        <option [ngValue]="getSelected(algorithm.filterProperties, basePropertyOption)" *ngFor="let basePropertyOption of baseproperties; trackBy: trackBasePropertyById">{{basePropertyOption.propertyName}}</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="field_scoreProperties">Score Properties</label>
+                    <label for="field_scoreProperties">计分属性</label>
                     <select class="form-control" id="field_scoreProperties" multiple name="scoreProperties" [(ngModel)]="algorithm.scoreProperties">
-                        <option [ngValue]="getSelected(algorithm.scoreProperties, basePropertyOption)" *ngFor="let basePropertyOption of baseproperties; trackBy: trackBasePropertyById">{{basePropertyOption.id}}</option>
+                        <option [ngValue]="getSelected(algorithm.scoreProperties, basePropertyOption)" *ngFor="let basePropertyOption of baseproperties; trackBy: trackBasePropertyById">{{basePropertyOption.propertyName}}</option>
                     </select>
                 </div>
             </div>

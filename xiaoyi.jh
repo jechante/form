@@ -207,13 +207,13 @@ relationship ManyToMany {
 	UserMatch{pushRecords} to PushRecord{userMatches}
 
     /**过滤属性*/
-    Algorithm{filterProperties}
+    Algorithm{filterProperties(propertyName)}
     to
     /**作为过滤属性参与的算法*/
     BaseProperty{filterAlgorithms(name)}
 
     /**计分属性*/
-    Algorithm{scoreProperties}
+    Algorithm{scoreProperties(propertyName)}
     to
     /**作为计分属性参与的算法*/
     BaseProperty{scoreAlgorithms(name)}

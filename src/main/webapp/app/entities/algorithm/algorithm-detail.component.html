@@ -25,16 +25,16 @@
                 <dd>
                     <span>{{algorithm.enabled}}</span>
                 </dd>
-                <dt><span>Filter Properties</span></dt>
+                <dt><span>过滤属性</span></dt>
                 <dd>
                     <span *ngFor="let filterProperties of algorithm.filterProperties; let last = last">
-                        <a [routerLink]="['/base-property', filterProperties?.id, 'view' ]">{{filterProperties.id}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/base-property', filterProperties?.id, 'view' ]">{{filterProperties.propertyName}}</a>{{last ? '' : ', '}}
                     </span>
                 </dd>
-                <dt><span>Score Properties</span></dt>
+                <dt><span>计分属性</span></dt>
                 <dd>
                     <span *ngFor="let scoreProperties of algorithm.scoreProperties; let last = last">
-                        <a [routerLink]="['/base-property', scoreProperties?.id, 'view' ]">{{scoreProperties.id}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/base-property', scoreProperties?.id, 'view' ]">{{scoreProperties.propertyName}}</a>{{last ? '' : ', '}}
                     </span>
                 </dd>
             </dl>
