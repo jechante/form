@@ -73,6 +73,7 @@ public class AlgorithmResourceIntTest {
     @Autowired
     private AlgorithmService algorithmService;
 
+
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
@@ -92,7 +93,7 @@ public class AlgorithmResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AlgorithmResource algorithmResource = new AlgorithmResource(algorithmService);
+        final AlgorithmResource algorithmResource = new AlgorithmResource(algorithmService, algorithmRepository);
         this.restAlgorithmMockMvc = MockMvcBuilders.standaloneSetup(algorithmResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -199,7 +200,7 @@ public class AlgorithmResourceIntTest {
     }
     
     public void getAllAlgorithmsWithEagerRelationshipsIsEnabled() throws Exception {
-        AlgorithmResource algorithmResource = new AlgorithmResource(algorithmServiceMock);
+        AlgorithmResource algorithmResource = new AlgorithmResource(algorithmServiceMock, algorithmRepository);
         when(algorithmServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restAlgorithmMockMvc = MockMvcBuilders.standaloneSetup(algorithmResource)
@@ -215,7 +216,7 @@ public class AlgorithmResourceIntTest {
     }
 
     public void getAllAlgorithmsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        AlgorithmResource algorithmResource = new AlgorithmResource(algorithmServiceMock);
+        AlgorithmResource algorithmResource = new AlgorithmResource(algorithmServiceMock, algorithmRepository);
             when(algorithmServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restAlgorithmMockMvc = MockMvcBuilders.standaloneSetup(algorithmResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

@@ -12,6 +12,7 @@ type EntityArrayResponseType = HttpResponse<IBaseProperty[]>;
 @Injectable({ providedIn: 'root' })
 export class BasePropertyService {
     private resourceUrl = SERVER_API_URL + 'api/base-properties';
+    private findAllUrl = SERVER_API_URL + 'api/base-properties-all';
 
     constructor(private http: HttpClient) {}
 
@@ -30,6 +31,11 @@ export class BasePropertyService {
     query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http.get<IBaseProperty[]>(this.resourceUrl, { params: options, observe: 'response' });
+    }
+
+    findAll(req?: any): Observable<EntityArrayResponseType> {
+        const options = createRequestOption(req);
+        return this.http.get<IBaseProperty[]>(this.findAllUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {

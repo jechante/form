@@ -2,6 +2,7 @@ package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.schinta.domain.Algorithm;
+import com.schinta.repository.AlgorithmRepository;
 import com.schinta.service.AlgorithmService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
@@ -35,9 +36,13 @@ public class AlgorithmResource {
     private static final String ENTITY_NAME = "algorithm";
 
     private final AlgorithmService algorithmService;
+    private final AlgorithmRepository algorithmRepository;
 
-    public AlgorithmResource(AlgorithmService algorithmService) {
+    public AlgorithmResource(AlgorithmService algorithmService,
+                             AlgorithmRepository algorithmRepository
+    ) {
         this.algorithmService = algorithmService;
+        this.algorithmRepository = algorithmRepository;
     }
 
     /**
@@ -101,6 +106,18 @@ public class AlgorithmResource {
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/algorithms?eagerload=%b", eagerload));
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /algorithms : get all the algorithms.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of algorithms in body
+     */
+    @GetMapping("/algorithms-all")
+    @Timed
+    public ResponseEntity<List<Algorithm>> getAllAlgorithms() {
+        log.debug("REST request to get all Algorithms");
+        return ResponseEntity.ok(algorithmRepository.findAll());
     }
 
     /**

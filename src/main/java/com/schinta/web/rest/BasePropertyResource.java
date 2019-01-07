@@ -2,6 +2,7 @@ package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.schinta.domain.BaseProperty;
+import com.schinta.repository.BasePropertyRepository;
 import com.schinta.service.BasePropertyService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
@@ -35,9 +36,12 @@ public class BasePropertyResource {
     private static final String ENTITY_NAME = "baseProperty";
 
     private final BasePropertyService basePropertyService;
+    private final BasePropertyRepository basePropertyRepository;
 
-    public BasePropertyResource(BasePropertyService basePropertyService) {
+    public BasePropertyResource(BasePropertyService basePropertyService,
+                                BasePropertyRepository basePropertyRepository) {
         this.basePropertyService = basePropertyService;
+        this.basePropertyRepository = basePropertyRepository;
     }
 
     /**
@@ -95,6 +99,18 @@ public class BasePropertyResource {
         Page<BaseProperty> page = basePropertyService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/base-properties");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /base-properties : get all the baseProperties.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of baseProperties in body
+     */
+    @GetMapping("/base-properties-all")
+    @Timed
+    public ResponseEntity<List<BaseProperty>> getAllBaseProperties() {
+        log.debug("REST request to get all BaseProperties");
+        return ResponseEntity.ok(basePropertyRepository.findAll());
     }
 
     /**

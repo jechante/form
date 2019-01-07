@@ -31,7 +31,7 @@ export class AlgorithmUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ algorithm }) => {
             this.algorithm = algorithm;
         });
-        this.basePropertyService.query().subscribe(
+        this.basePropertyService.findAll().subscribe(
             (res: HttpResponse<IBaseProperty[]>) => {
                 this.baseproperties = res.body;
             },

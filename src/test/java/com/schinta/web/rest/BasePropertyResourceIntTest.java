@@ -88,7 +88,7 @@ public class BasePropertyResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final BasePropertyResource basePropertyResource = new BasePropertyResource(basePropertyService);
+        final BasePropertyResource basePropertyResource = new BasePropertyResource(basePropertyService, basePropertyRepository);
         this.restBasePropertyMockMvc = MockMvcBuilders.standaloneSetup(basePropertyResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
