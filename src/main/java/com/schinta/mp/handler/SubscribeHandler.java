@@ -1,5 +1,6 @@
 package com.schinta.mp.handler;
 
+import com.schinta.domain.WxUser;
 import com.schinta.mp.builder.TextBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
@@ -7,6 +8,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -16,6 +18,7 @@ import java.util.Map;
  */
 @Component
 public class SubscribeHandler extends AbstractHandler {
+//    @Autowired
 
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
@@ -30,6 +33,8 @@ public class SubscribeHandler extends AbstractHandler {
                 .userInfo(wxMessage.getFromUser(), null);
             if (userWxInfo != null) {
                 // TODO 可以添加关注用户到本地数据库
+                WxUser wxUser = new WxUser();
+//                wxUser.setGender(userWxInfo.getSex());
             }
         } catch (WxErrorException e) {
             if (e.getError().getErrorCode() == 48001) {
