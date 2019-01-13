@@ -15,6 +15,7 @@ export interface IBaseForm {
     formWeb?: string;
     submitUrl?: string;
     vendor?: FormVendor;
+    enabled?: boolean;
     submits?: IFormSubmit[];
     fields?: IFormField[];
 }
@@ -28,7 +29,10 @@ export class BaseForm implements IBaseForm {
         public formWeb?: string,
         public submitUrl?: string,
         public vendor?: FormVendor,
+        public enabled?: boolean,
         public submits?: IFormSubmit[],
         public fields?: IFormField[]
-    ) {}
+    ) {
+        this.enabled = this.enabled || false;
+    }
 }

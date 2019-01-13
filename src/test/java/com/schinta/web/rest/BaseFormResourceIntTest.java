@@ -59,6 +59,9 @@ public class BaseFormResourceIntTest {
     private static final FormVendor DEFAULT_VENDOR = FormVendor.SELF;
     private static final FormVendor UPDATED_VENDOR = FormVendor.JIN;
 
+    private static final Boolean DEFAULT_ENABLED = false;
+    private static final Boolean UPDATED_ENABLED = true;
+
     @Autowired
     private BaseFormRepository baseFormRepository;
     
@@ -105,7 +108,8 @@ public class BaseFormResourceIntTest {
             .formDescribe(DEFAULT_FORM_DESCRIBE)
             .formWeb(DEFAULT_FORM_WEB)
             .submitUrl(DEFAULT_SUBMIT_URL)
-            .vendor(DEFAULT_VENDOR);
+            .vendor(DEFAULT_VENDOR)
+            .enabled(DEFAULT_ENABLED);
         return baseForm;
     }
 
@@ -135,6 +139,7 @@ public class BaseFormResourceIntTest {
         assertThat(testBaseForm.getFormWeb()).isEqualTo(DEFAULT_FORM_WEB);
         assertThat(testBaseForm.getSubmitUrl()).isEqualTo(DEFAULT_SUBMIT_URL);
         assertThat(testBaseForm.getVendor()).isEqualTo(DEFAULT_VENDOR);
+        assertThat(testBaseForm.isEnabled()).isEqualTo(DEFAULT_ENABLED);
     }
 
     @Test
@@ -190,7 +195,8 @@ public class BaseFormResourceIntTest {
             .andExpect(jsonPath("$.[*].formDescribe").value(hasItem(DEFAULT_FORM_DESCRIBE.toString())))
             .andExpect(jsonPath("$.[*].formWeb").value(hasItem(DEFAULT_FORM_WEB.toString())))
             .andExpect(jsonPath("$.[*].submitUrl").value(hasItem(DEFAULT_SUBMIT_URL.toString())))
-            .andExpect(jsonPath("$.[*].vendor").value(hasItem(DEFAULT_VENDOR.toString())));
+            .andExpect(jsonPath("$.[*].vendor").value(hasItem(DEFAULT_VENDOR.toString())))
+            .andExpect(jsonPath("$.[*].enabled").value(hasItem(DEFAULT_ENABLED.booleanValue())));
     }
     
     @Test
@@ -209,7 +215,8 @@ public class BaseFormResourceIntTest {
             .andExpect(jsonPath("$.formDescribe").value(DEFAULT_FORM_DESCRIBE.toString()))
             .andExpect(jsonPath("$.formWeb").value(DEFAULT_FORM_WEB.toString()))
             .andExpect(jsonPath("$.submitUrl").value(DEFAULT_SUBMIT_URL.toString()))
-            .andExpect(jsonPath("$.vendor").value(DEFAULT_VENDOR.toString()));
+            .andExpect(jsonPath("$.vendor").value(DEFAULT_VENDOR.toString()))
+            .andExpect(jsonPath("$.enabled").value(DEFAULT_ENABLED.booleanValue()));
     }
 
     @Test
@@ -238,7 +245,8 @@ public class BaseFormResourceIntTest {
             .formDescribe(UPDATED_FORM_DESCRIBE)
             .formWeb(UPDATED_FORM_WEB)
             .submitUrl(UPDATED_SUBMIT_URL)
-            .vendor(UPDATED_VENDOR);
+            .vendor(UPDATED_VENDOR)
+            .enabled(UPDATED_ENABLED);
 
         restBaseFormMockMvc.perform(put("/api/base-forms")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -255,6 +263,7 @@ public class BaseFormResourceIntTest {
         assertThat(testBaseForm.getFormWeb()).isEqualTo(UPDATED_FORM_WEB);
         assertThat(testBaseForm.getSubmitUrl()).isEqualTo(UPDATED_SUBMIT_URL);
         assertThat(testBaseForm.getVendor()).isEqualTo(UPDATED_VENDOR);
+        assertThat(testBaseForm.isEnabled()).isEqualTo(UPDATED_ENABLED);
     }
 
     @Test

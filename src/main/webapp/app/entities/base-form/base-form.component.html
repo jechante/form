@@ -21,6 +21,7 @@
             <th jhiSortBy="formWeb"><span>表单发布地址</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="submitUrl"><span>提交结果第三方推送地址</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="vendor"><span>表单提供商</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th jhiSortBy="enabled"><span>是否启用</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -33,6 +34,7 @@
                 <td>{{baseForm.formWeb}}</td>
                 <td>{{baseForm.submitUrl}}</td>
                 <td>{{baseForm.vendor}}</td>
+                <td>{{baseForm.enabled}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

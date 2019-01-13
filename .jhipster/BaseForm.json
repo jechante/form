@@ -52,6 +52,11 @@
             "javadoc": "第三方表单的提供商",
             "fieldType": "FormVendor",
             "fieldValues": "SELF,JIN,OTHER"
+        },
+        {
+            "fieldName": "enabled",
+            "javadoc": "是否启用",
+            "fieldType": "Boolean"
         }
     ],
     "relationships": [

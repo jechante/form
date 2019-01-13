@@ -79,6 +79,13 @@ public class BaseForm implements Serializable {
     private FormVendor vendor;
 
     /**
+     * 是否启用
+     */
+    @ApiModelProperty(value = "是否启用")
+    @Column(name = "enabled")
+    private Boolean enabled;
+
+    /**
      * 表单-用户提交表单
      */
     @ApiModelProperty(value = "表单-用户提交表单")
@@ -179,6 +186,19 @@ public class BaseForm implements Serializable {
         this.vendor = vendor;
     }
 
+    public Boolean isEnabled() {
+        return enabled;
+    }
+
+    public BaseForm enabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public Set<FormSubmit> getSubmits() {
         return submits;
     }
@@ -260,6 +280,7 @@ public class BaseForm implements Serializable {
             ", formWeb='" + getFormWeb() + "'" +
             ", submitUrl='" + getSubmitUrl() + "'" +
             ", vendor='" + getVendor() + "'" +
+            ", enabled='" + isEnabled() + "'" +
             "}";
     }
 }
