@@ -98,6 +98,7 @@ entity BaseForm{
     formWeb String maxlength(512) /**金数据等表单的发布地址*/
     submitUrl String maxlength(512) /**金数据等表单数据结果的第三方推送地址*/
     vendor FormVendor /**第三方表单的提供商*/
+    enabled Boolean /**是否启用*/
 }
 
 enum FormVendor {

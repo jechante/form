@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,8 +33,11 @@ public class WxUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Size(max = 28)
+    @ApiModelProperty(value = "微信openId")
+    @Column(name = "id", length = 28)
+    private String id;
 
     /**
      * 微信昵称
@@ -128,7 +132,7 @@ public class WxUser implements Serializable {
      */
     @ApiModelProperty(value = "注册时间")
     @Column(name = "register_date_time")
-    private ZonedDateTime registerDateTime;
+    private LocalDateTime registerDateTime;
 
     /**
      * 每日主动匹配记录数限制，默认为1。特权用户可以上调该限制
@@ -183,11 +187,11 @@ public class WxUser implements Serializable {
     private Broker broker;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -334,16 +338,16 @@ public class WxUser implements Serializable {
         this.registerChannel = registerChannel;
     }
 
-    public ZonedDateTime getRegisterDateTime() {
+    public LocalDateTime getRegisterDateTime() {
         return registerDateTime;
     }
 
-    public WxUser registerDateTime(ZonedDateTime registerDateTime) {
+    public WxUser registerDateTime(LocalDateTime registerDateTime) {
         this.registerDateTime = registerDateTime;
         return this;
     }
 
-    public void setRegisterDateTime(ZonedDateTime registerDateTime) {
+    public void setRegisterDateTime(LocalDateTime registerDateTime) {
         this.registerDateTime = registerDateTime;
     }
 

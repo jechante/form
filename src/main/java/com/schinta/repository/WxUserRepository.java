@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface WxUserRepository extends JpaRepository<WxUser, Long> {
+public interface WxUserRepository extends JpaRepository<WxUser, String> {
 
 }

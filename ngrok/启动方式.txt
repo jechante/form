@@ -3,3 +3,5 @@
 
 
 ngrok -config ngrok.cfg -subdomain schinta 8080
+
+ngrok http -subdomain=schinta 8080

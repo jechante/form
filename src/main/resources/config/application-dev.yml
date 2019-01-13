@@ -56,9 +56,23 @@ spring:
 #    h2:
 #        console:
 #            enabled: false
+#    jpa:
+#        database-platform: io.github.jhipster.domain.util.FixedH2Dialect
+#        database: H2
+#        show-sql: true
+#        properties:
+#            hibernate.id.new_generator_mappings: true
+#            hibernate.connection.provider_disables_autocommit: true
+#            hibernate.cache.use_second_level_cache: true
+#            hibernate.cache.use_query_cache: false
+#            hibernate.generate_statistics: true
+#            hibernate.cache.region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
+#            hibernate.cache.hazelcast.instance_name: form
+#            hibernate.cache.use_minimal_puts: true
+#            hibernate.cache.hazelcast.use_lite_member: true
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedH2Dialect
-        database: H2
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
         show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true

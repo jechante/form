@@ -57,7 +57,7 @@ public class WxUserService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<WxUser> findOne(Long id) {
+    public Optional<WxUser> findOne(String id) {
         log.debug("Request to get WxUser : {}", id);
         return wxUserRepository.findById(id);
     }
@@ -67,7 +67,7 @@ public class WxUserService {
      *
      * @param id the id of the entity
      */
-    public void delete(Long id) {
+    public void delete(String id) {
         log.debug("Request to delete WxUser : {}", id);
         wxUserRepository.deleteById(id);
     }

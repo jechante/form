@@ -22,10 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 
 
@@ -52,8 +49,8 @@ public class WxUserResourceIntTest {
     private static final String DEFAULT_WX_NICK_NAME = "AAAAAAAAAA";
     private static final String UPDATED_WX_NICK_NAME = "BBBBBBBBBB";
 
-    private static final Gender DEFAULT_WX_GENDER = Gender.MALE;
-    private static final Gender UPDATED_WX_GENDER = Gender.FEMALE;
+    private static final Gender DEFAULT_WX_GENDER = Gender.男;
+    private static final Gender UPDATED_WX_GENDER = Gender.女;
 
     private static final String DEFAULT_WX_COUNTRY = "AAAAAAAAAA";
     private static final String UPDATED_WX_COUNTRY = "BBBBBBBBBB";
@@ -73,8 +70,8 @@ public class WxUserResourceIntTest {
     private static final String DEFAULT_WX_LANGUAGE = "AAAAAAAAAA";
     private static final String UPDATED_WX_LANGUAGE = "BBBBBBBBBB";
 
-    private static final Gender DEFAULT_GENDER = Gender.MALE;
-    private static final Gender UPDATED_GENDER = Gender.FEMALE;
+    private static final Gender DEFAULT_GENDER = Gender.男;
+    private static final Gender UPDATED_GENDER = Gender.女;
 
     private static final UserStatus DEFAULT_USER_STATUS = UserStatus.ACTIVE;
     private static final UserStatus UPDATED_USER_STATUS = UserStatus.UNACTIVE;
@@ -82,15 +79,15 @@ public class WxUserResourceIntTest {
     private static final RegisterChannel DEFAULT_REGISTER_CHANNEL = RegisterChannel.POSTER;
     private static final RegisterChannel UPDATED_REGISTER_CHANNEL = RegisterChannel.SITE;
 
-    private static final ZonedDateTime DEFAULT_REGISTER_DATE_TIME = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_REGISTER_DATE_TIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDateTime DEFAULT_REGISTER_DATE_TIME = LocalDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.systemDefault());
+    private static final LocalDateTime UPDATED_REGISTER_DATE_TIME = LocalDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final Integer DEFAULT_PUSH_LIMIT = 1;
     private static final Integer UPDATED_PUSH_LIMIT = 2;
 
     @Autowired
     private WxUserRepository wxUserRepository;
-    
+
     @Autowired
     private WxUserService wxUserService;
 
@@ -186,7 +183,7 @@ public class WxUserResourceIntTest {
         int databaseSizeBeforeCreate = wxUserRepository.findAll().size();
 
         // Create the WxUser with an existing ID
-        wxUser.setId(1L);
+        wxUser.setId("aaaaaaa");
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restWxUserMockMvc.perform(post("/api/wx-users")
@@ -209,7 +206,7 @@ public class WxUserResourceIntTest {
         restWxUserMockMvc.perform(get("/api/wx-users?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(wxUser.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(wxUser.getId())))
             .andExpect(jsonPath("$.[*].wxNickName").value(hasItem(DEFAULT_WX_NICK_NAME.toString())))
             .andExpect(jsonPath("$.[*].wxGender").value(hasItem(DEFAULT_WX_GENDER.toString())))
             .andExpect(jsonPath("$.[*].wxCountry").value(hasItem(DEFAULT_WX_COUNTRY.toString())))
@@ -221,10 +218,10 @@ public class WxUserResourceIntTest {
             .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
             .andExpect(jsonPath("$.[*].userStatus").value(hasItem(DEFAULT_USER_STATUS.toString())))
             .andExpect(jsonPath("$.[*].registerChannel").value(hasItem(DEFAULT_REGISTER_CHANNEL.toString())))
-            .andExpect(jsonPath("$.[*].registerDateTime").value(hasItem(sameInstant(DEFAULT_REGISTER_DATE_TIME))))
+            .andExpect(jsonPath("$.[*].registerDateTime").value(hasItem(DEFAULT_REGISTER_DATE_TIME)))
             .andExpect(jsonPath("$.[*].pushLimit").value(hasItem(DEFAULT_PUSH_LIMIT)));
     }
-    
+
     @Test
     @Transactional
     public void getWxUser() throws Exception {
@@ -235,7 +232,7 @@ public class WxUserResourceIntTest {
         restWxUserMockMvc.perform(get("/api/wx-users/{id}", wxUser.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(wxUser.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(wxUser.getId()))
             .andExpect(jsonPath("$.wxNickName").value(DEFAULT_WX_NICK_NAME.toString()))
             .andExpect(jsonPath("$.wxGender").value(DEFAULT_WX_GENDER.toString()))
             .andExpect(jsonPath("$.wxCountry").value(DEFAULT_WX_COUNTRY.toString()))
@@ -247,7 +244,7 @@ public class WxUserResourceIntTest {
             .andExpect(jsonPath("$.gender").value(DEFAULT_GENDER.toString()))
             .andExpect(jsonPath("$.userStatus").value(DEFAULT_USER_STATUS.toString()))
             .andExpect(jsonPath("$.registerChannel").value(DEFAULT_REGISTER_CHANNEL.toString()))
-            .andExpect(jsonPath("$.registerDateTime").value(sameInstant(DEFAULT_REGISTER_DATE_TIME)))
+            .andExpect(jsonPath("$.registerDateTime").value(DEFAULT_REGISTER_DATE_TIME))
             .andExpect(jsonPath("$.pushLimit").value(DEFAULT_PUSH_LIMIT));
     }
 
@@ -351,11 +348,11 @@ public class WxUserResourceIntTest {
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(WxUser.class);
         WxUser wxUser1 = new WxUser();
-        wxUser1.setId(1L);
+        wxUser1.setId("aa");
         WxUser wxUser2 = new WxUser();
         wxUser2.setId(wxUser1.getId());
         assertThat(wxUser1).isEqualTo(wxUser2);
-        wxUser2.setId(2L);
+        wxUser2.setId("bb");
         assertThat(wxUser1).isNotEqualTo(wxUser2);
         wxUser1.setId(null);
         assertThat(wxUser1).isNotEqualTo(wxUser2);

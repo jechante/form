@@ -105,7 +105,7 @@ public class WxUserResource {
      */
     @GetMapping("/wx-users/{id}")
     @Timed
-    public ResponseEntity<WxUser> getWxUser(@PathVariable Long id) {
+    public ResponseEntity<WxUser> getWxUser(@PathVariable String id) {
         log.debug("REST request to get WxUser : {}", id);
         Optional<WxUser> wxUser = wxUserService.findOne(id);
         return ResponseUtil.wrapOrNotFound(wxUser);
@@ -119,7 +119,7 @@ public class WxUserResource {
      */
     @DeleteMapping("/wx-users/{id}")
     @Timed
-    public ResponseEntity<Void> deleteWxUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteWxUser(@PathVariable String id) {
         log.debug("REST request to delete WxUser : {}", id);
         wxUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
