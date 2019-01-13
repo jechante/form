@@ -3,7 +3,9 @@ package com.schinta.web.rest;
 import com.schinta.FormApp;
 
 import com.schinta.domain.FormSubmit;
+import com.schinta.repository.BaseFormRepository;
 import com.schinta.repository.FormSubmitRepository;
+import com.schinta.repository.WxUserRepository;
 import com.schinta.service.FormSubmitService;
 import com.schinta.web.rest.errors.ExceptionTranslator;
 
@@ -22,10 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 
 
@@ -54,11 +53,11 @@ public class FormSubmitResourceIntTest {
     private static final String DEFAULT_CREATOR_NAME = "AAAAAAAAAA";
     private static final String UPDATED_CREATOR_NAME = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_CREATED_DATE_TIME = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_CREATED_DATE_TIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDateTime DEFAULT_CREATED_DATE_TIME = LocalDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.systemDefault());
+    private static final LocalDateTime UPDATED_CREATED_DATE_TIME = LocalDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final ZonedDateTime DEFAULT_UPDATED_DATE_TIME = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_UPDATED_DATE_TIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDateTime DEFAULT_UPDATED_DATE_TIME = LocalDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.systemDefault());
+    private static final LocalDateTime UPDATED_UPDATED_DATE_TIME = LocalDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final String DEFAULT_INFO_REMOTE_IP = "AAAAAAAAAA";
     private static final String UPDATED_INFO_REMOTE_IP = "BBBBBBBBBB";
@@ -68,6 +67,12 @@ public class FormSubmitResourceIntTest {
 
     @Autowired
     private FormSubmitRepository formSubmitRepository;
+
+    @Autowired
+    private WxUserRepository wxUserRepository;
+
+    @Autowired
+    private BaseFormRepository baseFormRepository;
     
     @Autowired
     private FormSubmitService formSubmitService;
@@ -91,7 +96,7 @@ public class FormSubmitResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final FormSubmitResource formSubmitResource = new FormSubmitResource(formSubmitService);
+        final FormSubmitResource formSubmitResource = new FormSubmitResource(formSubmitService,baseFormRepository,wxUserRepository);
         this.restFormSubmitMockMvc = MockMvcBuilders.standaloneSetup(formSubmitResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -215,8 +220,8 @@ public class FormSubmitResourceIntTest {
             .andExpect(jsonPath("$.[*].submitJosn").value(hasItem(DEFAULT_SUBMIT_JOSN.toString())))
             .andExpect(jsonPath("$.[*].serialNumber").value(hasItem(DEFAULT_SERIAL_NUMBER)))
             .andExpect(jsonPath("$.[*].creatorName").value(hasItem(DEFAULT_CREATOR_NAME.toString())))
-            .andExpect(jsonPath("$.[*].createdDateTime").value(hasItem(sameInstant(DEFAULT_CREATED_DATE_TIME))))
-            .andExpect(jsonPath("$.[*].updatedDateTime").value(hasItem(sameInstant(DEFAULT_UPDATED_DATE_TIME))))
+            .andExpect(jsonPath("$.[*].createdDateTime").value(hasItem(DEFAULT_CREATED_DATE_TIME)))
+            .andExpect(jsonPath("$.[*].updatedDateTime").value(hasItem(DEFAULT_UPDATED_DATE_TIME)))
             .andExpect(jsonPath("$.[*].infoRemoteIp").value(hasItem(DEFAULT_INFO_REMOTE_IP.toString())))
             .andExpect(jsonPath("$.[*].dealflag").value(hasItem(DEFAULT_DEALFLAG.booleanValue())));
     }
@@ -235,8 +240,8 @@ public class FormSubmitResourceIntTest {
             .andExpect(jsonPath("$.submitJosn").value(DEFAULT_SUBMIT_JOSN.toString()))
             .andExpect(jsonPath("$.serialNumber").value(DEFAULT_SERIAL_NUMBER))
             .andExpect(jsonPath("$.creatorName").value(DEFAULT_CREATOR_NAME.toString()))
-            .andExpect(jsonPath("$.createdDateTime").value(sameInstant(DEFAULT_CREATED_DATE_TIME)))
-            .andExpect(jsonPath("$.updatedDateTime").value(sameInstant(DEFAULT_UPDATED_DATE_TIME)))
+            .andExpect(jsonPath("$.createdDateTime").value(DEFAULT_CREATED_DATE_TIME))
+            .andExpect(jsonPath("$.updatedDateTime").value(DEFAULT_UPDATED_DATE_TIME))
             .andExpect(jsonPath("$.infoRemoteIp").value(DEFAULT_INFO_REMOTE_IP.toString()))
             .andExpect(jsonPath("$.dealflag").value(DEFAULT_DEALFLAG.booleanValue()));
     }

@@ -1,7 +1,14 @@
 package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.schinta.domain.BaseForm;
 import com.schinta.domain.FormSubmit;
+import com.schinta.domain.WxUser;
+import com.schinta.domain.enumeration.Gender;
+import com.schinta.domain.enumeration.UserStatus;
+import com.schinta.repository.BaseFormRepository;
+import com.schinta.repository.WxUserRepository;
 import com.schinta.service.FormSubmitService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
@@ -9,6 +16,7 @@ import com.schinta.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -17,11 +25,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 
 /**
  * REST controller for managing FormSubmit.
@@ -36,8 +50,16 @@ public class FormSubmitResource {
 
     private final FormSubmitService formSubmitService;
 
-    public FormSubmitResource(FormSubmitService formSubmitService) {
+    private final BaseFormRepository baseFormRepository;
+
+    private final WxUserRepository wxUserRepository;
+
+    public FormSubmitResource(FormSubmitService formSubmitService,
+                              BaseFormRepository baseFormRepository,
+                              WxUserRepository wxUserRepository) {
         this.formSubmitService = formSubmitService;
+        this.baseFormRepository = baseFormRepository;
+        this.wxUserRepository = wxUserRepository;
     }
 
     /**
@@ -123,5 +145,38 @@ public class FormSubmitResource {
         log.debug("REST request to delete FormSubmit : {}", id);
         formSubmitService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * 金数据表单「 邀请你来填写金数据表单《[新]金华-测试用表单》https://jinshuju.net/f/Q4qaJD 」的数据推送地址
+     */
+    @PostMapping("/form-submits-jin/Q4qaJD")
+    @Timed
+    public ResponseEntity<Object> printTest(@Valid @RequestBody String submitJson) throws URISyntaxException, IOException {
+        log.info("收到金数据推送表单 : {}", submitJson);
+        ObjectMapper mapper = new ObjectMapper(); //转换器
+        Map form = mapper.readValue(submitJson, Map.class);
+        Map entry = (Map) form.get("entry");
+        FormSubmit formSubmit = new FormSubmit();
+        formSubmit.setSubmitJosn(submitJson);
+        formSubmit.setSerialNumber((Integer) entry.get("serial_number"));
+        formSubmit.setDealflag(false);
+        formSubmit.setCreatedDateTime(LocalDateTime.ofInstant(Instant.parse((String)entry.get("created_at")), ZoneId.systemDefault()));
+        formSubmit.setUpdatedDateTime(LocalDateTime.ofInstant(Instant.parse((String)entry.get("updated_at")), ZoneId.systemDefault()));
+        formSubmit.setCreatorName((String) entry.get("creator_name"));
+        formSubmit.setInfoRemoteIp((String) entry.get("info_remote_ip"));
+
+        BaseForm baseForm = baseFormRepository.findByFormCode((String)form.get("form")).orElse(null);
+        formSubmit.setBase(baseForm);
+
+//        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生成环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
+        String openid = "oPhnp5scZ4Mf0b9hObV6vj7FqfeA"; // 开发环境启用，为微信测试号的openid
+        WxUser user = wxUserRepository.findById(openid).orElse(null); // todo orElseGet （如果可以向未关注用户推送匹配结果，也可以在这里创建用户）
+        formSubmit.setWxUser(user);
+
+        FormSubmit result = formSubmitService.save(formSubmit);
+        return ResponseEntity.created(new URI("/api/form-submits/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

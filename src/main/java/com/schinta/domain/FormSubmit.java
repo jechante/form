@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class FormSubmit implements Serializable {
     private String submitJosn;
 
     /**
-     * 金数据表单中的字段，代表数据表的主键
+     * 金数据表单中的字段，代表数据表的主键（有时候后台可以对已有某条数据进行修改或者删除，但本应用场景应该只有新增，即每次用户提交的数据都是一条新的记录）
      */
     @NotNull
     @ApiModelProperty(value = "金数据表单中的字段，代表数据表的主键", required = true)
@@ -56,14 +57,14 @@ public class FormSubmit implements Serializable {
      */
     @ApiModelProperty(value = "金数据表单中的字段，创建时间")
     @Column(name = "created_date_time")
-    private ZonedDateTime createdDateTime;
+    private LocalDateTime createdDateTime;
 
     /**
      * 金数据表单中的字段，更新时间
      */
     @ApiModelProperty(value = "金数据表单中的字段，更新时间")
     @Column(name = "updated_date_time")
-    private ZonedDateTime updatedDateTime;
+    private LocalDateTime updatedDateTime;
 
     /**
      * 金数据表单中的字段，提交人ip
@@ -134,29 +135,29 @@ public class FormSubmit implements Serializable {
         this.creatorName = creatorName;
     }
 
-    public ZonedDateTime getCreatedDateTime() {
+    public LocalDateTime getCreatedDateTime() {
         return createdDateTime;
     }
 
-    public FormSubmit createdDateTime(ZonedDateTime createdDateTime) {
+    public FormSubmit createdDateTime(LocalDateTime createdDateTime) {
         this.createdDateTime = createdDateTime;
         return this;
     }
 
-    public void setCreatedDateTime(ZonedDateTime createdDateTime) {
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
 
-    public ZonedDateTime getUpdatedDateTime() {
+    public LocalDateTime getUpdatedDateTime() {
         return updatedDateTime;
     }
 
-    public FormSubmit updatedDateTime(ZonedDateTime updatedDateTime) {
+    public FormSubmit updatedDateTime(LocalDateTime updatedDateTime) {
         this.updatedDateTime = updatedDateTime;
         return this;
     }
 
-    public void setUpdatedDateTime(ZonedDateTime updatedDateTime) {
+    public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
         this.updatedDateTime = updatedDateTime;
     }
 

@@ -16,4 +16,6 @@ public interface BaseFormRepository extends JpaRepository<BaseForm, Long> {
 
 //    @Override
     Optional<BaseForm> findByEnabled(Boolean enabled);
+
+    Optional<BaseForm> findByFormCode(String formCode);
 }
