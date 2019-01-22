@@ -86,7 +86,7 @@ public class UserPropertyResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public static UserProperty createEntity(EntityManager em) {
-        UserProperty userProperty = new UserProperty()
+        UserProperty userProperty = (UserProperty) new UserProperty()
             .propertyValue(DEFAULT_PROPERTY_VALUE)
             .remark(DEFAULT_REMARK);
         return userProperty;

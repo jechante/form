@@ -1,13 +1,9 @@
 package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.schinta.domain.BaseForm;
 import com.schinta.domain.FormSubmit;
-import com.schinta.domain.WxUser;
-import com.schinta.domain.enumeration.Gender;
-import com.schinta.domain.enumeration.UserStatus;
 import com.schinta.repository.BaseFormRepository;
+import com.schinta.repository.FormSubmitRepository;
 import com.schinta.repository.WxUserRepository;
 import com.schinta.service.FormSubmitService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
@@ -16,7 +12,6 @@ import com.schinta.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -29,13 +24,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 
 /**
  * REST controller for managing FormSubmit.
@@ -53,13 +43,16 @@ public class FormSubmitResource {
     private final BaseFormRepository baseFormRepository;
 
     private final WxUserRepository wxUserRepository;
+    private final FormSubmitRepository formSubmitRepository;
 
     public FormSubmitResource(FormSubmitService formSubmitService,
                               BaseFormRepository baseFormRepository,
-                              WxUserRepository wxUserRepository) {
+                              WxUserRepository wxUserRepository,
+                              FormSubmitRepository formSubmitRepository) {
         this.formSubmitService = formSubmitService;
         this.baseFormRepository = baseFormRepository;
         this.wxUserRepository = wxUserRepository;
+        this.formSubmitRepository = formSubmitRepository;
     }
 
     /**
@@ -138,6 +131,7 @@ public class FormSubmitResource {
      *
      * @param id the id of the formSubmit to delete
      * @return the ResponseEntity with status 200 (OK)
+     *
      */
     @DeleteMapping("/form-submits/{id}")
     @Timed
@@ -149,34 +143,25 @@ public class FormSubmitResource {
 
     /**
      * 金数据表单「 邀请你来填写金数据表单《[新]金华-测试用表单》https://jinshuju.net/f/Q4qaJD 」的数据推送地址
+     * formSubmit、userProperty和userDemand的保存分成两个事务，避免推送表单数据保存失败（目前用dealflag标记是否处理）。
      */
     @PostMapping("/form-submits-jin/Q4qaJD")
     @Timed
     public ResponseEntity<Object> printTest(@Valid @RequestBody String submitJson) throws URISyntaxException, IOException {
         log.info("收到金数据推送表单 : {}", submitJson);
-        ObjectMapper mapper = new ObjectMapper(); //转换器
-        Map form = mapper.readValue(submitJson, Map.class);
-        Map entry = (Map) form.get("entry");
-        FormSubmit formSubmit = new FormSubmit();
-        formSubmit.setSubmitJosn(submitJson);
-        formSubmit.setSerialNumber((Integer) entry.get("serial_number"));
-        formSubmit.setDealflag(false);
-        formSubmit.setCreatedDateTime(LocalDateTime.ofInstant(Instant.parse((String)entry.get("created_at")), ZoneId.systemDefault()));
-        formSubmit.setUpdatedDateTime(LocalDateTime.ofInstant(Instant.parse((String)entry.get("updated_at")), ZoneId.systemDefault()));
-        formSubmit.setCreatorName((String) entry.get("creator_name"));
-        formSubmit.setInfoRemoteIp((String) entry.get("info_remote_ip"));
 
-        BaseForm baseForm = baseFormRepository.findByFormCode((String)form.get("form")).orElse(null);
-        formSubmit.setBase(baseForm);
 
-//        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生成环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
-        String openid = "oPhnp5scZ4Mf0b9hObV6vj7FqfeA"; // 开发环境启用，为微信测试号的openid
-        WxUser user = wxUserRepository.findById(openid).orElse(null); // todo orElseGet （如果可以向未关注用户推送匹配结果，也可以在这里创建用户）
-        formSubmit.setWxUser(user);
 
-        FormSubmit result = formSubmitService.save(formSubmit);
-        return ResponseEntity.created(new URI("/api/form-submits/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        FormSubmit newSubmit = formSubmitService.saveSubmitJson(submitJson);
+        if (newSubmit == null) return ResponseEntity.ok().body("重复推送");
+//        if (newSubmit != null) { // 如果不是重复推送
+            log.debug("不是重复推送");
+            formSubmitService.updateUserPropertyAndDemand(newSubmit);
+
+//        }
+
+        return ResponseEntity.created(new URI("/api/form-submits-jin/Q4qaJD/" + newSubmit.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, newSubmit.getId().toString()))
+            .body(newSubmit);
     }
 }

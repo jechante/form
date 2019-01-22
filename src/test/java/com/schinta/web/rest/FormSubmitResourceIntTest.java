@@ -96,7 +96,7 @@ public class FormSubmitResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final FormSubmitResource formSubmitResource = new FormSubmitResource(formSubmitService,baseFormRepository,wxUserRepository);
+        final FormSubmitResource formSubmitResource = new FormSubmitResource(formSubmitService,baseFormRepository,wxUserRepository,formSubmitRepository);
         this.restFormSubmitMockMvc = MockMvcBuilders.standaloneSetup(formSubmitResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -116,7 +116,7 @@ public class FormSubmitResourceIntTest {
             .serialNumber(DEFAULT_SERIAL_NUMBER)
             .creatorName(DEFAULT_CREATOR_NAME)
             .createdDateTime(DEFAULT_CREATED_DATE_TIME)
-            .updatedDateTime(DEFAULT_UPDATED_DATE_TIME)
+//            .updatedDateTime(DEFAULT_UPDATED_DATE_TIME)
             .infoRemoteIp(DEFAULT_INFO_REMOTE_IP)
             .dealflag(DEFAULT_DEALFLAG);
         return formSubmit;
@@ -271,7 +271,7 @@ public class FormSubmitResourceIntTest {
             .serialNumber(UPDATED_SERIAL_NUMBER)
             .creatorName(UPDATED_CREATOR_NAME)
             .createdDateTime(UPDATED_CREATED_DATE_TIME)
-            .updatedDateTime(UPDATED_UPDATED_DATE_TIME)
+//            .updatedDateTime(UPDATED_UPDATED_DATE_TIME)
             .infoRemoteIp(UPDATED_INFO_REMOTE_IP)
             .dealflag(UPDATED_DEALFLAG);
 

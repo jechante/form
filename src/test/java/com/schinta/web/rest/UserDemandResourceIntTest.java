@@ -86,7 +86,7 @@ public class UserDemandResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public static UserDemand createEntity(EntityManager em) {
-        UserDemand userDemand = new UserDemand()
+        UserDemand userDemand = (UserDemand) new UserDemand()
             .propertyValue(DEFAULT_PROPERTY_VALUE)
             .remark(DEFAULT_REMARK);
         return userDemand;
