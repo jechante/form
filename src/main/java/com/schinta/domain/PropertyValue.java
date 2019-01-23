@@ -35,11 +35,11 @@ public abstract class PropertyValue implements Serializable {
     @Column(name = "remark", length = 2000)
     private String remark;
 
-    @ManyToOne    @JsonIgnoreProperties("properties")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("properties")
     @NaturalId
     private WxUser wxUser;
 
-    @ManyToOne    @JsonIgnoreProperties("propertyValues")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("propertyValues")
     @NaturalId
     private BaseProperty base;
 

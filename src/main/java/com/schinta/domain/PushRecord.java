@@ -48,7 +48,7 @@ public class PushRecord implements Serializable {
     @Column(name = "success")
     private Boolean success;
 
-    @ManyToOne    @JsonIgnoreProperties("pushRecords")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("pushRecords")
     private WxUser user;
 
     @ManyToMany(mappedBy = "pushRecords")    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

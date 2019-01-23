@@ -48,10 +48,12 @@ public class FormField implements Serializable {
     @Column(name = "field_type")
     private FieldType fieldType;
 
-    @ManyToOne    @JsonIgnoreProperties("fields")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("fields")
     private BaseForm baseForm;
 
-    @ManyToOne    @JsonIgnoreProperties("fields")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("fields")
     private BaseProperty baseProperty;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

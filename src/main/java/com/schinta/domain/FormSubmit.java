@@ -81,10 +81,10 @@ public class FormSubmit implements Serializable {
     @Column(name = "dealflag")
     private Boolean dealflag;
 
-    @ManyToOne    @JsonIgnoreProperties("submits")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("submits")
     private WxUser wxUser;
 
-    @ManyToOne    @JsonIgnoreProperties("submits")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("submits")
     private BaseForm base;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

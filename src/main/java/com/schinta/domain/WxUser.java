@@ -183,7 +183,7 @@ public class WxUser implements Serializable {
     @OneToMany(mappedBy = "user")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PushRecord> pushRecords = new HashSet<>();
-    @ManyToOne    @JsonIgnoreProperties("wxUsers")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("wxUsers")
     private Broker broker;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

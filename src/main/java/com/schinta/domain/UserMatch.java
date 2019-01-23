@@ -82,13 +82,13 @@ public class UserMatch implements Serializable {
      * 算法
      */
     @ApiModelProperty(value = "算法")
-    @ManyToOne    @JsonIgnoreProperties("matches")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("matches")
     private Algorithm algorithm;
 
-    @ManyToOne    @JsonIgnoreProperties("aMatches")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("aMatches")
     private WxUser userA;
 
-    @ManyToOne    @JsonIgnoreProperties("bMatches")
+    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("bMatches")
     private WxUser userB;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
