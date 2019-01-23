@@ -146,9 +146,20 @@ public class FormSubmitService {
             }
         });
         // 处理完成后将formSubmit状态改为已处理
-//        entityManager.persist(formSubmit); // 会报错，formSubmit状态为detached，不能使用persist方法
-        formSubmit.setDealflag(true);
-        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx；如果setter放前面，可以不需要formSubmit =
+//        测试直接用persist方法
+//        entityManager.persist(formSubmit); // 会报错，formSubmit状态被认为detached（因为含义id），因此不能使用persist方法
+
+//        测试persist方法与save方法区别
+        FormSubmit newForm = new FormSubmit();
+//        newForm.setId(formSubmit.getId()); // 如果设置id则newForm被认为是detached,无法调用persist方法，但是可以调用this.save方法
+        newForm.setSubmitJosn(formSubmit.getSubmitJosn());
+        newForm.setSerialNumber(formSubmit.getSerialNumber());
+//        entityManager.persist(newForm); // 如果设置了id会报错，formSubmit状态为detached，不能使用persist方法
+//        this.save(newForm); // 可行
+        entityManager.merge(newForm); // 可行，同this.save(newForm);
+
+//        formSubmit.setDealflag(true);
+//        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx；如果setter放前面，可以不需要formSubmit =
 //        this.save(formSubmit); // 如果没有，之后执行的setter方法不会转化成update
 //        formSubmit.setDealflag(true);
         return;
