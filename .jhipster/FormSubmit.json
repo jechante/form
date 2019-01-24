@@ -51,6 +51,11 @@
             "fieldName": "dealflag",
             "javadoc": "结果是否已处理",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "computed",
+            "javadoc": "结果是否已计算",
+            "fieldType": "Boolean"
         }
     ],
     "relationships": [

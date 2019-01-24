@@ -11,6 +11,7 @@ export interface IFormSubmit {
     updatedDateTime?: Moment;
     infoRemoteIp?: string;
     dealflag?: boolean;
+    computed?: boolean;
     wxUser?: IWxUser;
     base?: IBaseForm;
 }
@@ -25,9 +26,11 @@ export class FormSubmit implements IFormSubmit {
         public updatedDateTime?: Moment,
         public infoRemoteIp?: string,
         public dealflag?: boolean,
+        public computed?: boolean,
         public wxUser?: IWxUser,
         public base?: IBaseForm
     ) {
         this.dealflag = this.dealflag || false;
+        this.computed = this.computed || false;
     }
 }

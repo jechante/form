@@ -115,6 +115,7 @@ entity FormSubmit{
     updatedDateTime ZonedDateTime /**金数据表单中的字段，更新时间*/
     infoRemoteIp String maxlength(20) /**金数据表单中的字段，提交人ip*/
     dealflag Boolean /**结果是否已处理*/
+    computed Boolean /**结果是否已计算*/
 }
 
 entity FormField{

@@ -1,7 +1,12 @@
 package com.schinta.service;
 
+import com.schinta.domain.UserDemand;
 import com.schinta.domain.UserMatch;
+import com.schinta.domain.UserProperty;
+import com.schinta.domain.WxUser;
+import com.schinta.repository.UserDemandRepository;
 import com.schinta.repository.UserMatchRepository;
+import com.schinta.repository.UserPropertyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,9 +28,15 @@ public class UserMatchService {
     private final Logger log = LoggerFactory.getLogger(UserMatchService.class);
 
     private final UserMatchRepository userMatchRepository;
+    private final UserPropertyRepository userPropertyRepository;
+    private final UserDemandRepository userDemandRepository;
 
-    public UserMatchService(UserMatchRepository userMatchRepository) {
+    public UserMatchService(UserMatchRepository userMatchRepository,
+                            UserPropertyRepository userPropertyRepository,
+                            UserDemandRepository userDemandRepository) {
         this.userMatchRepository = userMatchRepository;
+        this.userPropertyRepository = userPropertyRepository;
+        this.userDemandRepository = userDemandRepository;
     }
 
     /**
@@ -79,5 +91,14 @@ public class UserMatchService {
     public void delete(Long id) {
         log.debug("Request to delete UserMatch : {}", id);
         userMatchRepository.deleteById(id);
+    }
+
+    // 计算效用矩阵
+    public void computeUserToOthers(WxUser wxUser) {
+        List<UserProperty> allProperties = this.userPropertyRepository.findAllActiveWithUser();
+        List<UserDemand> allDemands = this.userDemandRepository.findAllActiveWithUser();
+        // 按用户分组、剔除wxUser
+
+
     }
 }

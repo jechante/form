@@ -22,6 +22,7 @@
             <th jhiSortBy="updatedDateTime"><span>Updated Date Time</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="infoRemoteIp"><span>Info Remote Ip</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="dealflag"><span>Dealflag</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="computed"><span>Computed</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="wxUser.wxNickName"><span>Wx User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="base.formName"><span>Base</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
@@ -37,6 +38,7 @@
                 <td>{{formSubmit.updatedDateTime | date:'medium'}}</td>
                 <td>{{formSubmit.infoRemoteIp}}</td>
                 <td>{{formSubmit.dealflag}}</td>
+                <td>{{formSubmit.computed}}</td>
                 <td>
                     <div *ngIf="formSubmit.wxUser">
                         <a [routerLink]="['../wx-user', formSubmit.wxUser?.id, 'view' ]" >{{formSubmit.wxUser?.wxNickName}}</a>

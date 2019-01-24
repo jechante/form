@@ -81,6 +81,13 @@ public class FormSubmit implements Serializable {
     @Column(name = "dealflag")
     private Boolean dealflag;
 
+    /**
+     * 结果是否已对绩效矩阵进行更新
+     */
+    @ApiModelProperty(value = "结果是否已对绩效矩阵进行更新")
+    @Column(name = "computed")
+    private Boolean computed;
+
     @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("submits")
     private WxUser wxUser;
 
@@ -88,6 +95,16 @@ public class FormSubmit implements Serializable {
     private BaseForm base;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+
+
+    public Boolean isComputed() {
+        return computed;
+    }
+
+    public void setComputed(Boolean computed) {
+        this.computed = computed;
+    }
+
     public Long getId() {
         return id;
     }

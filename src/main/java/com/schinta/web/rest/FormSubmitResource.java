@@ -6,6 +6,7 @@ import com.schinta.repository.BaseFormRepository;
 import com.schinta.repository.FormSubmitRepository;
 import com.schinta.repository.WxUserRepository;
 import com.schinta.service.FormSubmitService;
+import com.schinta.service.UserMatchService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
 import com.schinta.web.rest.util.PaginationUtil;
@@ -23,7 +24,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -40,19 +40,22 @@ public class FormSubmitResource {
 
     private final FormSubmitService formSubmitService;
 
-    private final BaseFormRepository baseFormRepository;
+//    private final BaseFormRepository baseFormRepository;
 
-    private final WxUserRepository wxUserRepository;
-    private final FormSubmitRepository formSubmitRepository;
+//    private final WxUserRepository wxUserRepository;
+//    private final FormSubmitRepository formSubmitRepository;
+    private final UserMatchService userMatchService;
 
     public FormSubmitResource(FormSubmitService formSubmitService,
-                              BaseFormRepository baseFormRepository,
-                              WxUserRepository wxUserRepository,
-                              FormSubmitRepository formSubmitRepository) {
+//                              BaseFormRepository baseFormRepository,
+//                              WxUserRepository wxUserRepository,
+//                              FormSubmitRepository formSubmitRepository,
+                              UserMatchService userMatchService) {
         this.formSubmitService = formSubmitService;
-        this.baseFormRepository = baseFormRepository;
-        this.wxUserRepository = wxUserRepository;
-        this.formSubmitRepository = formSubmitRepository;
+//        this.baseFormRepository = baseFormRepository;
+//        this.wxUserRepository = wxUserRepository;
+//        this.formSubmitRepository = formSubmitRepository;
+        this.userMatchService = userMatchService;
     }
 
     /**
@@ -131,7 +134,6 @@ public class FormSubmitResource {
      *
      * @param id the id of the formSubmit to delete
      * @return the ResponseEntity with status 200 (OK)
-     *
      */
     @DeleteMapping("/form-submits/{id}")
     @Timed
@@ -143,23 +145,21 @@ public class FormSubmitResource {
 
     /**
      * 金数据表单「 邀请你来填写金数据表单《[新]金华-测试用表单》https://jinshuju.net/f/Q4qaJD 」的数据推送地址
-     * formSubmit、userProperty和userDemand的保存分成两个事务，避免推送表单数据保存失败（目前用dealflag标记是否处理）。
+     * formSubmit、userProperty和userDemand的保存、计算该用户与现有其他用户的效用矩阵分成三个事务，避免推送表单数据保存失败（目前用dealflag、computed标记是否处理）。
      */
     @PostMapping("/form-submits-jin/Q4qaJD")
     @Timed
     public ResponseEntity<Object> printTest(@Valid @RequestBody String submitJson) throws URISyntaxException, IOException {
         log.info("收到金数据推送表单 : {}", submitJson);
 
-
-
+        // 保存推送表单json及元数据
         FormSubmit newSubmit = formSubmitService.saveSubmitJson(submitJson);
         if (newSubmit == null) return ResponseEntity.ok().body("重复推送");
-//        if (newSubmit != null) { // 如果不是重复推送
-            log.debug("不是重复推送");
-            formSubmitService.updateUserPropertyAndDemand(newSubmit);
-
-//        }
-
+        log.debug("不是重复推送");
+        // 更新用户属性和需求值
+        formSubmitService.updateUserPropertyAndDemand(newSubmit);
+        // 计算该用户与现有其他用户的效用矩阵
+        userMatchService.computeUserToOthers(newSubmit.getWxUser());
         return ResponseEntity.created(new URI("/api/form-submits-jin/Q4qaJD/" + newSubmit.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, newSubmit.getId().toString()))
             .body(newSubmit);

@@ -30,6 +30,7 @@ public class UserMatch implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 以下四项是效用阵相关字段
     /**
      * 以A的需求对B打分
      */
@@ -50,6 +51,7 @@ public class UserMatch implements Serializable {
     @Column(name = "ratio")
     private Float ratio;
 
+    // 以下是与配对和推送相关的属性，仅在推送成功之后才更新
     /**
      * 如果是a对b的主动配对，b的排名数（位于1~pushLimit之间）
      */
