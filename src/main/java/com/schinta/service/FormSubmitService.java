@@ -100,7 +100,8 @@ public class FormSubmitService {
         formSubmitRepository.deleteById(id);
     }
 
-    // 需要注意的点：需要使用批处理，提高性能 todo 验证批处理是否成功
+    // 需要注意的点：需要使用批处理，提高性能
+    // todo 1）验证批处理是否成功；2）如果避免更新或插入（upsert）前的逐条记录查询（先查询出所有结果，然后通过hashCode或者equals等方法，再利用set判断是否已经有该记录）
     public void updateUserPropertyAndDemand(FormSubmit formSubmit) throws IOException {
         ObjectMapper mapper = new ObjectMapper(); //转换器
         Map form = mapper.readValue(formSubmit.getSubmitJosn(), Map.class);
@@ -147,19 +148,19 @@ public class FormSubmitService {
         });
         // 处理完成后将formSubmit状态改为已处理
 //        测试直接用persist方法
-//        entityManager.persist(formSubmit); // 会报错，formSubmit状态被认为detached（因为含义id），因此不能使用persist方法
+//        entityManager.persist(formSubmit); // 会报错，formSubmit状态被认为detached（因为含有id），因此不能使用persist方法
 
-//        测试persist方法与save方法区别
-        FormSubmit newForm = new FormSubmit();
-//        newForm.setId(formSubmit.getId()); // 如果设置id则newForm被认为是detached,无法调用persist方法，但是可以调用this.save方法
-        newForm.setSubmitJosn(formSubmit.getSubmitJosn());
-        newForm.setSerialNumber(formSubmit.getSerialNumber());
-//        entityManager.persist(newForm); // 如果设置了id会报错，formSubmit状态为detached，不能使用persist方法
-//        this.save(newForm); // 可行
-        entityManager.merge(newForm); // 可行，同this.save(newForm);
+////        测试persist方法与save方法区别
+//        FormSubmit newForm = new FormSubmit();
+////        newForm.setId(formSubmit.getId()); // 如果设置id则newForm被认为是detached,无法调用persist方法，但是可以调用this.save方法
+//        newForm.setSubmitJosn(formSubmit.getSubmitJosn());
+//        newForm.setSerialNumber(formSubmit.getSerialNumber());
+////        entityManager.persist(newForm); // 如果设置了id会报错，formSubmit状态为detached，不能使用persist方法
+////        this.save(newForm); // 可行
+//        entityManager.merge(newForm); // 可行，同this.save(newForm);
 
-//        formSubmit.setDealflag(true);
-//        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx；如果setter放前面，可以不需要formSubmit =
+        formSubmit.setDealflag(true);
+        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx；如果setter放前面，可以不需要formSubmit =
 //        this.save(formSubmit); // 如果没有，之后执行的setter方法不会转化成update
 //        formSubmit.setDealflag(true);
         return;

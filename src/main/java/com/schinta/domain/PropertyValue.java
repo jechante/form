@@ -113,16 +113,25 @@ public abstract class PropertyValue implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         PropertyValue propertyValue = (PropertyValue) o;
-        if (propertyValue.getId() == null || getId() == null) {
+        // 通过Id
+//        if (propertyValue.getId() == null || getId() == null) {
+//            return false;
+//        }
+//        return Objects.equals(getId(), propertyValue.getId());
+
+//        // 通过NatureId
+        if (propertyValue.getWxUser() == null || propertyValue.getBase() == null ||
+            getWxUser() == null || getBase() == null) {
             return false;
         }
-        return Objects.equals(getId(), propertyValue.getId());
+        return Objects.equals(wxUser.getId() + base.getId(), propertyValue.getWxUser().getId() + propertyValue.getBase().getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return Objects.hashCode(wxUser.getId() + base.getId());
     }
 
     @Override

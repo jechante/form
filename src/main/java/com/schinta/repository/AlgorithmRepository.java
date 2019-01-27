@@ -27,4 +27,7 @@ public interface AlgorithmRepository extends JpaRepository<Algorithm, Long> {
     @Query("select algorithm from Algorithm algorithm left join fetch algorithm.filterProperties left join fetch algorithm.scoreProperties where algorithm.id =:id")
     Optional<Algorithm> findOneWithEagerRelationships(@Param("id") Long id);
 
+    @Query("select algorithm from Algorithm algorithm left join fetch algorithm.filterProperties left join fetch algorithm.scoreProperties where algorithm.enabled = true ")
+    Optional<Algorithm> findEnabledOneWithEagerRelationships();
+
 }

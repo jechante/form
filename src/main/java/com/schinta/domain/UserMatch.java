@@ -15,6 +15,8 @@ import java.util.Objects;
 import com.schinta.domain.enumeration.MatchType;
 
 import com.schinta.domain.enumeration.PushStatus;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 /**
  * A UserMatch.
@@ -22,6 +24,7 @@ import com.schinta.domain.enumeration.PushStatus;
 @Entity
 @Table(name = "user_match")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@NaturalIdCache
 public class UserMatch implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -85,12 +88,15 @@ public class UserMatch implements Serializable {
      */
     @ApiModelProperty(value = "算法")
     @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("matches")
+    @NaturalId
     private Algorithm algorithm;
 
     @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("aMatches")
+    @NaturalId
     private WxUser userA;
 
     @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("bMatches")
+    @NaturalId
     private WxUser userB;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -280,15 +286,22 @@ public class UserMatch implements Serializable {
             return false;
         }
         UserMatch userMatch = (UserMatch) o;
-        if (userMatch.getId() == null || getId() == null) {
+//        if (userMatch.getId() == null || getId() == null) {
+//            return false;
+//        }
+//        return Objects.equals(getId(), userMatch.getId());
+
+        if (userMatch.getUserA() == null || userMatch.getUserB() == null || userMatch.getAlgorithm() == null ||
+        getUserA() == null || getUserB() == null || getAlgorithm() == null) {
             return false;
         }
-        return Objects.equals(getId(), userMatch.getId());
+        return Objects.equals(userA.getId()+userB.getId()+algorithm.getId(), userMatch.getUserA().getId()+userMatch.getUserB().getId()+userMatch.getAlgorithm().getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+//        return Objects.hashCode(getId());
+        return Objects.hashCode(userA.getId()+userB.getId()+algorithm.getId());
     }
 
     @Override

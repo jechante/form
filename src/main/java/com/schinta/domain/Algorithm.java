@@ -72,6 +72,7 @@ public class Algorithm implements Serializable {
     @OneToMany(mappedBy = "algorithm")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserMatch> matches = new HashSet<>();
+
     /**
      * 过滤属性
      */
