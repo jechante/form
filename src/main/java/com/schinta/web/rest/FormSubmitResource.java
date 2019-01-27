@@ -159,7 +159,7 @@ public class FormSubmitResource {
         // 更新用户属性和需求值
         formSubmitService.updateUserPropertyAndDemand(newSubmit);
         // 计算该用户与现有其他用户的效用矩阵
-        userMatchService.computeUserToOthers(newSubmit.getWxUser());
+//        userMatchService.computeUserToOthers(newSubmit.getWxUser());
         return ResponseEntity.created(new URI("/api/form-submits-jin/Q4qaJD/" + newSubmit.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, newSubmit.getId().toString()))
             .body(newSubmit);

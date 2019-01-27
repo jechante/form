@@ -119,21 +119,21 @@ public class FormSubmitService {
 //                String value = object == null ? null : object.toString();
                 Class propertyClass = PropertyValue.getClassFromFieldType(formField.getFieldType());
                 // 这里与一般的增删改查应用的区别在于通过金数据表单提交的属性不知道是新增属性还是修改属性，只能通过id或者NaturalId查询确定，所以这里的查询是不可避免的，事先一次性查出全部加载到内存中不是一个好策略（因为如果是新增属性，不会走缓存，还是会执行通过id查询）
-                PropertyValue property = (PropertyValue) entityManager
-                    .unwrap(Session.class)
-                    .byNaturalId(propertyClass)
-                    .using("wxUser", user)
-                    .using("base", baseProperty)
-                    .load(); // select userdemand_.id as id1_14_ from user_demand userdemand_ where userdemand_.base_id=? and userdemand_.wx_user_id=?
-                if (property == null) { // 如果是新增属性
+//                PropertyValue property = (PropertyValue) entityManager
+//                    .unwrap(Session.class)
+//                    .byNaturalId(propertyClass)
+//                    .using("wxUser", user)
+//                    .using("base", baseProperty)
+//                    .load(); // select userdemand_.id as id1_14_ from user_demand userdemand_ where userdemand_.base_id=? and userdemand_.wx_user_id=?
+//                if (property == null) { // 如果是新增属性
                     try {
-                        property = (PropertyValue) propertyClass.newInstance();
+                        PropertyValue property = (PropertyValue) propertyClass.newInstance();
                         property.setBase(baseProperty);
                         property.setWxUser(user);
                         property.setPropertyValue(value);
                         // 注意这里的persist一定要放在setWxUser和setPropertyValue之后：原因：1）因为这两个属性被当作了natureId，默认是不可变的(mutable = false)，因此放在前面会报错；
                         // 2）persist之后改变的属性不会一次性insert，而是通过额外的update语句更新，例如下面的setRemark会导致update user_property set property_value=?, remark=? where id=?
-                        entityManager.persist(property); // insert into user_demand (base_id, property_value, remark, wx_user_id) values (?, ?, ?, ?)
+                        entityManager.merge(property); // insert into user_demand (base_id, property_value, remark, wx_user_id) values (?, ?, ?, ?)
 //                        property.setRemark("测试persist执行顺序"); // 会导致update user_property set property_value=?, remark=? where id=?
                     } catch (InstantiationException e) {
                         e.printStackTrace();
@@ -141,9 +141,9 @@ public class FormSubmitService {
                         e.printStackTrace();
                     }
 
-                } else { // 如果是已有属性
-                    property.setPropertyValue(value);
-                }
+//                } else { // 如果是已有属性
+//                    property.setPropertyValue(value);
+//                }
             }
         });
         // 处理完成后将formSubmit状态改为已处理
