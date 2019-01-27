@@ -36,6 +36,7 @@ public class FormSubmitService {
     private final BaseFormRepository baseFormRepository;
     private final WxUserRepository wxUserRepository;
     private final UserPropertyRepository userPropertyRepository;
+    private final UserDemandRepository userDemandRepository;
     private final FormFieldRepository formFieldRepository;
 
     @Autowired
@@ -45,12 +46,14 @@ public class FormSubmitService {
                              BaseFormRepository baseFormRepository,
                              WxUserRepository wxUserRepository,
                              UserPropertyRepository userPropertyRepository,
-                             FormFieldRepository formFieldRepository) {
+                             FormFieldRepository formFieldRepository,
+                             UserDemandRepository userDemandRepository) {
         this.formSubmitRepository = formSubmitRepository;
         this.baseFormRepository = baseFormRepository;
         this.wxUserRepository = wxUserRepository;
         this.userPropertyRepository = userPropertyRepository;
         this.formFieldRepository = formFieldRepository;
+        this.userDemandRepository = userDemandRepository;
     }
 
     /**
@@ -109,7 +112,9 @@ public class FormSubmitService {
 
         WxUser user = formSubmit.getWxUser();
 
-//        List<UserProperty> properties = userPropertyRepository.findAllByWxUser(user);
+        List<UserProperty> properties = userPropertyRepository.findAllByWxUser(user);
+        List<UserDemand> demands = userDemandRepository.findAllByWxUser(user);
+
         List<FormField> fields = formFieldRepository.findAllByBaseFormWithBaseProperty(formSubmit.getBase());
         fields.forEach(formField -> {
             Object object = entry.get(formField.getFieldName());
@@ -130,6 +135,17 @@ public class FormSubmitService {
                         PropertyValue property = (PropertyValue) propertyClass.newInstance();
                         property.setBase(baseProperty);
                         property.setWxUser(user);
+                        if (propertyClass == UserProperty.class) {
+                            int index = properties.indexOf(property);
+                            if (index != -1) { // 如果已经有该对象
+                                property = properties.get(index);
+                            }
+                        } else {
+                            int index = demands.indexOf(property);
+                            if (index != -1) { // 如果已经有该对象
+                                property = demands.get(index);
+                            }
+                        }
                         property.setPropertyValue(value);
                         // 注意这里的persist一定要放在setWxUser和setPropertyValue之后：原因：1）因为这两个属性被当作了natureId，默认是不可变的(mutable = false)，因此放在前面会报错；
                         // 2）persist之后改变的属性不会一次性insert，而是通过额外的update语句更新，例如下面的setRemark会导致update user_property set property_value=?, remark=? where id=?
