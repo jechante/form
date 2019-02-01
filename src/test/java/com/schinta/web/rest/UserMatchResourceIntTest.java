@@ -47,14 +47,14 @@ import com.schinta.domain.enumeration.PushStatus;
 @SpringBootTest(classes = FormApp.class)
 public class UserMatchResourceIntTest {
 
-    private static final Integer DEFAULT_SCORE_ATO_B = 1;
-    private static final Integer UPDATED_SCORE_ATO_B = 2;
+    private static final Float DEFAULT_SCORE_ATO_B = 1F;
+    private static final Float UPDATED_SCORE_ATO_B = 2F;
 
-    private static final Integer DEFAULT_SCORE_BTO_A = 1;
-    private static final Integer UPDATED_SCORE_BTO_A = 2;
+    private static final Float DEFAULT_SCORE_BTO_A = 1F;
+    private static final Float UPDATED_SCORE_BTO_A = 2F;
 
-    private static final Integer DEFAULT_SCORE_TOTAL = 1;
-    private static final Integer UPDATED_SCORE_TOTAL = 2;
+    private static final Float DEFAULT_SCORE_TOTAL = 1F;
+    private static final Float UPDATED_SCORE_TOTAL = 2F;
 
     private static final Float DEFAULT_RATIO = 1F;
     private static final Float UPDATED_RATIO = 2F;

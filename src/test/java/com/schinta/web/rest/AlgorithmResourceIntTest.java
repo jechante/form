@@ -48,8 +48,8 @@ public class AlgorithmResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final Double DEFAULT_GENDER_WEIGHT = 1D;
-    private static final Double UPDATED_GENDER_WEIGHT = 2D;
+    private static final Float DEFAULT_GENDER_WEIGHT = 1F;
+    private static final Float UPDATED_GENDER_WEIGHT = 2F;
 
     private static final Integer DEFAULT_K_VALUE = 1;
     private static final Integer UPDATED_K_VALUE = 2;
