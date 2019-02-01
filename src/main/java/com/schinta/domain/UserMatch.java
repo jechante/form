@@ -39,13 +39,13 @@ public class UserMatch implements Serializable {
      */
     @ApiModelProperty(value = "以A的需求对B打分")
     @Column(name = "score_ato_b")
-    private Integer scoreAtoB;
+    private Float scoreAtoB;
 
     @Column(name = "score_bto_a")
-    private Integer scoreBtoA;
+    private Float scoreBtoA;
 
     @Column(name = "score_total")
-    private Integer scoreTotal;
+    private Float scoreTotal;
 
     /**
      * 匹配度，即匹配分除以可能的最高分
@@ -108,42 +108,42 @@ public class UserMatch implements Serializable {
         this.id = id;
     }
 
-    public Integer getScoreAtoB() {
+    public Float getScoreAtoB() {
         return scoreAtoB;
     }
 
-    public UserMatch scoreAtoB(Integer scoreAtoB) {
+    public UserMatch scoreAtoB(Float scoreAtoB) {
         this.scoreAtoB = scoreAtoB;
         return this;
     }
 
-    public void setScoreAtoB(Integer scoreAtoB) {
+    public void setScoreAtoB(Float scoreAtoB) {
         this.scoreAtoB = scoreAtoB;
     }
 
-    public Integer getScoreBtoA() {
+    public Float getScoreBtoA() {
         return scoreBtoA;
     }
 
-    public UserMatch scoreBtoA(Integer scoreBtoA) {
+    public UserMatch scoreBtoA(Float scoreBtoA) {
         this.scoreBtoA = scoreBtoA;
         return this;
     }
 
-    public void setScoreBtoA(Integer scoreBtoA) {
+    public void setScoreBtoA(Float scoreBtoA) {
         this.scoreBtoA = scoreBtoA;
     }
 
-    public Integer getScoreTotal() {
+    public Float getScoreTotal() {
         return scoreTotal;
     }
 
-    public UserMatch scoreTotal(Integer scoreTotal) {
+    public UserMatch scoreTotal(Float scoreTotal) {
         this.scoreTotal = scoreTotal;
         return this;
     }
 
-    public void setScoreTotal(Integer scoreTotal) {
+    public void setScoreTotal(Float scoreTotal) {
         this.scoreTotal = scoreTotal;
     }
 

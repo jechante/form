@@ -1,19 +1,25 @@
 package com.schinta.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.util.StringUtil;
 import com.schinta.domain.*;
+import com.schinta.domain.enumeration.FormyType;
 import com.schinta.repository.AlgorithmRepository;
 import com.schinta.repository.UserDemandRepository;
 import com.schinta.repository.UserMatchRepository;
 import com.schinta.repository.UserPropertyRepository;
-import org.hibernate.annotations.SelectBeforeUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +38,13 @@ public class UserMatchService {
     private final UserDemandRepository userDemandRepository;
     private final AlgorithmRepository algorithmRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
+    private int baseScore = 50; // 满足过滤条件的基础分 todo 应该存到算法或者其他配置中
+
+    ObjectMapper mapper = new ObjectMapper(); //转换器
+
     public UserMatchService(UserMatchRepository userMatchRepository,
                             UserPropertyRepository userPropertyRepository,
                             UserDemandRepository userDemandRepository,
@@ -49,7 +62,8 @@ public class UserMatchService {
      * @return the persisted entity
      */
     public UserMatch save(UserMatch userMatch) {
-        log.debug("Request to save UserMatch : {}", userMatch);        return userMatchRepository.save(userMatch);
+        log.debug("Request to save UserMatch : {}", userMatch);
+        return userMatchRepository.save(userMatch);
     }
 
     /**
@@ -72,7 +86,7 @@ public class UserMatchService {
     public Page<UserMatch> findAllWithEagerRelationships(Pageable pageable) {
         return userMatchRepository.findAllWithEagerRelationships(pageable);
     }
-    
+
 
     /**
      * Get one userMatch by id.
@@ -96,31 +110,322 @@ public class UserMatchService {
         userMatchRepository.deleteById(id);
     }
 
-    // 计算效用矩阵 todo 同存储userProperty一样，不确定userMatch是新增数据还是
-    public void computeUserToOthers(WxUser wxUser) {
+    // 计算效用矩阵 同存储userProperty一样，不确定userMatch是insert还是update
+    // todo 判断是否启动了批处理
+    public void computeUserToOthers(FormSubmit formSubmit) throws IOException {
+        WxUser wxUser = formSubmit.getWxUser();
+        // 获取默认算法
+        Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
+        // 获取用户与其他所有用户已有的效用结果
+        List<UserMatch> userMatches = userMatchRepository.findAllByWxUserAndAlgorithm(wxUser, algorithm);
+        // 获取所有用户的属性及需求（由于算法已经急加载出了计算所需的BaseProperty，因此猜测下面的manyToOne到BaseProperty的关系会自动补上）
         List<UserProperty> allProperties = this.userPropertyRepository.findAllActiveWithUser();
         List<UserDemand> allDemands = this.userDemandRepository.findAllActiveWithUser();
         // 按用户分组
-        Map<WxUser,List<UserProperty>> allPropertiesMap = allProperties.stream().collect(Collectors.groupingBy(userProperty -> userProperty.getWxUser(),
+        Map<WxUser, List<UserProperty>> allPropertiesMap = allProperties.stream().collect(Collectors.groupingBy(userProperty -> userProperty.getWxUser(),
             Collectors.toList()));
-        Map<WxUser,List<UserDemand>> allDemandsMap = allDemands.stream().collect(Collectors.groupingBy(userDemand -> userDemand.getWxUser(),
+        Map<WxUser, List<UserDemand>> allDemandsMap = allDemands.stream().collect(Collectors.groupingBy(userDemand -> userDemand.getWxUser(),
             Collectors.toList()));
         // 将wxUser单独拿出来
         List<UserProperty> userProperties = allPropertiesMap.remove(wxUser);
         List<UserDemand> userDemands = allDemandsMap.remove(wxUser);
-        // 获取默认算法
-        Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
+        // 转化成Map，BaseProperty可以作key，因为按id实现了equals和hashCode方法，不论其是否初始化，都认为是相等的
+        Map<BaseProperty, UserProperty> userPropertyMap = null;
+        Map<BaseProperty, UserDemand> userDemandMap = null;
+        if (userProperties != null) {
+            userPropertyMap = userProperties.stream().collect(Collectors.toMap(UserProperty::getBase, userProperty -> userProperty));
+        }
+        if (userDemands != null) {
+            userDemandMap = userDemands.stream().collect(Collectors.toMap(UserDemand::getBase, userDemand -> userDemand));
+        }
+
+        // 计算目前可能的最大相互效用分
+        int maxScore = algorithm.getScoreProperties().stream().collect(Collectors.summingInt(BaseProperty::getPropertyMaxScore)) + baseScore;
+
         // 首先获取所有其他用户(考虑部分用户只填了属性或者只填了需求的情况)
         Set<WxUser> allUsers = allPropertiesMap.keySet();
         allUsers.addAll(allDemandsMap.keySet());
-        // 以该用户需求对其他用户属性打分
-        allUsers.forEach(toUser -> {
-            UserMatch userMatch = new UserMatch();
-            userMatch.setUserA(wxUser);
-            userMatch.setUserB(toUser);
-            userMatch.setAlgorithm(algorithm);
 
+        // 计算效用分
+        for (WxUser toUser : allUsers) {
+            List<UserProperty> toUserProperties = allPropertiesMap.get(toUser);
+            List<UserDemand> toUserDemands = allDemandsMap.get(toUser);
+            Map<BaseProperty, UserProperty> toUserPropertyMap = null;
+            Map<BaseProperty, UserDemand> toUserDemandMap = null;
 
-        });
+            if (toUserProperties != null) {
+                toUserPropertyMap = toUserProperties.stream().collect(Collectors.toMap(UserProperty::getBase, userProperty -> userProperty));
+            }
+            if (toUserDemands != null) {
+                toUserDemandMap = toUserDemands.stream().collect(Collectors.toMap(UserDemand::getBase, userDemand -> userDemand));
+            }
+            // 以该用户需求对其他用户属性打分，即计算scoreAtoB
+            float scoreAtoB = scoreOnOneSide(userDemandMap, toUserPropertyMap, algorithm);
+            // 以其他用户需求对该用户属性打分，即计算scoreBtoA
+            float scoreBtoA = scoreOnOneSide(toUserDemandMap, userPropertyMap, algorithm);
+            if (scoreAtoB != 0 || scoreBtoA != 0) { // 如果有一方得分不为0，则将结果存库
+                UserMatch userMatch = new UserMatch();
+                userMatch.setUserA(wxUser);
+                userMatch.setUserB(toUser);
+                userMatch.setAlgorithm(algorithm);
+                int index = userMatches.indexOf(userMatch);
+                if (index != -1) { // 如果已经有该记录
+                    userMatch = userMatches.get(index);
+                }
+                userMatch.setScoreAtoB(scoreAtoB);
+                userMatch.setScoreBtoA(scoreAtoB);
+                // 获取性别
+                BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性
+                String sexA = readSingleValue(userPropertyMap.get(sex));
+                String sexB = readSingleValue(toUserPropertyMap.get(sex));
+                float total;
+                float genderWeight = algorithm.getGenderWeight(); // 需求权重
+                if (sexA.equals("男") && sexB.equals("女")) {
+                    total = (1-genderWeight)*scoreAtoB + genderWeight*scoreBtoA;
+                } else if (sexA.equals("女") && sexB.equals("男")) {
+                    total = genderWeight*scoreAtoB + (1-genderWeight)*scoreBtoA;
+                } else {
+                    total = (scoreAtoB+scoreBtoA)/2; // (float) (0.5*scoreAtoB + 0.5*scoreBtoA);
+                }
+                userMatch.setScoreTotal(total);
+                userMatch.setRatio(total/maxScore);
+                entityManager.merge(userMatch);
+            }
+        }
+        formSubmit.setComputed(true);
+        entityManager.merge(formSubmit);
     }
+
+
+    private boolean matchLocation(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        Map<String, String> userLocation = mapper.readValue(userDemand.getPropertyValue(), Map.class); // 需求
+        Map<String, String> toUserLocation = mapper.readValue(toUserProperty.getPropertyValue(), Map.class);
+        if (StringUtil.isNullOrEmpty(userLocation.get("district"))) {
+            if (StringUtil.isNullOrEmpty(userLocation.get("city"))) { // 如果只填到省
+                return (userLocation.get("province")).equals(
+                    toUserLocation.get("province")
+                );
+            } else { // 如果填到了市
+                return (userLocation.get("city") + userLocation.get("province")).equals(
+                    toUserLocation.get("city") + toUserLocation.get("province")
+                );
+            }
+        } else { // 如果填到了区/县
+            return (userLocation.get("district") + userLocation.get("city") + userLocation.get("province")).equals(
+                toUserLocation.get("district") + toUserLocation.get("city") + toUserLocation.get("province")
+            );
+        }
+
+    }
+
+    // 性别（取向）、体型等
+    private boolean matchOneToMany(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        List demands = mapper.readValue(userDemand.getPropertyValue(), List.class); // 需求方是多
+        Object property = readSingleValue(toUserProperty);
+        for (Object demand : demands) {
+            if (demand.equals(property)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 一对一
+    private boolean matchOneToOne(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        Object demand = readSingleValue(userDemand);
+        Object property = readSingleValue(toUserProperty);
+        if (demand.equals(property)) {
+            return true;
+        }
+        return false;
+    }
+
+    // 读取单值属性或需求
+    private String readSingleValue(PropertyValue propertyValue) throws IOException {
+        if (propertyValue == null) return null;
+        Object propertyObj = mapper.readValue(propertyValue.getPropertyValue(), Object.class);
+        Object property = null;
+        if (propertyObj instanceof String) { // 如果是单选框
+            property = propertyObj;
+        } else if (propertyObj instanceof List) { // 如果是多选框
+            property = ((ArrayList) propertyObj).get(0);
+        }
+        return (String) property;
+    }
+
+//    // 性别（取向）、体型等
+//    private int scoreOneToMany(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+//        List demands = mapper.readValue(userDemand.getPropertyValue(), List.class); // 需求方是多
+//        Object propertyObj = mapper.readValue(toUserProperty.getPropertyValue(), Object.class);
+//        Object property = null;
+//        if (propertyObj instanceof String) { // 如果是单选框
+//            property = propertyObj;
+//        } else if (propertyObj instanceof List) { // 如果是多选框
+//            property = ((ArrayList)propertyObj).get(0);
+//        }
+//        for (Object demand: demands) {
+//            if (demand.equals(property)) {
+//                return toUserProperty.getBase().getPropertyScore();
+//            }
+//        }
+//        return 0;
+//    }
+
+    // todo 暂时只支持所填的数字和范围均为整数的情况，范围只支持“-”为分隔符
+    private boolean matchOneToRange(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        // range即需求侧为文本
+        String demand = mapper.readValue(userDemand.getPropertyValue(), String.class);
+        int[] demandMinMax = Arrays.stream(demand.split("-")).mapToInt(str -> Integer.valueOf(str)).toArray();
+        // 属性侧
+        int property = -1;
+        if (toUserProperty.getBase().getPropertyName().equals("年龄")) { // 年龄需要特殊处理，这里需要急加载BaseProperty
+            String birthStr = mapper.readValue(toUserProperty.getPropertyValue(), String.class);
+            int[] birthArray = Arrays.stream(birthStr.split("-")).mapToInt(str -> Integer.valueOf(str)).toArray();
+            LocalDate birthDate = LocalDate.of(birthArray[0], birthArray[1], birthArray[2]);
+            property = (int) birthDate.until(LocalDate.now(), ChronoUnit.YEARS);
+        } else {
+            property = mapper.readValue(toUserProperty.getPropertyValue(), Integer.class);
+        }
+        return property > demandMinMax[0] && property < demandMinMax[1];
+    }
+
+    // 专业等
+    private boolean matchManyToMany(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        List demands = mapper.readValue(userDemand.getPropertyValue(), List.class);
+        List properties = mapper.readValue(toUserProperty.getPropertyValue(), List.class);
+
+        for (Object demand : demands) {
+            for (Object property : properties) {
+                if (property.equals(demand)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private int scoreManyToMany(UserDemand userDemand, UserProperty toUserProperty/*, BaseProperty baseProperty*/) throws IOException {
+        int score = 0;
+        List demands = mapper.readValue(userDemand.getPropertyValue(), List.class);
+        List properties = mapper.readValue(toUserProperty.getPropertyValue(), List.class);
+
+        for (Object demand : demands) {
+            for (Object property : properties) {
+                if (property.equals(demand)) {
+                    score += toUserProperty.getBase().getPropertyScore();
+                }
+            }
+        }
+        if (score == 0) {
+            return 0;
+        } else {
+            int max = toUserProperty.getBase().getPropertyMaxScore();
+            return score > max ? max : score;
+        }
+    }
+
+    // 以一方的需求对另一方属性打分
+    private float scoreOnOneSide (Map<BaseProperty, UserDemand> userDemandMap, Map<BaseProperty, UserProperty> toUserPropertyMap, Algorithm algorithm) throws IOException {
+        float filterRate;
+        int score = baseScore;
+        if (userDemandMap == null || userDemandMap.size() == 0) { // 如果没有填需求
+            filterRate = 0;
+        } else {
+            // 先计算过滤条件是否满足
+            filterRate = 1; // 还是用系数而不是用Boolean判断是否满足过滤条件，如果是0则不满足，如果非0则满足，且最后得分需要乘以该系数
+            for (BaseProperty baseProperty : algorithm.getFilterProperties()) {
+                // 用户需求与其他用户属性
+                UserDemand userDemand = userDemandMap.get(baseProperty);
+                UserProperty toUserProperty = toUserPropertyMap.get(baseProperty);
+                if (userDemand != null) { // 仅考虑需求不为空
+                    if (toUserProperty == null) { // 如果属性为空，则认为不满足配对条件
+                        filterRate = 0;
+                        break;
+                    } else {
+                        if (baseProperty.getFormyType() == FormyType.LOCATION) { // 如果是当前位置等
+                            // 方案一：采用微信位置信息
+//                        if (wxUser.getWxCountry().equals(toUser.getWxCountry())){
+//                            if (wxUser.getWxProvince().equals(toUser.getWxProvince())){
+//                                if (wxUser.getWxCity().equals(toUser.getWxCity())) { // 如果市相同
+//                                    filterRate = 1;
+//                                } else { // 如果省相同
+//                                    filterRate = 0.8;
+//                                }
+//                            } else { // 如果国家相同
+//                                filterRate = 0.64;
+//                            }
+//                        } else { // 如果国家不同
+//                            filterRate = 0;
+//                            break;
+//                        }
+                            // 方案二：采用表单中的位置信息
+                            if (!matchLocation(userDemand, toUserProperty)) {
+                                filterRate = 0;
+                                break;
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.ONETOMANY) { // 如果是性别等
+                            if (!matchOneToMany(userDemand, toUserProperty)) {
+                                filterRate = 0;
+                                break;
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.ONETORANGE) { // 如果是年龄、身高等
+                            if (!matchOneToRange(userDemand, toUserProperty)) {
+                                filterRate = 0;
+                                break;
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.ONETOONE) { // 如果是一对一，暂时没有
+                            if (!matchOneToOne(userDemand, toUserProperty)) {
+                                filterRate = 0;
+                                break;
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.MANYTOMANY) { // 如果是多对多，暂时没有
+                            if (!matchManyToMany(userDemand, toUserProperty)) {
+                                filterRate = 0;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // 如果满足过滤条件，计算匹配得分
+        if (filterRate != 0) {
+            for (BaseProperty baseProperty : algorithm.getScoreProperties()) {
+                UserDemand userDemand = userDemandMap.get(baseProperty);
+                UserProperty toUserProperty = toUserPropertyMap.get(baseProperty);
+                if (baseProperty.getFormyType() == FormyType.OTHER) { // 头像等字段特殊处理，只要有则加分
+                    if (toUserProperty != null) {
+                        score += baseProperty.getPropertyScore();
+                    }
+                } else {
+                    if (userDemand != null && toUserProperty != null) { // 仅需求和属性均不为空时，才计算配对分
+                        if (baseProperty.getFormyType() == FormyType.LOCATION) { // 如果是家乡等
+                            if (matchLocation(userDemand, toUserProperty)) { // 如果匹配
+                                score += baseProperty.getPropertyScore();
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.ONETOMANY) { // 如果是体型、学历等
+                            if (matchOneToMany(userDemand, toUserProperty)) { // 如果匹配
+                                score += baseProperty.getPropertyScore();
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.ONETORANGE) { // 如果是外部打分等
+                            if (matchOneToRange(userDemand, toUserProperty)) { // 如果匹配
+                                score += baseProperty.getPropertyScore();
+                            }
+                        } else if (baseProperty.getFormyType() == FormyType.MANYTOMANY) { // 如果是专业等
+                            score += scoreManyToMany(userDemand, toUserProperty);
+                        } else if (baseProperty.getFormyType() == FormyType.ONETOONE) { // 如果是一对一（暂时没有）
+                            if (matchOneToOne(userDemand,toUserProperty)) {
+                                score += baseProperty.getPropertyScore();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return filterRate*score;
+    }
+
+
+
 }

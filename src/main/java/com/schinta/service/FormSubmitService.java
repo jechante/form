@@ -3,7 +3,6 @@ package com.schinta.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.schinta.domain.*;
 import com.schinta.repository.*;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,7 @@ import java.lang.reflect.Array;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Service Implementation for managing FormSubmit.
@@ -104,8 +100,9 @@ public class FormSubmitService {
     }
 
     // 需要注意的点：需要使用批处理，提高性能
-    // todo 1）验证批处理是否成功；2）如果避免更新或插入（upsert）前的逐条记录查询（先查询出所有结果，然后通过hashCode或者equals等方法，再利用set判断是否已经有该记录）
-    public void updateUserPropertyAndDemand(FormSubmit formSubmit) throws IOException {
+    // todo 1）验证批处理是否成功；
+    //  2）避免更新或插入（upsert）前的逐条记录查询（先查询出所有结果，然后通过hashCode或者equals等方法判断是否已经有该记录）
+    public void updateUserPropertyAndDemand(FormSubmit formSubmit) throws IOException, IllegalAccessException, InstantiationException {
         ObjectMapper mapper = new ObjectMapper(); //转换器
         Map form = mapper.readValue(formSubmit.getSubmitJosn(), Map.class);
         Map entry = (Map) form.get("entry");
@@ -116,10 +113,10 @@ public class FormSubmitService {
         List<UserDemand> demands = userDemandRepository.findAllByWxUser(user);
 
         List<FormField> fields = formFieldRepository.findAllByBaseFormWithBaseProperty(formSubmit.getBase());
-        fields.forEach(formField -> {
+        for (FormField formField : fields) {
             Object object = entry.get(formField.getFieldName());
             if (this.hasValue(object)) { // 如果有值
-                String value = object.toString();
+                String value = mapper.writeValueAsString(object); // 不能使用object.toString();否则无法解析数据
                 BaseProperty baseProperty = formField.getBaseProperty();
 //                String value = object == null ? null : object.toString();
                 Class propertyClass = PropertyValue.getClassFromFieldType(formField.getFieldType());
@@ -131,37 +128,33 @@ public class FormSubmitService {
 //                    .using("base", baseProperty)
 //                    .load(); // select userdemand_.id as id1_14_ from user_demand userdemand_ where userdemand_.base_id=? and userdemand_.wx_user_id=?
 //                if (property == null) { // 如果是新增属性
-                    try {
-                        PropertyValue property = (PropertyValue) propertyClass.newInstance();
-                        property.setBase(baseProperty);
-                        property.setWxUser(user);
-                        if (propertyClass == UserProperty.class) {
-                            int index = properties.indexOf(property);
-                            if (index != -1) { // 如果已经有该对象
-                                property = properties.get(index);
-                            }
-                        } else {
-                            int index = demands.indexOf(property);
-                            if (index != -1) { // 如果已经有该对象
-                                property = demands.get(index);
-                            }
-                        }
-                        property.setPropertyValue(value);
-                        // 注意这里的persist一定要放在setWxUser和setPropertyValue之后：原因：1）因为这两个属性被当作了natureId，默认是不可变的(mutable = false)，因此放在前面会报错；
-                        // 2）persist之后改变的属性不会一次性insert，而是通过额外的update语句更新，例如下面的setRemark会导致update user_property set property_value=?, remark=? where id=?
-                        entityManager.merge(property); // insert into user_demand (base_id, property_value, remark, wx_user_id) values (?, ?, ?, ?)
-//                        property.setRemark("测试persist执行顺序"); // 会导致update user_property set property_value=?, remark=? where id=?
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                PropertyValue property = (PropertyValue) propertyClass.newInstance();
+                property.setBase(baseProperty);
+                property.setWxUser(user);
+                if (propertyClass == UserProperty.class) {
+                    int index = properties.indexOf(property);
+                    if (index != -1) { // 如果已经有该对象
+                        property = properties.get(index);
                     }
+                } else {
+                    int index = demands.indexOf(property);
+                    if (index != -1) { // 如果已经有该对象
+                        property = demands.get(index);
+                    }
+                }
+                property.setPropertyValue(value);
+                // 注意这里的persist一定要放在setWxUser和setPropertyValue之后：原因：1）因为这两个属性被当作了natureId，默认是不可变的(mutable = false)，因此放在前面会报错；
+                // 2）persist之后改变的属性不会一次性insert，而是通过额外的update语句更新，例如下面的setRemark会导致update user_property set property_value=?, remark=? where id=?
+                entityManager.merge(property); // insert into user_demand (base_id, property_value, remark, wx_user_id) values (?, ?, ?, ?)
+//                        property.setRemark("测试persist执行顺序"); // 会导致update user_property set property_value=?, remark=? where id=?
+
 
 //                } else { // 如果是已有属性
 //                    property.setPropertyValue(value);
 //                }
             }
-        });
+        }
+
         // 处理完成后将formSubmit状态改为已处理
 //        测试直接用persist方法
 //        entityManager.persist(formSubmit); // 会报错，formSubmit状态被认为detached（因为含有id），因此不能使用persist方法
@@ -194,7 +187,11 @@ public class FormSubmitService {
                 return false;
             } else return true;
         } else if (value instanceof ArrayList) {
-            if (((ArrayList)value).size() == 0) { // Jackson将数组统一封装成了ArrayList而不是[]
+            if (((ArrayList) value).size() == 0) { // Jackson将数组统一封装成了ArrayList而不是[]
+                return false;
+            } else return true;
+        } else if (value instanceof HashMap) {
+            if (((HashMap) value).size() == 0) { // Jackson将对象统一封装成了HashMap
                 return false;
             } else return true;
         } else return true;

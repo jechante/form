@@ -1,6 +1,8 @@
 package com.schinta.repository;
 
+import com.schinta.domain.Algorithm;
 import com.schinta.domain.UserMatch;
+import com.schinta.domain.WxUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -27,4 +29,6 @@ public interface UserMatchRepository extends JpaRepository<UserMatch, Long> {
     @Query("select user_match from UserMatch user_match left join fetch user_match.pushRecords where user_match.id =:id")
     Optional<UserMatch> findOneWithEagerRelationships(@Param("id") Long id);
 
+    @Query("select user_match from UserMatch user_match where (user_match.userA =:user or user_match.userB = :user) and user_match.algorithm = :algorithm")
+    List<UserMatch> findAllByWxUserAndAlgorithm(@Param("user")WxUser user, @Param("algorithm")Algorithm algorithm);
 }

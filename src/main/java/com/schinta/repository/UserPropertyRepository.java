@@ -16,6 +16,6 @@ import java.util.List;
 public interface UserPropertyRepository extends JpaRepository<UserProperty, Long> {
     List<UserProperty> findAllByWxUser(WxUser user);
 
-    @Query("select property from UserProperty property left join fetch property.wxUser user where user.userStatus = 'ACTIVE'")
+    @Query("select property from UserProperty property join property.wxUser user where user.userStatus = 'ACTIVE'") // 这里仅join，没有fetch，因为只需要用户的id和基础属性的id即可
     List<UserProperty> findAllActiveWithUser();
 }

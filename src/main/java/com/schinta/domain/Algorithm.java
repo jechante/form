@@ -41,7 +41,7 @@ public class Algorithm implements Serializable {
      */
     @ApiModelProperty(value = "需求权重")
     @Column(name = "gender_weight")
-    private Double genderWeight;
+    private Float genderWeight;
 
     /**
      * 分块数
@@ -115,16 +115,16 @@ public class Algorithm implements Serializable {
         this.name = name;
     }
 
-    public Double getGenderWeight() {
+    public Float getGenderWeight() {
         return genderWeight;
     }
 
-    public Algorithm genderWeight(Double genderWeight) {
+    public Algorithm genderWeight(Float genderWeight) {
         this.genderWeight = genderWeight;
         return this;
     }
 
-    public void setGenderWeight(Double genderWeight) {
+    public void setGenderWeight(Float genderWeight) {
         this.genderWeight = genderWeight;
     }
 
