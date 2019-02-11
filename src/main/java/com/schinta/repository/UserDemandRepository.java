@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -19,4 +20,6 @@ public interface UserDemandRepository extends JpaRepository<UserDemand, Long> {
     List<UserDemand> findAllActiveWithUser();
 
     List<UserDemand> findAllByWxUser(WxUser user);
+
+    List<UserDemand> findAllByWxUserIn(Set<WxUser> userSet);
 }

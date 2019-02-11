@@ -168,7 +168,8 @@ enum MatchType {
 
 enum PushStatus {
 	NEITHER, // 未推送
-    EITHER, // 已经被推送给一方（主要针对用户主动发起的匹配）
+    A,
+    B,// 已经被推送给一方（主要针对用户主动发起的匹配）
     BOTH // 双方均已推送
 }
 

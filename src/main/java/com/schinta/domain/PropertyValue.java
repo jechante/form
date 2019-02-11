@@ -2,14 +2,16 @@ package com.schinta.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.schinta.domain.enumeration.FieldType;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.*;
 
 @MappedSuperclass
 public abstract class PropertyValue implements Serializable {
@@ -151,5 +153,22 @@ public abstract class PropertyValue implements Serializable {
             return UserDemand.class;
         }
         return null;
+    }
+
+    @JsonIgnore
+    public String getShownValue(ObjectMapper mapper) throws IOException {
+
+        Object propertyObj = mapper.readValue(this.propertyValue, Object.class);
+        String property = null;
+        if (propertyObj instanceof String) { // 如果是字符串
+            property = (String) propertyObj;
+        } else if (propertyObj instanceof List) { // 如果是数组
+            property = String.join("; ",(ArrayList) propertyObj);
+        } else if (propertyObj instanceof Number) { // 如果是数字
+            property = propertyObj.toString();
+        } else if (propertyObj instanceof Map) { // 如果是map
+            property = String.join("",((HashMap) propertyObj).values());
+        }
+        return  property;
     }
 }

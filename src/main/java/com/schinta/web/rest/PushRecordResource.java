@@ -2,11 +2,15 @@ package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.schinta.domain.PushRecord;
+import com.schinta.domain.WxUser;
+import com.schinta.repository.WxUserRepository;
 import com.schinta.service.PushRecordService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
 import com.schinta.web.rest.util.PaginationUtil;
+import com.sun.mail.iap.Response;
 import io.github.jhipster.web.util.ResponseUtil;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -34,9 +39,12 @@ public class PushRecordResource {
     private static final String ENTITY_NAME = "pushRecord";
 
     private final PushRecordService pushRecordService;
+    private final WxUserRepository wxUserRepository;
 
-    public PushRecordResource(PushRecordService pushRecordService) {
+    public PushRecordResource(PushRecordService pushRecordService,
+                              WxUserRepository wxUserRepository) {
         this.pushRecordService = pushRecordService;
+        this.wxUserRepository = wxUserRepository;
     }
 
     /**
@@ -122,5 +130,21 @@ public class PushRecordResource {
         log.debug("REST request to delete PushRecord : {}", id);
         pushRecordService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * GET  /push-user-asked/:id : 用户主动获取最佳配对，返回计算得到的推送记录.
+     *
+     * @param id 用户的openid
+     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+     */
+    @GetMapping("/push-user-asked/{id}")
+    @Timed
+    public ResponseEntity<PushRecord> pushUserAsked(@PathVariable String id) throws WxErrorException, MalformedURLException {
+        WxUser wxUser = wxUserRepository.findById(id).get();
+//        PushRecord pushRecord = pushRecordService.getUserAsked(wxUser);
+        PushRecord pushRecord = pushRecordService.findOneWithMatches(Long.valueOf(2)); // 测试用
+        pushRecordService.push(pushRecord);
+        return ResponseEntity.ok().body(null);
     }
 }

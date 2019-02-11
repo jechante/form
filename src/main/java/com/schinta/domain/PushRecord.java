@@ -2,19 +2,17 @@ package com.schinta.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.schinta.domain.enumeration.PushType;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
-
-import com.schinta.domain.enumeration.PushType;
+import java.util.Set;
 
 /**
  * A PushRecord.
@@ -39,7 +37,7 @@ public class PushRecord implements Serializable {
      */
     @ApiModelProperty(value = "推送时间")
     @Column(name = "push_date_time")
-    private ZonedDateTime pushDateTime;
+    private LocalDateTime pushDateTime;
 
     /**
      * 是否推送成功
@@ -48,11 +46,14 @@ public class PushRecord implements Serializable {
     @Column(name = "success")
     private Boolean success;
 
-    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("pushRecords")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("pushRecords")
     private WxUser user;
 
-    @ManyToMany(mappedBy = "pushRecords")    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@JsonIgnore    private Set<UserMatch> userMatches = new HashSet<>();
+    @ManyToMany(mappedBy = "pushRecords"/*, cascade = CascadeType.ALL*/) // ManyToMany无需设置级联，即可更新关系表，级联主要用于更新关联对象本身而非关联字段
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
+    private Set<UserMatch> userMatches = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -76,16 +77,16 @@ public class PushRecord implements Serializable {
         this.pushType = pushType;
     }
 
-    public ZonedDateTime getPushDateTime() {
+    public LocalDateTime getPushDateTime() {
         return pushDateTime;
     }
 
-    public PushRecord pushDateTime(ZonedDateTime pushDateTime) {
+    public PushRecord pushDateTime(LocalDateTime pushDateTime) {
         this.pushDateTime = pushDateTime;
         return this;
     }
 
-    public void setPushDateTime(ZonedDateTime pushDateTime) {
+    public void setPushDateTime(LocalDateTime pushDateTime) {
         this.pushDateTime = pushDateTime;
     }
 

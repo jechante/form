@@ -2,10 +2,12 @@ package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.schinta.domain.FormSubmit;
+import com.schinta.domain.PushRecord;
 import com.schinta.repository.BaseFormRepository;
 import com.schinta.repository.FormSubmitRepository;
 import com.schinta.repository.WxUserRepository;
 import com.schinta.service.FormSubmitService;
+import com.schinta.service.PushRecordService;
 import com.schinta.service.UserMatchService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
@@ -45,17 +47,20 @@ public class FormSubmitResource {
 //    private final WxUserRepository wxUserRepository;
 //    private final FormSubmitRepository formSubmitRepository;
     private final UserMatchService userMatchService;
+    private final PushRecordService pushRecordService;
 
     public FormSubmitResource(FormSubmitService formSubmitService,
 //                              BaseFormRepository baseFormRepository,
 //                              WxUserRepository wxUserRepository,
 //                              FormSubmitRepository formSubmitRepository,
-                              UserMatchService userMatchService) {
+                              UserMatchService userMatchService,
+                              PushRecordService pushRecordService) {
         this.formSubmitService = formSubmitService;
 //        this.baseFormRepository = baseFormRepository;
 //        this.wxUserRepository = wxUserRepository;
 //        this.formSubmitRepository = formSubmitRepository;
         this.userMatchService = userMatchService;
+        this.pushRecordService = pushRecordService;
     }
 
     /**
@@ -160,8 +165,13 @@ public class FormSubmitResource {
         formSubmitService.updateUserPropertyAndDemand(newSubmit);
         // 计算该用户与现有其他用户的效用矩阵
         userMatchService.computeUserToOthers(newSubmit);
+        // 推动针对该用户需求的最佳匹配结果
+        PushRecord pushRecord = pushRecordService.getUserAsked(newSubmit.getWxUser());
+
         return ResponseEntity.created(new URI("/api/form-submits-jin/Q4qaJD/" + newSubmit.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, newSubmit.getId().toString()))
             .body(newSubmit);
     }
+
+
 }

@@ -69,7 +69,7 @@ public class UserMatchResourceIntTest {
     private static final MatchType UPDATED_MATCH_TYPE = MatchType.BTOA;
 
     private static final PushStatus DEFAULT_PUSH_STATUS = PushStatus.NEITHER;
-    private static final PushStatus UPDATED_PUSH_STATUS = PushStatus.EITHER;
+    private static final PushStatus UPDATED_PUSH_STATUS = PushStatus.A;
 
     @Autowired
     private UserMatchRepository userMatchRepository;

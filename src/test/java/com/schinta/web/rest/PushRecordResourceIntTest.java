@@ -4,6 +4,7 @@ import com.schinta.FormApp;
 
 import com.schinta.domain.PushRecord;
 import com.schinta.repository.PushRecordRepository;
+import com.schinta.repository.WxUserRepository;
 import com.schinta.service.PushRecordService;
 import com.schinta.web.rest.errors.ExceptionTranslator;
 
@@ -22,10 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 
 
@@ -49,14 +47,17 @@ public class PushRecordResourceIntTest {
     private static final PushType DEFAULT_PUSH_TYPE = PushType.ASK;
     private static final PushType UPDATED_PUSH_TYPE = PushType.Regular;
 
-    private static final ZonedDateTime DEFAULT_PUSH_DATE_TIME = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_PUSH_DATE_TIME = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDateTime DEFAULT_PUSH_DATE_TIME = LocalDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneId.systemDefault());
+    private static final LocalDateTime UPDATED_PUSH_DATE_TIME = LocalDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final Boolean DEFAULT_SUCCESS = false;
     private static final Boolean UPDATED_SUCCESS = true;
 
     @Autowired
     private PushRecordRepository pushRecordRepository;
+
+    @Autowired
+    private WxUserRepository wxUserRepository;
     
     @Autowired
     private PushRecordService pushRecordService;
@@ -80,7 +81,7 @@ public class PushRecordResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PushRecordResource pushRecordResource = new PushRecordResource(pushRecordService);
+        final PushRecordResource pushRecordResource = new PushRecordResource(pushRecordService,wxUserRepository);
         this.restPushRecordMockMvc = MockMvcBuilders.standaloneSetup(pushRecordResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -158,7 +159,7 @@ public class PushRecordResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(pushRecord.getId().intValue())))
             .andExpect(jsonPath("$.[*].pushType").value(hasItem(DEFAULT_PUSH_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].pushDateTime").value(hasItem(sameInstant(DEFAULT_PUSH_DATE_TIME))))
+            .andExpect(jsonPath("$.[*].pushDateTime").value(hasItem(DEFAULT_PUSH_DATE_TIME)))
             .andExpect(jsonPath("$.[*].success").value(hasItem(DEFAULT_SUCCESS.booleanValue())));
     }
     
@@ -174,7 +175,7 @@ public class PushRecordResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(pushRecord.getId().intValue()))
             .andExpect(jsonPath("$.pushType").value(DEFAULT_PUSH_TYPE.toString()))
-            .andExpect(jsonPath("$.pushDateTime").value(sameInstant(DEFAULT_PUSH_DATE_TIME)))
+            .andExpect(jsonPath("$.pushDateTime").value(DEFAULT_PUSH_DATE_TIME))
             .andExpect(jsonPath("$.success").value(DEFAULT_SUCCESS.booleanValue()));
     }
 

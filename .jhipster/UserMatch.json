@@ -36,7 +36,7 @@
         {
             "fieldName": "pushStatus",
             "fieldType": "PushStatus",
-            "fieldValues": "NEITHER,EITHER,BOTH"
+            "fieldValues": "NEITHER,A,B,BOTH"
         }
     ],
     "relationships": [

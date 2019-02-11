@@ -7,6 +7,7 @@ import com.schinta.repository.BaseFormRepository;
 import com.schinta.repository.FormSubmitRepository;
 import com.schinta.repository.WxUserRepository;
 import com.schinta.service.FormSubmitService;
+import com.schinta.service.PushRecordService;
 import com.schinta.service.UserMatchService;
 import com.schinta.web.rest.errors.ExceptionTranslator;
 
@@ -69,17 +70,20 @@ public class FormSubmitResourceIntTest {
     @Autowired
     private FormSubmitRepository formSubmitRepository;
 
-    @Autowired
-    private WxUserRepository wxUserRepository;
-
-    @Autowired
-    private BaseFormRepository baseFormRepository;
+//    @Autowired
+//    private WxUserRepository wxUserRepository;
+//
+//    @Autowired
+//    private BaseFormRepository baseFormRepository;
     
     @Autowired
     private FormSubmitService formSubmitService;
 
     @Autowired
     private UserMatchService userMatchService;
+
+    @Autowired
+    private PushRecordService pushRecordService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -100,7 +104,7 @@ public class FormSubmitResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final FormSubmitResource formSubmitResource = new FormSubmitResource(formSubmitService, userMatchService);
+        final FormSubmitResource formSubmitResource = new FormSubmitResource(formSubmitService, userMatchService, pushRecordService);
         this.restFormSubmitMockMvc = MockMvcBuilders.standaloneSetup(formSubmitResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-reboot.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:each="match, matchStat : ${userMatchList}">
+    <div th:with="otherUser = ((${match.userA} == ${user}) ? ${match.userB} : ${match.userA})">
+        <h5 th:text="|匹配结果${matchStat.count}|"></h5>
+        <div>
+        <span th:switch="${{match.matchType}}">
+            <span th:case="'BIDIRECTIONAL'">恭喜！当前你们互为对方的最佳候选人，</span>
+            <span th:case="'ATOB'"
+                  th:text="(${match.userA} == ${user}) ? '对方是你的最佳候选人，' : '你是对方的最佳候选人，'"></span>
+            <span th:case="'BTOA'"
+                  th:text="(${match.userA} == ${user}) ? '你是对方的最佳候选人，' : '对方是你的最佳候选人，'"></span>
+        </span>
+            <span>匹配度为：<span th:text="${#numbers.formatDecimal(match.ratio,1,2)}"></span></span>
+        </div>
+        <div class="rich_media_content " id="js_content">
+            <table height="1463" style="">
+                <colgroup>
+                    <col width="275" style="width:206.25pf;">
+                    <col width="248" style="width:186.00pf;">
+                    <col width="417" style="width:312.75pf;">
+                </colgroup>
+                <tbody>
+                <tr height="19">
+                    <td height="19" width="412"
+                        style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                        昵称
+                    </td>
+                    <td class="w2ui-grid-data" col="79" style="">
+                        <div class="image-wrapper small" title="jechante"><a
+                            th:text="${user.wxNickName}"
+                            th:href="${user.wxHeadimgurl}"
+                            rel="lightbox">
+                            <img
+                            th:src="${user.wxHeadimgurl}"
+                            class="weixin-headimg"></a>
+                        </div>
+                    </td>
+                    <td class="w2ui-grid-data" col="79" style="">
+                        <div class="image-wrapper small" title="jechante"><a
+                            th:text="${otherUser.wxNickName}"
+                            th:href="${otherUser.wxHeadimgurl}"
+                            rel="lightbox"><img
+                            th:src="${otherUser.wxHeadimgurl}"
+                            class="weixin-headimg"></a>
+                        </div>
+                    </td>
+                </tr>
+                <div th:each="base : ${basePropertyList}">
+                    <div th:switch="${{base.propertyName}}">
+                        <div th:case="'头像'"></div>
+                        <div th:case="'联系方式'">
+                            <tr height="19">
+                                <td th:text="${base.propertyName}" height="19" width="412"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    你的性别
+                                </td>
+                                <td th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}" height="19" width="444"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    男
+                                </td>
+                                <td th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}" height="19"
+                                    width="5"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    女
+                                </td>
+                            </tr>
+                        </div>
+                        <div th:case="*">
+                            <tr height="19">
+                                <td th:text="${base.propertyName} + '(自己)'" height="19" width="412"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    你的性别
+                                </td>
+                                <td th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}" height="19" width="444"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    男
+                                </td>
+                                <td th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}" height="19"
+                                    width="5"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    女
+                                </td>
+                            </tr>
+                            <tr height="19">
+                                <td th:text="${base.propertyName} + '(希望对方)'" height="19" width="246"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    你想配对
+                                </td>
+                                <td th:text="${demandsMap.get(user).get(base).getShownValue(mapper)}" height="19" width="304"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    女
+                                </td>
+                                <td th:text="${demandsMap.get(otherUser).get(base).getShownValue(mapper)}" height="19" width="5"
+                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                    男
+                                </td>
+                            </tr>
+                        </div>
+                    </div>
+
+                </div>
+
+                </tbody>
+            </table>
+            <p><img class="" data-backh="419" data-backw="558"
+                    data-before-oversubscription-url="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRzfApTaAhkwPxpHKEpHgrAsfuujrmP8EvqibFq6SBPYibiczx5h44sA89Q/0?wx_fmt=jpeg"
+                    data-copyright="0" data-ratio="0.75" data-s="300,640"
+                    data-src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRzfApTaAhkwPxpHKEpHgrAsfuujrmP8EvqibFq6SBPYibiczx5h44sA89Q/640?wx_fmt=jpeg"
+                    data-type="jpeg" data-w="1280"
+                    style="width: 100% !important; height: auto !important; visibility: visible !important;"
+                    _width="100%"
+                    src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRzfApTaAhkwPxpHKEpHgrAsfuujrmP8EvqibFq6SBPYibiczx5h44sA89Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"
+                    crossorigin="anonymous" data-fail="0"></p>
+            <p><img class="" data-backh="558" data-backw="558"
+                    data-before-oversubscription-url="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/0?wx_fmt=jpeg"
+                    data-copyright="0" data-ratio="1" data-s="300,640"
+                    data-src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg"
+                    data-type="jpeg" data-w="1080"
+                    style="width: 100% !important; height: auto !important; visibility: visible !important;"
+                    _width="100%"
+                    src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"
+                    crossorigin="anonymous" data-fail="0"></p>
+            <p><br></p>
+        </div>
+        <!--<p>城市： <span th:text="${user.city}"></span></p>-->
+    </div>
+    <!--<p>-->
+    <!--<span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!-->
+    <!--</p>-->
+</div>
+
+</body>
+</html>

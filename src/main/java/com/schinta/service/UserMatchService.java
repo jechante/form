@@ -143,7 +143,8 @@ public class UserMatchService {
         int maxScore = algorithm.getScoreProperties().stream().collect(Collectors.summingInt(BaseProperty::getPropertyMaxScore)) + baseScore;
 
         // 首先获取所有其他用户(考虑部分用户只填了属性或者只填了需求的情况)
-        Set<WxUser> allUsers = allPropertiesMap.keySet();
+        Set<WxUser> allUsers = new HashSet<>(); // 需要new，否则直接用allPropertiesMap.keySet()返回的Set去add会报java.lang.UnsupportedOperationException错误
+        allUsers.addAll(allPropertiesMap.keySet());
         allUsers.addAll(allDemandsMap.keySet());
 
         // 计算效用分
@@ -164,16 +165,33 @@ public class UserMatchService {
             // 以其他用户需求对该用户属性打分，即计算scoreBtoA
             float scoreBtoA = scoreOnOneSide(toUserDemandMap, userPropertyMap, algorithm);
             if (scoreAtoB != 0 || scoreBtoA != 0) { // 如果有一方得分不为0，则将结果存库
+                String type = "new";
                 UserMatch userMatch = new UserMatch();
+                userMatch.setAlgorithm(algorithm);
+
                 userMatch.setUserA(wxUser);
                 userMatch.setUserB(toUser);
-                userMatch.setAlgorithm(algorithm);
                 int index = userMatches.indexOf(userMatch);
-                if (index != -1) { // 如果已经有该记录
+                if (index != -1) { // 如果已经有该记录，且user为A，toUser为B
+                    type = "AToB";
                     userMatch = userMatches.get(index);
+                } else { // 如果没有该记录
+                    userMatch.setUserA(toUser);
+                    userMatch.setUserB(wxUser);
+                    index = userMatches.indexOf(userMatch);
+                    if (index != -1) { // 如果已经有该记录，且user为B，toUser为A
+                        type = "BToA";
+                        userMatch = userMatches.get(index);
+                    }
                 }
-                userMatch.setScoreAtoB(scoreAtoB);
-                userMatch.setScoreBtoA(scoreAtoB);
+                if (type.equals("new") || type.equals("AToB")) {
+                    userMatch.setScoreAtoB(scoreAtoB);
+                    userMatch.setScoreBtoA(scoreBtoA);
+                } else if (type.equals("BToA")){
+                    userMatch.setScoreAtoB(scoreBtoA);
+                    userMatch.setScoreBtoA(scoreAtoB);
+                }
+
                 // 获取性别
                 BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性
                 String sexA = readSingleValue(userPropertyMap.get(sex));
@@ -189,7 +207,7 @@ public class UserMatchService {
                 }
                 userMatch.setScoreTotal(total);
                 userMatch.setRatio(total/maxScore);
-                entityManager.merge(userMatch);
+                entityManager.persist(userMatch); // 这里merge也可以，但感觉尽量merge尽量还是用于detached的实体，其余情况用persist更高校
             }
         }
         formSubmit.setComputed(true);

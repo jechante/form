@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class TestResource {
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private AlgorithmRepository algorithmRepository;
 
@@ -107,11 +109,32 @@ public class TestResource {
 //        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
 
         // 测试Jackson（支撑转化为Number\String\List\Map等类型）
-        ObjectMapper mapper = new ObjectMapper(); //转换器
-        // OneToMany：数组（取第一个）对数组或者String对数组
-        String string = "13.4";
-        Object result =  mapper.readValue(string, Object.class);
+//        ObjectMapper mapper = new ObjectMapper(); //转换器
+//        // OneToMany：数组（取第一个）对数组或者String对数组
+//        String string = "13.4";
+//        Object result =  mapper.readValue(string, Object.class);
+//        return new ResponseEntity<>(result, null, HttpStatus.OK);
 
-        return new ResponseEntity<>(result, null, HttpStatus.OK);
+        // 测试HashMap的get方法
+//        Map map = new HashMap();
+//        WxUser user1 = new WxUser();
+//        user1.setId("aaa");
+//        user1.setWxCountry("test1");
+//
+//        WxUser user2 = new WxUser();
+//        user2.setId("aaa");
+//        user2.setWxCountry("test2");
+//        map.put(user1,"user1");
+//        String test = (String) map.remove(user2);
+//        return new ResponseEntity<>(test, null, HttpStatus.OK);
+
+        // 测试entityManager的persist方法
+//        Algorithm algorithm = algorithmRepository.findById(Long.valueOf(1)).get();
+        Algorithm algorithm = new Algorithm();
+        algorithm.setEnabled(true);
+        algorithm.setId(2L);
+        entityManager.persist(algorithm);
+        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
+
     }
 }

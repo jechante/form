@@ -533,7 +533,8 @@ public class WxUser implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+//        if (o == null || getClass() != o.getClass()) { // 默认为必须完全为同一个class类型
+        if (o == null || !(o instanceof WxUser)) { // 改为只要为其子类即可（这样代理对象（仅含id）也可以认为与完全加载的对象相等）todo 后续可能会有一些弊端，例如如果该类会作为其他类的父类时
             return false;
         }
         WxUser wxUser = (WxUser) o;

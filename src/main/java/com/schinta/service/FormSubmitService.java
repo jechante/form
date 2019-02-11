@@ -143,9 +143,12 @@ public class FormSubmitService {
                     }
                 }
                 property.setPropertyValue(value);
+
                 // 注意这里的persist一定要放在setWxUser和setPropertyValue之后：原因：1）因为这两个属性被当作了natureId，默认是不可变的(mutable = false)，因此放在前面会报错；
                 // 2）persist之后改变的属性不会一次性insert，而是通过额外的update语句更新，例如下面的setRemark会导致update user_property set property_value=?, remark=? where id=?
-                entityManager.merge(property); // insert into user_demand (base_id, property_value, remark, wx_user_id) values (?, ?, ?, ?)
+                // 3）这里用persist和merge都可以，因为property要么是persistent要么是transient，肯定不是detached状态。但是猜测persist更高效一些（不确定，但经过阅读源码，虽然两者均会针对不同态执行不同逻辑，但persist貌似没有复制属性等操作）
+//                entityManager.merge(property); // insert into user_demand (base_id, property_value, remark, wx_user_id) values (?, ?, ?, ?)
+                entityManager.persist(property); //
 //                        property.setRemark("测试persist执行顺序"); // 会导致update user_property set property_value=?, remark=? where id=?
 
 
@@ -157,7 +160,7 @@ public class FormSubmitService {
 
         // 处理完成后将formSubmit状态改为已处理
 //        测试直接用persist方法
-//        entityManager.persist(formSubmit); // 会报错，formSubmit状态被认为detached（因为含有id），因此不能使用persist方法
+//        entityManager.persist(formSubmit); // 会报错，formSubmit状态被认为detached（因为含有id，而且确实为detached的（从上一个已经关闭的持久化上下文中获取的）），因此不能使用persist方法
 
 ////        测试persist方法与save方法区别
 //        FormSubmit newForm = new FormSubmit();
@@ -230,8 +233,8 @@ public class FormSubmitService {
         BaseForm baseForm = baseFormRepository.findByFormCode((String) form.get("form")).orElse(null);
         formSubmit.setBase(baseForm);
 
-//        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生成环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
-        String openid = "oPhnp5scZ4Mf0b9hObV6vj7FqfeA"; // 开发环境启用，为微信测试号的openid
+        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生成环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
+//        String openid = "oPhnp5scZ4Mf0b9hObV6vj7FqfeA"; // 开发环境启用，为微信测试号的openid。实际小伊中个人的openid为：oMzbs1A71vYPVjOPtWKPXyL2jFHU
         WxUser user = wxUserRepository.findById(openid).orElse(null); // todo orElseGet （如果可以向未关注用户推送匹配结果，也可以在这里创建用户）
         formSubmit.setWxUser(user);
         formSubmit = this.save(formSubmit);

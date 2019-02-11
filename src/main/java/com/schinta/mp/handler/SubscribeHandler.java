@@ -67,6 +67,7 @@ public class SubscribeHandler extends AbstractHandler {
                 wxUser.setRegisterDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(userWxInfo.getSubscribeTime()), TimeZone
                     .getDefault().toZoneId()));
                 wxUser.setWxHeadimgurl(userWxInfo.getHeadImgUrl());
+                wxUser.setPushLimit(2); // 默认两条 todo 应该改为可配置
                 wxUserRepository.save(wxUser);
             }
         } catch (WxErrorException e) {
