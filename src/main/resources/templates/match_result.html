@@ -10,102 +10,182 @@
     <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <style>
+
+        body {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .col-th-1 {
+            color: rgb(0, 0, 0);
+            font-size: 13px;
+            font-weight: 400;
+            font-style: normal;
+            text-align: center;
+            line-height: 19px;
+            background: rgba(0,0,0,0.1);
+            border: 10px solid white;
+        }
+
+        .col-th-2 {
+            color: rgb(0, 0, 0);
+            font-size: 13px;
+            font-weight: 400;
+            font-style: normal;
+            text-align: center;
+            line-height: 19px;
+            background: rgba(255,182,193,0.5);
+            border-radius: 8px;
+            border: 10px solid white;
+        }
+
+        .col-th-3 {
+            color: rgb(0, 0, 0);
+            font-size: 13px;
+            font-weight: 400;
+            font-style: normal;
+            text-align: center;
+            line-height: 19px;
+            background: rgba(135,206,2500,0.5);
+            border-radius: 8px;
+            border: 10px solid white;
+        }
+
+        .weixin-headimg {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
 </head>
 <body>
-<div th:each="match, matchStat : ${userMatchList}">
+<div th:each="match, matchStat : ${userMatchList}" >
     <div th:with="otherUser = ((${match.userA} == ${user}) ? ${match.userB} : ${match.userA})">
-        <h5 th:text="|匹配结果${matchStat.count}|"></h5>
-        <div>
+        <h5 style="margin-top: 10px" th:text="|匹配结果${matchStat.count}|"></h5>
+        <div style="margin: 5px 0px 5px 0px">
         <span th:switch="${{match.matchType}}">
-            <span th:case="'BIDIRECTIONAL'">恭喜！当前你们互为对方的最佳候选人，</span>
+            <span th:case="'BIDIRECTIONAL'">恭喜！当前你们互为对方的最佳候人，</span>
             <span th:case="'ATOB'"
                   th:text="(${match.userA} == ${user}) ? '对方是你的最佳候选人，' : '你是对方的最佳候选人，'"></span>
             <span th:case="'BTOA'"
                   th:text="(${match.userA} == ${user}) ? '你是对方的最佳候选人，' : '对方是你的最佳候选人，'"></span>
         </span>
             <span>匹配度为：<span th:text="${#numbers.formatDecimal(match.ratio,1,2)}"></span></span>
+            <!--<img th:src="@{/girl.png}"/>-->
         </div>
         <div class="rich_media_content " id="js_content">
-            <table height="1463" style="">
+            <table height="1463" border=1 frame=void rules=none >
                 <colgroup>
                     <col width="275" style="width:206.25pf;">
                     <col width="248" style="width:186.00pf;">
                     <col width="417" style="width:312.75pf;">
                 </colgroup>
                 <tbody>
-                <tr height="19">
+                <tr height="19" >
                     <td height="19" width="412"
-                        style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                        class="col-th-1">
                         昵称
                     </td>
-                    <td class="w2ui-grid-data" col="79" style="">
-                        <div class="image-wrapper small" title="jechante"><a
+                    <td class="w2ui-grid-data col-th-2" col="79" width="444" >
+                        <div class="image-wrapper small" title="jechante">
+                            <img th:src="@{${user.wxHeadimgurl}}" class="weixin-headimg"/>
+                            <a
                             th:text="${user.wxNickName}"
                             th:href="${user.wxHeadimgurl}"
                             rel="lightbox">
                             <img
-                            th:src="${user.wxHeadimgurl}"
+                            th:src="@{${user.wxHeadimgurl}}"
                             class="weixin-headimg"></a>
                         </div>
                     </td>
-                    <td class="w2ui-grid-data" col="79" style="">
-                        <div class="image-wrapper small" title="jechante"><a
+                    <td class="w2ui-grid-data col-th-3" col="79" width="444" >
+                        <div class="image-wrapper small" title="jechante">
+                            <img th:src="@{${otherUser.wxHeadimgurl}}"  class="weixin-headimg"/>
+                            <a
                             th:text="${otherUser.wxNickName}"
                             th:href="${otherUser.wxHeadimgurl}"
-                            rel="lightbox"><img
-                            th:src="${otherUser.wxHeadimgurl}"
+                            rel="lightbox">
+                            <img
+                            th:src="@{${otherUser.wxHeadimgurl}}"
                             class="weixin-headimg"></a>
+
                         </div>
                     </td>
                 </tr>
-                <div th:each="base : ${basePropertyList}">
+                <div th:each="base : ${basePropertyList}" >
                     <div th:switch="${{base.propertyName}}">
                         <div th:case="'头像'"></div>
                         <div th:case="'联系方式'">
                             <tr height="19">
-                                <td th:text="${base.propertyName}" height="19" width="412"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                <td th:text="${base.propertyName}" height="19" class="col-th-1">
                                     你的性别
                                 </td>
-                                <td th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}" height="19" width="444"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
-                                    男
+                                <td th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}" height="19" class="col-th-2"
+                                    >
+                                    <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
                                 </td>
-                                <td th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}" height="19"
+                                <td th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}" height="19" class="col-th-3"
                                     width="5"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
-                                    女
+                                    >
+                                    <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
                                 </td>
                             </tr>
                         </div>
                         <div th:case="*">
                             <tr height="19">
-                                <td th:text="${base.propertyName} + '(自己)'" height="19" width="412"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                <td th:text="${base.propertyName} + '(自己)'" height="19"  class="col-th-1">
                                     你的性别
                                 </td>
-                                <td th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}" height="19" width="444"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
-                                    男
+                                <td  height="19" class="col-th-2">
+                                    <span th:if="${propertiesMap.get(user).get(base).getShownValue(mapper) == '女'}">
+                                        <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${propertiesMap.get(user).get(base).getShownValue(mapper) == '男'}">
+                                        <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${propertiesMap.get(user).get(base).getShownValue(mapper) != '男' && propertiesMap.get(user).get(base).getShownValue(mapper) != '女'}" th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}">
+                                    </span>
                                 </td>
-                                <td th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}" height="19"
-                                    width="5"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
-                                    女
+                                <td height="19"
+                                    width="5" class="col-th-3">
+                                    <span th:if="${propertiesMap.get(otherUser).get(base).getShownValue(mapper) == '女'}">
+                                        <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${propertiesMap.get(otherUser).get(base).getShownValue(mapper) == '男'}">
+                                        <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${propertiesMap.get(otherUser).get(base).getShownValue(mapper) != '男' && propertiesMap.get(otherUser).get(base).getShownValue(mapper) != '女'}" th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}">
+                                    </span>
                                 </td>
                             </tr>
                             <tr height="19">
-                                <td th:text="${base.propertyName} + '(希望对方)'" height="19" width="246"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
+                                <td th:text="${base.propertyName} + '(希望对方)'" height="19" class="col-th-1"
+                >
                                     你想配对
                                 </td>
-                                <td th:text="${demandsMap.get(user).get(base).getShownValue(mapper)}" height="19" width="304"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
-                                    女
+                                <td  height="19"
+                         class="col-th-2">
+                                    <span th:if="${demandsMap.get(user).get(base).getShownValue(mapper) == '女'}">
+                                        <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${demandsMap.get(user).get(base).getShownValue(mapper) == '男'}">
+                                        <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${demandsMap.get(user).get(base).getShownValue(mapper) != '男' && demandsMap.get(user).get(base).getShownValue(mapper) != '女'}" th:text="${demandsMap.get(user).get(base).getShownValue(mapper)}">
+                                    </span>
                                 </td>
-                                <td th:text="${demandsMap.get(otherUser).get(base).getShownValue(mapper)}" height="19" width="5"
-                                    style="color: rgb(0, 0, 0);font-size: 13px;font-weight: 400;font-style: normal;vertical-align: bottom;border-width: 0.7px;border-style: solid;border-color: rgb(0, 0, 0);text-align: center;">
-                                    男
+                                <td  height="19" class="col-th-3">
+                                    <span th:if="${demandsMap.get(otherUser).get(base).getShownValue(mapper) == '女'}">
+                                        <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${demandsMap.get(otherUser).get(base).getShownValue(mapper) == '男'}">
+                                        <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
+                                    </span>
+                                    <span th:if="${demandsMap.get(otherUser).get(base).getShownValue(mapper) != '男' && demandsMap.get(otherUser).get(base).getShownValue(mapper) != '女'}" th:text="${demandsMap.get(otherUser).get(base).getShownValue(mapper)}">
+                                    </span>
                                 </td>
                             </tr>
                         </div>

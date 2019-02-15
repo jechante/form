@@ -129,8 +129,8 @@ public class TestResource {
 //        return new ResponseEntity<>(test, null, HttpStatus.OK);
 
         // 测试entityManager的persist方法
-//        Algorithm algorithm = algorithmRepository.findById(Long.valueOf(1)).get();
-        Algorithm algorithm = new Algorithm();
+        Algorithm algorithm = algorithmRepository.findById(Long.valueOf(1)).get();
+//        Algorithm algorithm = new Algorithm();
         algorithm.setEnabled(true);
         algorithm.setId(2L);
         entityManager.persist(algorithm);
