@@ -13,6 +13,7 @@
 </head>
 <body>
 <div th:each="match, matchStat : ${userMatchList}">
+    <!-- 下面的比较符是否执行的是equals方法，还是仅仅是==。答：这里貌似就是equals，参见：http://forum.thymeleaf.org/th-if-comparing-objects-td4026839.html   -->
     <div th:with="otherUser = ((${match.userA} == ${user}) ? ${match.userB} : ${match.userA})">
         <h5 th:text="|匹配结果${matchStat.count}|"></h5>
         <div>

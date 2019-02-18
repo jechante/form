@@ -55,17 +55,21 @@ public class WxMpConfiguration {
         this.unsubscribeHandler = unsubscribeHandler;
         this.subscribeHandler = subscribeHandler;
         this.properties = properties;
+        this.services();
     }
 
+    // 这种静态方法的方式很丑陋，应该统一用bean方法
     public static Map<String, WxMpMessageRouter> getRouters() {
         return routers;
     }
 
+    // 这种静态方法的方式很丑陋，应该统一用bean方法
     public static Map<String, WxMpService> getMpServices() {
         return mpServices;
     }
 
-    @Bean
+//    @Bean
+// 该方法并非bean方法，真正的bean方法见下面两个方法
     public Object services() {
         mpServices = this.properties.getConfigs()
             .stream()
@@ -87,6 +91,17 @@ public class WxMpConfiguration {
 
         return Boolean.TRUE;
     }
+
+    @Bean
+    public Map<String, WxMpService> mpServices() {
+        return mpServices;
+    }
+
+    @Bean
+    public Map<String, WxMpMessageRouter> routers() {
+        return routers;
+    }
+
 
     private WxMpMessageRouter newRouter(WxMpService wxMpService) {
         final WxMpMessageRouter newRouter = new WxMpMessageRouter(wxMpService);

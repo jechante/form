@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,9 @@ public class WxRedirectController {
     @Autowired
     private PushRecordService pushRecordService;
 
+    @Autowired
+    private Map<String, WxMpService> mpServices;
+
 
     @RequestMapping("/greet")
     public String greetUser(@PathVariable String appid, @RequestParam String code, ModelMap map) {
@@ -70,28 +74,44 @@ public class WxRedirectController {
     @RequestMapping("/ask-match-result")
     // 只读事务
     @Transactional(readOnly = true)
-    public String getAskMatchResult(@PathVariable String appid, @RequestParam String code, ModelMap map, @RequestParam Long id) {
+    public String getAskMatchResult(@PathVariable String appid, @RequestParam String code, ModelMap map, @RequestParam Long id) throws WxErrorException {
 
-//        WxMpService mpService = WxMpConfiguration.getMpServices().get(appid);
-//
-//        try {
-//            WxMpOAuth2AccessToken accessToken = mpService.oauth2getAccessToken(code);
-//            WxMpUser user = mpService.oauth2getUserInfo(accessToken, null);
-//
-//            // 判断是否有权限查看该配对结果
-//            PushRecord pushRecord = pushRecordRepository.findById(id).orElseThrow(() -> new RuntimeException("没有该条记录"));
-//            if (!pushRecord.getUser().getId().equals(user.getOpenId())) {
-//                log.error("无权查看该配对结果");
-//            }
-//            map.put("user", user);
-//        } catch (WxErrorException e) {
-//            e.printStackTrace();
-//        }
-        // 测试模板
+        WxMpService mpService = mpServices.get(appid);
+        WxMpOAuth2AccessToken accessToken = mpService.oauth2getAccessToken(code);
+        WxMpUser user = mpService.oauth2getUserInfo(accessToken, null);
+
+        // 判断是否有权限查看该配对结果
+        PushRecord pushRecord = pushRecordRepository.findWithMatchesAndUser(id).orElseThrow(() -> new RuntimeException("没有该条记录"));
+        if (!pushRecord.getUser().getId().equals(user.getOpenId())) {
+            log.error("无权查看该配对结果");
+            throw new RuntimeException("该用户无权查看该配对结果,推送id为："+id);
+        }
+
+        this.buildModelMapFromPushRecord(pushRecord,map);
+        return "match_result";
+    }
+
+
+
+
+    // 日常推送，根据pushRecord的id获取配对结果
+    @RequestMapping("/regular-match-result")
+    public String getMatchResult(@PathVariable String appid, @RequestParam String code, ModelMap map, @RequestParam LocalDateTime timestamp) throws WxErrorException {
+        // 根据时间戳和用户id获取推送记录
+        WxMpService mpService = mpServices.get(appid);
+        WxMpOAuth2AccessToken accessToken = mpService.oauth2getAccessToken(code);
+        WxMpUser user = mpService.oauth2getUserInfo(accessToken, null);
+
+        PushRecord pushRecord = pushRecordRepository.findAllByUserIdAndPushDateTimeWithMatchesAndUser(user.getOpenId(), timestamp).orElseThrow(() -> new RuntimeException("没有该条记录"));
+        this.buildModelMapFromPushRecord(pushRecord,map);
+        return "match_result";
+    }
+
+    // pushRecord最好已经急加载了user和userMatchList
+    private void buildModelMapFromPushRecord(PushRecord pushRecord, ModelMap map) {
+
+        // 构造模板需要用的变量信息
         map.put("mapper", new ObjectMapper());
-
-        id = 2l;
-        PushRecord pushRecord = pushRecordService.findOneWithMatches(Long.valueOf(2));
         map.put("pushRecord", pushRecord);
         map.put("user", pushRecord.getUser());
 
@@ -117,24 +137,14 @@ public class WxRedirectController {
         List<BaseProperty> basePropertyList = basePropertyRepository.findAllByIdIn(basePropertySet);
 
         // 按用户分组，获取BaseProperty为key的Map
-        Map<WxUser, Map<BaseProperty,UserProperty>> propertiesMap = userProperties.stream().collect(Collectors.groupingBy(userProperty -> userProperty.getWxUser(),
+        Map<WxUser, Map<BaseProperty, UserProperty>> propertiesMap = userProperties.stream().collect(Collectors.groupingBy(userProperty -> userProperty.getWxUser(),
             Collectors.toMap(UserProperty::getBase, userProperty -> userProperty)));
-        Map<WxUser, Map<BaseProperty,UserDemand>> demandsMap = userDemands.stream().collect(Collectors.groupingBy(userDemand -> userDemand.getWxUser(),
+        Map<WxUser, Map<BaseProperty, UserDemand>> demandsMap = userDemands.stream().collect(Collectors.groupingBy(userDemand -> userDemand.getWxUser(),
             Collectors.toMap(UserDemand::getBase, userDemand -> userDemand)));
         map.put("basePropertyList", basePropertyList);
         map.put("propertiesMap", propertiesMap);
         map.put("demandsMap", demandsMap);
-
-
-
-        return "match_result";
     }
 
 
-    // 日常推送，根据pushRecord的id获取配对结果
-    @RequestMapping("/regular-match-result")
-    public String getMatchResult(@PathVariable String appid, @RequestParam String code, ModelMap map, @RequestParam Long id) {
-
-        return "match_result";
-    }
 }

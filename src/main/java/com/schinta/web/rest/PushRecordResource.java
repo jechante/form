@@ -8,7 +8,6 @@ import com.schinta.service.PushRecordService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
 import com.schinta.web.rest.util.PaginationUtil;
-import com.sun.mail.iap.Response;
 import io.github.jhipster.web.util.ResponseUtil;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -142,9 +142,36 @@ public class PushRecordResource {
     @Timed
     public ResponseEntity<PushRecord> pushUserAsked(@PathVariable String id) throws WxErrorException, MalformedURLException {
         WxUser wxUser = wxUserRepository.findById(id).get();
-//        PushRecord pushRecord = pushRecordService.getUserAsked(wxUser);
-        PushRecord pushRecord = pushRecordService.findOneWithMatches(Long.valueOf(2)); // 测试用
+        PushRecord pushRecord = pushRecordService.getUserAsked(wxUser);
+//        PushRecord pushRecord = pushRecordService.findOneWithMatches(Long.valueOf(2)); // 测试用
         pushRecordService.push(pushRecord);
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    /**
+     * GET  /broadcast : 群发消息。分成两个事务：1.计算生成推送记录；2.向用户群发消息（只是一个带时间戳的地址）
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+     */
+    @GetMapping("/broadcast")
+    @Timed
+    public ResponseEntity<List<PushRecord>> broadcast() throws WxErrorException, MalformedURLException {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
+        pushRecordService.broadcast(localDateTime, pushRecords);
+        return ResponseEntity.ok().body(pushRecords);
+    }
+
+    /**
+     * GET  /mass-preview : 群发消息预览
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+     */
+    @GetMapping("/mass-preview")
+    @Timed
+    public ResponseEntity<PushRecord> massPreview(@RequestParam LocalDateTime timestamp) throws WxErrorException, MalformedURLException {
+        pushRecordService.massPreview(timestamp);
         return ResponseEntity.ok().body(null);
     }
 }

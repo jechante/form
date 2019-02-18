@@ -36,5 +36,8 @@ public interface UserMatchRepository extends JpaRepository<UserMatch, Long> {
     @Query("select user_match from UserMatch user_match where ( user_match.userA =:user and (user_match.pushStatus is null or user_match.pushStatus = 'B' ) ) or (user_match.userB = :user and (user_match.pushStatus is null or user_match.pushStatus = 'A' ) ) and user_match.algorithm = :algorithm")
     List<UserMatch> findUnPushedByWxUserAndAlgorithm(@Param("user")WxUser user, @Param("algorithm")Algorithm algorithm);
 
+    // 查询某个算法下所有未被推送的匹配
+    @Query("select user_match from UserMatch user_match where user_match.pushStatus <> 'BOTH' and user_match.algorithm = :algorithm")
+    List<UserMatch> findUnPushedByAlgorithm(@Param("algorithm")Algorithm algorithm);
 
 }

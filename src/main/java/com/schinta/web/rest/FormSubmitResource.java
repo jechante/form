@@ -13,6 +13,7 @@ import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
 import com.schinta.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -154,7 +155,7 @@ public class FormSubmitResource {
      */
     @PostMapping("/form-submits-jin/Q4qaJD")
     @Timed
-    public ResponseEntity<Object> printTest(@Valid @RequestBody String submitJson) throws URISyntaxException, IOException, InstantiationException, IllegalAccessException {
+    public ResponseEntity<Object> printTest(@Valid @RequestBody String submitJson) throws URISyntaxException, IOException, InstantiationException, IllegalAccessException, WxErrorException {
         log.info("收到金数据推送表单 : {}", submitJson);
 
         // 保存推送表单json及元数据
@@ -166,8 +167,10 @@ public class FormSubmitResource {
         // 计算该用户与现有其他用户的效用矩阵
         userMatchService.computeUserToOthers(newSubmit);
         // 推动针对该用户需求的最佳匹配结果
+        // 同样分成了两个事务，1.先计算生产pushRecord
         PushRecord pushRecord = pushRecordService.getUserAsked(newSubmit.getWxUser());
-
+        // 2.再推送链接
+        pushRecordService.push(pushRecord);
         return ResponseEntity.created(new URI("/api/form-submits-jin/Q4qaJD/" + newSubmit.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, newSubmit.getId().toString()))
             .body(newSubmit);

@@ -62,6 +62,7 @@ spring:
             hibernate.cache.hazelcast.instance_name: form
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
+            hibernate.jdbc.batch_size: 25
     liquibase:
         contexts: prod
     mail:

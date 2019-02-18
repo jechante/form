@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,11 +131,16 @@ public class TestResource {
 
         // 测试entityManager的persist方法
 //        Algorithm algorithm = algorithmRepository.findById(Long.valueOf(1)).get();
-        Algorithm algorithm = new Algorithm();
-        algorithm.setEnabled(true);
-        algorithm.setId(2L);
-        entityManager.persist(algorithm);
-        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
+//        Algorithm algorithm = new Algorithm();
+//        algorithm.setEnabled(true);
+//        algorithm.setId(2L);
+//        entityManager.persist(algorithm);
+//        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
 
+        // 测试localdatetime 与 string 间的转化
+        LocalDateTime time = LocalDateTime.now();
+        String timeStr = time.toString();
+        LocalDateTime time1 = LocalDateTime.parse(timeStr);
+        return new ResponseEntity<>(time1, null, HttpStatus.OK);
     }
 }

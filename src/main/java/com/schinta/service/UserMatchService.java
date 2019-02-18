@@ -148,7 +148,15 @@ public class UserMatchService {
         allUsers.addAll(allDemandsMap.keySet());
 
         // 计算效用分
+        // 批处理（主要是防止内存溢出）
+        int batchSize = 25;
+        int i = 0; // set循环的index记录变量
         for (WxUser toUser : allUsers) {
+            if ( i > 0 && i % batchSize == 0 ) {
+                //flush a batch of inserts and release memory
+                entityManager.flush();
+                entityManager.clear();
+            }
             List<UserProperty> toUserProperties = allPropertiesMap.get(toUser);
             List<UserDemand> toUserDemands = allDemandsMap.get(toUser);
             Map<BaseProperty, UserProperty> toUserPropertyMap = null;
@@ -208,7 +216,9 @@ public class UserMatchService {
                 userMatch.setScoreTotal(total);
                 userMatch.setRatio(total/maxScore);
                 entityManager.persist(userMatch); // 这里merge也可以，但感觉尽量merge尽量还是用于detached的实体，其余情况用persist更高校
+                i ++;
             }
+
         }
         formSubmit.setComputed(true);
         entityManager.merge(formSubmit);
