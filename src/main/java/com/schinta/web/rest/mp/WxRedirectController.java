@@ -106,6 +106,8 @@ public class WxRedirectController {
 
     // 日常推送，根据pushRecord的id获取配对结果
     @RequestMapping("/regular-match-result")
+    // 只读事务
+    @Transactional(readOnly = true)
     public String getMatchResult(@PathVariable String appid, @RequestParam String code, ModelMap map, @RequestParam LocalDateTime timestamp) throws WxErrorException {
         // 根据时间戳和用户id获取推送记录
         WxMpService mpService = mpServices.get(appid);
