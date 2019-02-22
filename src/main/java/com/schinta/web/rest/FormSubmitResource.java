@@ -23,8 +23,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -129,8 +132,9 @@ public class FormSubmitResource {
      */
     @GetMapping("/form-submits/{id}")
     @Timed
-    public ResponseEntity<FormSubmit> getFormSubmit(@PathVariable Long id) {
+    public ResponseEntity<FormSubmit> getFormSubmit(@PathVariable Long id) throws IOException {
         log.debug("REST request to get FormSubmit : {}", id);
+
         Optional<FormSubmit> formSubmit = formSubmitService.findOne(id);
         return ResponseUtil.wrapOrNotFound(formSubmit);
     }
@@ -150,30 +154,40 @@ public class FormSubmitResource {
     }
 
     /**
-     * 金数据表单「 邀请你来填写金数据表单《[新]金华-测试用表单》https://jinshuju.net/f/Q4qaJD 」的数据推送地址
+     * 金数据表单的数据推送地址
      * formSubmit、userProperty和userDemand的保存、计算该用户与现有其他用户的效用矩阵分成三个事务，避免推送表单数据保存失败（目前用dealflag、computed标记是否处理）。
      */
-    @PostMapping("/form-submits-jin/Q4qaJD")
+    @PostMapping("/form-submits-jin")
     @Timed
-    public ResponseEntity<Object> printTest(@Valid @RequestBody String submitJson) throws URISyntaxException, IOException, InstantiationException, IllegalAccessException, WxErrorException {
+    public void submitJin(HttpServletResponse response, @Valid @RequestBody String submitJson) throws IOException, InstantiationException, IllegalAccessException, WxErrorException {
         log.info("收到金数据推送表单 : {}", submitJson);
+        // 先返回200结果，小伊后台有2s等待超时重发并一定次数后关闭数据推送的机制
+        PrintWriter wr = response.getWriter();
+        response.setStatus(HttpStatus.OK.value());
+        wr.print("200ok");
+        // 一定要关闭之后才会返回结果
+        wr.flush();
+        wr.close();
+
+        // --------- 返回结果之后------------
 
         // 保存推送表单json及元数据
         FormSubmit newSubmit = formSubmitService.saveSubmitJson(submitJson);
-        if (newSubmit == null) return ResponseEntity.ok().body("重复推送");
-        log.debug("不是重复推送");
-        // 更新用户属性和需求值
-        formSubmitService.updateUserPropertyAndDemand(newSubmit);
-        // 计算该用户与现有其他用户的效用矩阵
-        userMatchService.computeUserToOthers(newSubmit);
-        // 推动针对该用户需求的最佳匹配结果
-        // 同样分成了两个事务，1.先计算生产pushRecord
-        PushRecord pushRecord = pushRecordService.getUserAsked(newSubmit.getWxUser());
-        // 2.再推送链接
-        pushRecordService.push(pushRecord);
-        return ResponseEntity.created(new URI("/api/form-submits-jin/Q4qaJD/" + newSubmit.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, newSubmit.getId().toString()))
-            .body(newSubmit);
+        if (newSubmit == null) {
+            log.info("重复推送");
+            return;
+        } else {
+            log.info("不是重复推送");
+            // 更新用户属性和需求值
+            formSubmitService.updateUserPropertyAndDemand(newSubmit);
+            // 计算该用户与现有其他用户的效用矩阵
+            userMatchService.computeUserToOthers(newSubmit);
+            // 推动针对该用户需求的最佳匹配结果
+            // 同样分成了两个事务，1.先计算生产pushRecord
+            PushRecord pushRecord = pushRecordService.getUserAsked(newSubmit.getWxUser());
+            // 2.再推送链接
+            pushRecordService.wxPush(pushRecord);
+        }
     }
 
 

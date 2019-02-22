@@ -120,7 +120,7 @@ wx:
         secret: 2827a7f1d929db052ae57f9b8ce494a8
         token: rysf1989
         aesKey: 112131
-      - appId: 2222
+      - appId: wxba1e1e0cfc55f4a9
         secret: 1111
         token: 111
         aesKey: 111

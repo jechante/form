@@ -12,7 +12,7 @@
                 <div class="form-group">
                     <label class="form-control-label" for="field_propertyValue" ngbTooltip="属性值:男等">Property Value</label>
                     <input type="text" class="form-control" name="propertyValue" id="field_propertyValue"
-                        [(ngModel)]="userDemand.propertyValue" maxlength="128"/>
+                        [(ngModel)]="userDemand.propertyValue" maxlength="1000"/>
                     <div [hidden]="!(editForm.controls.propertyValue?.dirty && editForm.controls.propertyValue?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.propertyValue?.errors?.maxlength">

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -91,7 +92,16 @@ public class WxRedirectController {
         return "match_result";
     }
 
-
+    // 主动请求结果预览，根据pushRecord的id获取配对结果
+    @RequestMapping("/ask-match-result-preview")
+    // 只读事务
+    @Transactional(readOnly = true)
+    public String getAskMatchPreviewResult(@PathVariable String appid, ModelMap map, @RequestParam Long id) throws WxErrorException {
+        // 判断是否有权限查看该配对结果
+        PushRecord pushRecord = pushRecordRepository.findWithMatchesAndUser(id).orElseThrow(() -> new RuntimeException("没有该条记录"));
+        this.buildModelMapFromPushRecord(pushRecord,map);
+        return "match_result";
+    }
 
 
     // 日常推送，根据pushRecord的id获取配对结果
@@ -111,7 +121,8 @@ public class WxRedirectController {
     private void buildModelMapFromPushRecord(PushRecord pushRecord, ModelMap map) {
 
         // 构造模板需要用的变量信息
-        map.put("mapper", new ObjectMapper());
+        ObjectMapper mapper = new ObjectMapper();
+        map.put("mapper", mapper);
         map.put("pushRecord", pushRecord);
         map.put("user", pushRecord.getUser());
 
@@ -141,9 +152,29 @@ public class WxRedirectController {
             Collectors.toMap(UserProperty::getBase, userProperty -> userProperty)));
         Map<WxUser, Map<BaseProperty, UserDemand>> demandsMap = userDemands.stream().collect(Collectors.groupingBy(userDemand -> userDemand.getWxUser(),
             Collectors.toMap(UserDemand::getBase, userDemand -> userDemand)));
-        map.put("basePropertyList", basePropertyList);
+        map.put("basePropertyList", basePropertyList); // todo 不用UserMatch结果应该有不同的basePropertyList
         map.put("propertiesMap", propertiesMap);
         map.put("demandsMap", demandsMap);
+
+        // 获取用户照片信息
+        basePropertyList.stream().filter(baseProperty -> baseProperty.getPropertyName().equals("头像")).findAny().ifPresent(baseProperty -> {
+            Map<WxUser, List<String>> userPicsMap = propertiesMap.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+                UserProperty property = entry.getValue().get(baseProperty);
+                List<String> pics = new ArrayList<>();
+                if (property != null) { // 如果用户有头像
+                    String propertyValue = property.getPropertyValue();
+                    try {
+                        pics = mapper.readValue(propertyValue, List.class); // 头像是数组
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return pics;
+            }));
+            map.put("userPicsMap", userPicsMap);
+        });
+
+
     }
 
 

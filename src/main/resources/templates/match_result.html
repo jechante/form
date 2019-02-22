@@ -3,7 +3,7 @@
       xsi:schemaLocation="http://www.thymeleaf.org ">
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>小伊配对</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-reboot.min.css" rel="stylesheet">
@@ -58,6 +58,11 @@
         .weixin-headimg {
             width: 20px;
             height: 20px;
+        }
+
+        .user-pic {
+            margin-top: 10px;
+            width: 100%;
         }
     </style>
 </head>
@@ -194,24 +199,17 @@
                 </div>
                 </tbody>
             </table>
-            <p><img class="" data-backh="419" data-backw="558"
-                    data-before-oversubscription-url="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRzfApTaAhkwPxpHKEpHgrAsfuujrmP8EvqibFq6SBPYibiczx5h44sA89Q/0?wx_fmt=jpeg"
-                    data-copyright="0" data-ratio="0.75" data-s="300,640"
-                    data-src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRzfApTaAhkwPxpHKEpHgrAsfuujrmP8EvqibFq6SBPYibiczx5h44sA89Q/640?wx_fmt=jpeg"
-                    data-type="jpeg" data-w="1280"
-                    style="width: 100% !important; height: auto !important; visibility: visible !important;"
-                    _width="100%"
-                    src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRzfApTaAhkwPxpHKEpHgrAsfuujrmP8EvqibFq6SBPYibiczx5h44sA89Q/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"
-                    crossorigin="anonymous" data-fail="0"></p>
-            <p><img class="" data-backh="558" data-backw="558"
-                    data-before-oversubscription-url="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/0?wx_fmt=jpeg"
-                    data-copyright="0" data-ratio="1" data-s="300,640"
-                    data-src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg"
-                    data-type="jpeg" data-w="1080"
-                    style="width: 100% !important; height: auto !important; visibility: visible !important;"
-                    _width="100%"
-                    src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"
-                    crossorigin="anonymous" data-fail="0"></p>
+
+            <div th:each="picUrl, picUrlStat : ${userPicsMap == null ? null : userPicsMap.get(user)}" >
+                <p><img th:src="${picUrl}" class="user-pic"></p>
+            </div>
+            <div th:each="picUrl, picUrlStat : ${userPicsMap == null ? null : userPicsMap.get(otherUser)}" >
+                <p><img th:src="${picUrl}" class="user-pic"></p>
+            </div>
+
+
+<!--            <p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"-->
+<!--                    ></p>-->
             <p><br></p>
         </div>
         <!--<p>城市： <span th:text="${user.city}"></span></p>-->

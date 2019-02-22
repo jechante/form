@@ -24,9 +24,9 @@ public abstract class PropertyValue implements Serializable {
     /**
      * 属性值:男等
      */
-    @Size(max = 128)
+    @Size(max = 1000)
     @ApiModelProperty(value = "属性值:男等")
-    @Column(name = "property_value", length = 128)
+    @Column(name = "property_value", length = 1000)
     private String propertyValue;
 
     /**

@@ -13,6 +13,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Repository
 public interface WxUserRepository extends JpaRepository<WxUser, String> {
-    @Query("select user.id from WxUser user where user.userStatus = 'ACTIVE'")
-    List<String> getAllActiveUserOpenIds();
+//    @Query("select user.id from WxUser user where user.userStatus = 'ACTIVE'")
+//    List<String> getAllActiveUserOpenIds();
+
+
 }

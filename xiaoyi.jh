@@ -70,12 +70,12 @@ enum FormyType {
 }
 
 entity UserProperty{
-    propertyValue String maxlength(128) /**属性值:男等*/
+    propertyValue String maxlength(1000) /**属性值:男等*/
     remark String maxlength(2000) /**记录更新情况*/
 }
 
 entity UserDemand{
-    propertyValue String maxlength(128) /**属性值:男等*/
+    propertyValue String maxlength(1000) /**属性值:男等*/
     remark String maxlength(2000) /**记录更新情况*/
 }
 

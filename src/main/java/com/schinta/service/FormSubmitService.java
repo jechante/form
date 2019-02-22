@@ -1,15 +1,19 @@
 package com.schinta.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.util.StringUtil;
+import com.schinta.config.Constants;
 import com.schinta.domain.*;
 import com.schinta.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.support.RequestHandledEvent;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -100,8 +104,8 @@ public class FormSubmitService {
     }
 
     // 需要注意的点：需要使用批处理，提高性能
+    // 避免更新或插入（upsert）前的逐条记录查询（先查询出所有结果，然后通过hashCode或者equals等方法判断是否已经有该记录）
     // todo 1）验证批处理是否成功；
-    //  2）避免更新或插入（upsert）前的逐条记录查询（先查询出所有结果，然后通过hashCode或者equals等方法判断是否已经有该记录）
     public void updateUserPropertyAndDemand(FormSubmit formSubmit) throws IOException, IllegalAccessException, InstantiationException {
         ObjectMapper mapper = new ObjectMapper(); //转换器
         Map form = mapper.readValue(formSubmit.getSubmitJosn(), Map.class);
@@ -194,11 +198,27 @@ public class FormSubmitService {
                 return false;
             } else return true;
         } else if (value instanceof HashMap) {
-            if (((HashMap) value).size() == 0) { // Jackson将对象统一封装成了HashMap
+            HashMap map = (HashMap) value;
+            if (map.size() == 0) { // Jackson将对象统一封装成了HashMap
                 return false;
-            } else return true;
+            }
+            else if (map.containsKey("province")) { // 如果是地址
+                String province = (String) map.get("province");
+                if (StringUtil.isNullOrEmpty(province)) { // 并且未选择（省字段为空即为未填写）
+                    return false;
+                } else return true;
+            }
+            else {
+                return true;
+            }
         } else return true;
     }
+
+//    @EventListener
+//    public void handleEvent (RequestHandledEvent e) {
+//        System.out.println("-- RequestHandledEvent --");
+//        System.out.println(e);
+//    }
 
     // 需要注意的点：1）除了serial_number外，还需根据update_at判断是重复推送还是确实修改了某一条数据（可能是后台修改）；
     public FormSubmit saveSubmitJson(String submitJson) throws IOException {
@@ -214,6 +234,7 @@ public class FormSubmitService {
 //            .getSingleResult();
 
         // 有时候金数据会重复提交同一条数据，如果是重复则不处理（根据serial_number和update_at判断，有时候可能后台修改用户数据）
+        // todo 如果同时有多个表单，还需要增加formId字段，即Q4qaJD，并根据这个查重
         boolean isPresent = formSubmitRepository.findBySerialNumberAndUpdatedDateTime(serialNum, updateTime).isPresent();
 //        Optional isPresent = formSubmitRepository.findBySerialNumberAndUpdatedDateTime(serialNum, updateTime);
         if (isPresent) return null;
@@ -233,8 +254,8 @@ public class FormSubmitService {
         BaseForm baseForm = baseFormRepository.findByFormCode((String) form.get("form")).orElse(null);
         formSubmit.setBase(baseForm);
 
-        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生成环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
-//        String openid = "oPhnp5scZ4Mf0b9hObV6vj7FqfeA"; // 开发环境启用，为微信测试号的openid。实际小伊中个人的openid为：oMzbs1A71vYPVjOPtWKPXyL2jFHU
+//        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生产环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
+        String openid = Constants.WX_TEST_OPENID; // 开发环境启用，为微信测试号的openid。实际小伊中个人的openid为：oMzbs1A71vYPVjOPtWKPXyL2jFHU
         WxUser user = wxUserRepository.findById(openid).orElse(null); // todo orElseGet （如果可以向未关注用户推送匹配结果，也可以在这里创建用户）
         formSubmit.setWxUser(user);
         formSubmit = this.save(formSubmit);

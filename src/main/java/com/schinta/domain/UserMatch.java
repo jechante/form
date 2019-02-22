@@ -1,5 +1,6 @@
 package com.schinta.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.Cache;
@@ -318,4 +319,36 @@ public class UserMatch implements Serializable {
             ", pushStatus='" + getPushStatus() + "'" +
             "}";
     }
+
+    // 是否已经推送给A
+    @JsonIgnore
+    public boolean hasPushedToA() {
+        return pushStatus != null && pushStatus.equals(PushStatus.A);
+    }
+
+    // 是否已经推送给B
+    @JsonIgnore
+    public boolean hasPushedToB() {
+        return pushStatus != null && pushStatus.equals(PushStatus.B);
+    }
+
+    // 是否已经推送给任意一方
+    @JsonIgnore
+    public boolean hasPushedToEither() {
+        return pushStatus != null && (pushStatus.equals(PushStatus.A) || pushStatus.equals(PushStatus.B));
+    }
+
+    // 是否可以被推送给指定用户
+    @JsonIgnore
+    public boolean toBePushedToUser(WxUser user) {
+        if (userA.equals(user) && (!hasPushedToA())) {
+            return true;
+        } else if (userB.equals(user) && (!hasPushedToB())) {
+            return true;
+        } else return false;
+    }
+
+
+
+
 }

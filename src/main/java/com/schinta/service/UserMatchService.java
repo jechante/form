@@ -172,7 +172,7 @@ public class UserMatchService {
             float scoreAtoB = scoreOnOneSide(userDemandMap, toUserPropertyMap, algorithm);
             // 以其他用户需求对该用户属性打分，即计算scoreBtoA
             float scoreBtoA = scoreOnOneSide(toUserDemandMap, userPropertyMap, algorithm);
-            if (scoreAtoB != 0 || scoreBtoA != 0) { // 如果有一方得分不为0，则将结果存库
+            if (scoreAtoB != 0 || scoreBtoA != 0) { // 如果有一方得分不为0，则将结果存库 todo 如果有1方得分为0，是否还要推送（需要看过滤条件是否是强过滤条件，例如身高不是强过滤、性别是强过滤）
                 String type = "new";
                 UserMatch userMatch = new UserMatch();
                 userMatch.setAlgorithm(algorithm);
@@ -201,7 +201,7 @@ public class UserMatchService {
                 }
 
                 // 获取性别
-                BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性
+                BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性（必填属性？）
                 String sexA = readSingleValue(userPropertyMap.get(sex));
                 String sexB = readSingleValue(toUserPropertyMap.get(sex));
                 float total;

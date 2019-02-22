@@ -144,7 +144,7 @@ public class PushRecordResource {
         WxUser wxUser = wxUserRepository.findById(id).get();
         PushRecord pushRecord = pushRecordService.getUserAsked(wxUser);
 //        PushRecord pushRecord = pushRecordService.findOneWithMatches(Long.valueOf(2)); // 测试用
-        pushRecordService.push(pushRecord);
+        pushRecordService.wxPush(pushRecord);
 
         return ResponseEntity.ok().body(null);
     }
@@ -158,8 +158,24 @@ public class PushRecordResource {
     @Timed
     public ResponseEntity<List<PushRecord>> broadcast() throws WxErrorException, MalformedURLException {
         LocalDateTime localDateTime = LocalDateTime.now();
+        // 计算生成新的推送记录（同时更新usermatch部分）
         List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
-        pushRecordService.broadcast(localDateTime, pushRecords);
+        pushRecordService.wxBroadcast(localDateTime, pushRecords);
+        return ResponseEntity.ok().body(pushRecords);
+    }
+
+    /**
+     * GET  /broadcast : 测试群发：1.计算所有活跃用户的最新配对；2.推送给指定人预览
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+     */
+    @GetMapping("/broadcast-test")
+    @Timed
+    public ResponseEntity<List<PushRecord>> testBroadcast(@RequestParam String openid) throws WxErrorException, MalformedURLException {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        // 计算生成新的推送记录（同时更新usermatch部分）
+        List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
+        pushRecordService.wxMassPreview(localDateTime, openid);
         return ResponseEntity.ok().body(pushRecords);
     }
 
@@ -170,8 +186,8 @@ public class PushRecordResource {
      */
     @GetMapping("/mass-preview")
     @Timed
-    public ResponseEntity<PushRecord> massPreview(@RequestParam LocalDateTime timestamp) throws WxErrorException, MalformedURLException {
-        pushRecordService.massPreview(timestamp);
+    public ResponseEntity<PushRecord> massPreview(@RequestParam LocalDateTime timestamp, @RequestParam String openid) throws WxErrorException, MalformedURLException {
+        pushRecordService.wxMassPreview(timestamp, openid);
         return ResponseEntity.ok().body(null);
     }
 }

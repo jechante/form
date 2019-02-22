@@ -1,12 +1,14 @@
 package com.schinta.web.rest.mp;
 
 import com.schinta.config.wx.WxMpConfiguration;
+import com.schinta.repository.BaseFormRepository;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.bean.menu.WxMenuButton;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.menu.WxMpGetSelfMenuInfoResult;
 import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,7 +25,8 @@ import static me.chanjar.weixin.common.api.WxConsts.MenuButtonType;
 @RestController
 @RequestMapping("/wx/menu/{appid}")
 public class WxMenuController {
-
+    @Autowired
+    private BaseFormRepository baseFormRepository;
     /**
      * <pre>
      * 自定义菜单创建接口
@@ -39,6 +42,7 @@ public class WxMenuController {
         return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
     }
 
+    // 示例菜单
     @GetMapping("/create")
     public String menuCreateSample(@PathVariable String appid) throws WxErrorException, MalformedURLException {
         WxMenu menu = new WxMenu();
@@ -97,6 +101,20 @@ public class WxMenuController {
         button3.getSubButtons().add(button33);
         button3.getSubButtons().add(button34);
 
+        return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
+    }
+
+    // 小伊菜单
+    @GetMapping("/create-xy")
+    public String menuCreateXy(@PathVariable String appid) throws WxErrorException, MalformedURLException {
+        WxMenu menu = new WxMenu();
+
+        String url = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
+        WxMenuButton button1 = new WxMenuButton();
+        button1.setType(MenuButtonType.VIEW);
+        button1.setName("完善或修改配对条件");
+        button1.setUrl(url);
+        menu.getButtons().add(button1);
         return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
     }
 

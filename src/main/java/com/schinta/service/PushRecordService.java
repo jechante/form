@@ -1,5 +1,6 @@
 package com.schinta.service;
 
+import com.schinta.config.Constants;
 import com.schinta.domain.Algorithm;
 import com.schinta.domain.PushRecord;
 import com.schinta.domain.UserMatch;
@@ -132,10 +133,11 @@ public class PushRecordService {
     }
 
     // todo 需要验证用户主动推送数是否达到限制（如每日一次）
+    // 计算用户主动请求的此次配对(更新match、新建pushRecord)
     public PushRecord getUserAsked(WxUser wxUser) {
         // 获取默认算法
         Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
-        // 获取用户与其他所有用户已有的效用结果
+        // 获取用户与其他所有用户已有的未推送的效用结果
         List<UserMatch> userMatches = userMatchRepository.findUnPushedByWxUserAndAlgorithm(wxUser, algorithm);
         //        if (userMatches.size() == 0) throw new RuntimeException("该用户没有符合的配对");
         PushRecord pushRecord = getUserPushRecord(algorithm, wxUser, userMatches, LocalDateTime.now(), PushType.ASK);
@@ -147,11 +149,12 @@ public class PushRecordService {
     }
 
 
-
+    // 计算后台群发的此次配对(更新match、新建pushRecord)
+    // todo 已经取消关注的用户之前的配对信息是否还应推送给其他人，目前应该为不被推送。
     public List<PushRecord> getBroadcast(LocalDateTime localDateTime) {
         // 获取默认算法
         Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
-        // 获取用户与其他所有用户已有的效用结果
+        // 获取已有活跃用户未被推送的效用结果
         List<UserMatch> allMatches = userMatchRepository.findUnPushedByAlgorithm(algorithm);
         // 生成所有用户
         Set<WxUser> users = new HashSet<>();
@@ -172,16 +175,17 @@ public class PushRecordService {
                 entityManager.flush();
                 entityManager.clear();
             }
-            // 获取该用户的未推送配对
+            // 获取可以被推送给该用户且尚未推送的配对
             List<UserMatch> userMatches = allMatches.stream().filter(userMatch -> {
-                if (userMatch.getUserA().equals(user) && (!userMatch.getPushStatus().equals(PushStatus.A))) {
-                    return true;
-                } else if (userMatch.getUserB().equals(user) && (!userMatch.getPushStatus().equals(PushStatus.B))) {
-                    return true;
-                } else return false;
+//                if (userMatch.getUserA().equals(user) && (!userMatch.hasPushedToA())) {
+//                    return true;
+//                } else if (userMatch.getUserB().equals(user) && (!userMatch.hasPushedToB())) {
+//                    return true;
+//                } else return false;
+                return userMatch.toBePushedToUser(user);
             }).collect(Collectors.toList());
             PushRecord pushRecord = getUserPushRecord(algorithm, user, userMatches, localDateTime, PushType.Regular);
-            if (pushRecord != null) {
+            if (pushRecord != null) { // 不是所有活跃用户都有pushRecord，例如已经主动推送给他了等
                 entityManager.persist(pushRecord);
                 pushRecords.add(pushRecord);
                 i++;
@@ -191,8 +195,9 @@ public class PushRecordService {
         return pushRecords;
     }
 
+    // 计算某用户的此次配对
     private PushRecord getUserPushRecord(Algorithm algorithm, WxUser wxUser, List<UserMatch> userMatches, LocalDateTime timestamp, PushType pushType) {
-        if (userMatches == null){ // 如果没有记录则为空
+        if (userMatches == null || userMatches.size() == 0){ // 如果没有记录则为空
             return null;
         }
         PushRecord pushRecord = new PushRecord();
@@ -202,7 +207,8 @@ public class PushRecordService {
         for (int i = 0; i < wxUser.getPushLimit() && i < userMatches.size(); i++) {
             UserMatch userMatch = userMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
 
-            if(userMatch.getPushStatus() != null && (userMatch.getPushStatus().equals(PushStatus.A) || userMatch.getPushStatus().equals(PushStatus.B))) { // 如果已经被推送给其中一个人（说明已经计算了排名、matchType等）
+//            if(userMatch.getPushStatus() != null && (userMatch.getPushStatus().equals(PushStatus.A) || userMatch.getPushStatus().equals(PushStatus.B))) { // 如果已经被推送给其中一个人（说明已经计算了排名、matchType等）
+            if(userMatch.hasPushedToEither()) { // 如果已经被推送给其中任意一个人（说明已经计算了排名、matchType等）
                 userMatch.setPushStatus(PushStatus.BOTH);
             } else { // 如果还未推送过
                 WxUser theOther = null;
@@ -242,9 +248,10 @@ public class PushRecordService {
 
     }
 
-    public void push(PushRecord pushRecord) throws WxErrorException, MalformedURLException {
+    public void wxPush(PushRecord pushRecord) throws WxErrorException, MalformedURLException {
         // 将pushRecord转化为持久态。注意：一定要使用merge的返回值，即pushRecord = 不能漏掉！！！
-        if (pushRecord == null) return;
+        if (pushRecord == null)
+            return;
         pushRecord = entityManager.merge(pushRecord);
         log.debug(""+entityManager.contains(pushRecord));
         WxMpKefuMessage.WxArticle article1 = new WxMpKefuMessage.WxArticle();
@@ -259,7 +266,7 @@ public class PushRecordService {
             url = wxMpService
                 .oauth2buildAuthorizationUrl(
                     String.format("%s://%s/wx/redirect/%s/ask-match-result?id=%s", requestURL.getProtocol()/*"http"*/, requestURL.getHost()/*"120acf31.ngrok.io"*/, appid, pushRecord.getId()),
-                    WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // todo 采用静默授权
+                    WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // 虽然是用户信息授权，但在公众号内打开效果同静默授权
         }
 
         // 获取昵称、人数等
@@ -283,7 +290,12 @@ public class PushRecordService {
         article1.setUrl(url);
         article1.setPicUrl(user.getWxHeadimgurl());
         article1.setDescription("点击查看你们的配对情况和分数");
-        article1.setTitle(String.format("已成功与%s等%s个人完成配对",nickName,num));
+        if (num == 1) {
+            article1.setTitle(String.format("已成功与%s完成配对",nickName));
+        } else {
+            article1.setTitle(String.format("已成功与%s等%s个人完成配对",nickName,num));
+        }
+
 
 //        WxMpKefuMessage.WxArticle article2 = new WxMpKefuMessage.WxArticle();
 //        article2.setUrl("URL");
@@ -292,8 +304,8 @@ public class PushRecordService {
 //        article2.setTitle("Happy Day");
 
         WxMpKefuMessage message = WxMpKefuMessage.NEWS()
-//            .toUser("oPhnp5scZ4Mf0b9hObV6vj7FqfeA") // todo 测试用
-            .toUser(user.getId()) //
+            .toUser(Constants.WX_TEST_OPENID) // todo 测试用
+//            .toUser(user.getId()) //
             .addArticle(article1)
 //            .addArticle(article2)
             .build();
@@ -307,15 +319,17 @@ public class PushRecordService {
         }
     }
 
-    public void broadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws WxErrorException, MalformedURLException {
+    public void wxBroadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws WxErrorException, MalformedURLException {
         WxMpMassUploadResult massUploadResult = this.buildMPNews(localDateTime);
 
         WxMpMassOpenIdsMessage massMessage = new WxMpMassOpenIdsMessage();
         massMessage.setMsgType(WxConsts.MassMsgType.MPNEWS);
         massMessage.setMediaId(massUploadResult.getMediaId());
 
+        // 不能推送给所有活跃用户，而应该是计算得到的有PushRecord的用户
 //        List<String> users = wxUserRepository.getAllActiveUserOpenIds();
-        List<String> users = Arrays.asList(new String[] {"oPhnp5scZ4Mf0b9hObV6vj7FqfeA","oPhnp5scZ4Mf0b9hObV6vj7FqfeA"}); // todo 测试环境使用（不可用，测试号没有群发权限）
+        List<String> users = pushRecords.stream().map(PushRecord::getUser).map(WxUser::getId).collect(Collectors.toList());
+//        List<String> users = Arrays.asList(new String[] {Constants.WX_TEST_OPENID,Constants.WX_TEST_OPENID}); // todo 测试环境使用（不可用，测试号没有群发权限）
         massMessage.setToUsers(users);
 
         // 更新pushRecord的状态
@@ -350,17 +364,19 @@ public class PushRecordService {
     }
 
     // 群发消息预览
-    public void massPreview(LocalDateTime localDateTime) throws MalformedURLException, WxErrorException {
+    public void wxMassPreview(LocalDateTime localDateTime, String openid) throws MalformedURLException, WxErrorException {
         WxMpMassUploadResult massUploadResult = this.buildMPNews(localDateTime);
 
         WxMpMassPreviewMessage massMessage = new WxMpMassPreviewMessage();
         massMessage.setMsgType(WxConsts.MassMsgType.MPNEWS);
         massMessage.setMediaId(massUploadResult.getMediaId());
-        massMessage.setToWxUserOpenid("oPhnp5scZ4Mf0b9hObV6vj7FqfeA"); // todo 测试环境使用
+//        massMessage.setToWxUserOpenid(Constants.WX_TEST_OPENID); // todo 测试环境使用
+        massMessage.setToWxUserOpenid(openid); // todo 测试环境使用
         WxMpMassSendResult massResult = wxMpService.getMassMessageService().massMessagePreview(massMessage); // todo 测试群发成功的WxMpMassSendResult包括哪些信息，有什么用
 
     }
 
+    // 构造群发图文消息（主要是正文的链接）
     private WxMpMassUploadResult buildMPNews(LocalDateTime localDateTime) throws WxErrorException, MalformedURLException {
         // 上传图文消息的封面图片。webapp下的静态资源最终会打包到classpath：public下
         WxMediaUploadResult uploadMediaRes = wxMpService.getMaterialService().mediaUpload(WxConsts.MediaFileType.IMAGE, "jpg", getClass().getResourceAsStream("/public/content/images/640.jpg"));
@@ -409,7 +425,7 @@ public class PushRecordService {
             "<head>\n" +
             "</head>\n" +
             "<body>\n" +
-            "    <div id=\"test\">由于微信限制，请点击“阅读原文”查看本次匹配结果</div>\n" +
+            "    <div id=\"test\">由于微信图文无法呈现个性化页面，请点击“阅读原文”查看本次匹配结果</div>\n" +
             "  </body>\n" +
             "</html>";
 
@@ -421,7 +437,7 @@ public class PushRecordService {
         article1.setShowCoverPic(true);
         article1.setAuthor("小伊");
         article1.setContentSourceUrl(contentSourceUrl);
-        article1.setDigest(""); // todo 呈现效果需要调试
+        article1.setDigest("看看理想中的他（她）是什么样子的吧！"); // todo 呈现效果需要调试
         news.addArticle(article1);
 
 //        WxMpMassNews.WxMpMassNewsArticle article2 = new WxMpMassNews.WxMpMassNewsArticle();
