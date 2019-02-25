@@ -41,4 +41,7 @@ public interface UserMatchRepository extends JpaRepository<UserMatch, Long> {
     @Query("select user_match from UserMatch user_match where (user_match.pushStatus <> 'BOTH' or user_match.pushStatus is null ) and user_match.algorithm = :algorithm and user_match.userA.userStatus = 'ACTIVE' and user_match.userB.userStatus = 'ACTIVE'")
     List<UserMatch> findUnPushedByAlgorithm(@Param("algorithm")Algorithm algorithm);
 
+    @EntityGraph(attributePaths = {"algorithm","userA","userB"})
+    Page<UserMatch> findAll(Pageable pageable);
+
 }

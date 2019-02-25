@@ -93,10 +93,10 @@ public class WxRedirectController {
     }
 
     // 主动请求结果预览，根据pushRecord的id获取配对结果
-    @RequestMapping("/ask-match-result-preview")
+    @RequestMapping("/match-result-preview")
     // 只读事务
     @Transactional(readOnly = true)
-    public String getAskMatchPreviewResult(@PathVariable String appid, ModelMap map, @RequestParam Long id) throws WxErrorException {
+    public String getAskMatchPreviewResult(@PathVariable String appid, ModelMap map, @RequestParam Long id) {
         // 判断是否有权限查看该配对结果
         PushRecord pushRecord = pushRecordRepository.findWithMatchesAndUser(id).orElseThrow(() -> new RuntimeException("没有该条记录"));
         this.buildModelMapFromPushRecord(pushRecord,map);

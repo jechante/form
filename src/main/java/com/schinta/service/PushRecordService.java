@@ -455,4 +455,15 @@ public class PushRecordService {
     }
 
 
+    public List<PushRecord> findAllByPushTime(LocalDateTime timestamp) {
+        return pushRecordRepository.findAllByPushDateTime(timestamp);
+    }
+
+    public Page<PushRecord> findAllByPushTime(Pageable pageable, LocalDateTime localDateTime) {
+        return pushRecordRepository.findAllByPushDateTime(pageable, localDateTime);
+    }
+
+    public List<LocalDateTime> getPushTimes() {
+        return pushRecordRepository.findPushTimes();
+    }
 }

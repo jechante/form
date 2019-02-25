@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IPushRecord } from 'app/shared/model/push-record.model';
+import {Moment} from "moment";
 
 type EntityResponseType = HttpResponse<IPushRecord>;
 type EntityArrayResponseType = HttpResponse<IPushRecord[]>;
@@ -66,5 +67,29 @@ export class PushRecordService {
             pushRecord.pushDateTime = pushRecord.pushDateTime != null ? moment(pushRecord.pushDateTime) : null;
         });
         return res;
+    }
+
+    findTimeOption(): Observable<Moment[]> {
+        return this.http
+            .get<Moment[]>(`api/push-timestamps`, { observe: 'response' })
+            .pipe(map((res: any) => res.body.map(time => moment(time))));
+    }
+
+    generateNewRecords(): Observable<Moment> {
+        return this.http
+            .get<Moment>(`api/broadcast-records`, { observe: 'response' })
+            .pipe(map((res: any) => moment(res.body)));
+    }
+
+    massPreview(req?: any) {
+        const options = createRequestOption(req);
+        return this.http
+            .get(`api/mass-preview`, { params: options, observe: 'response' });
+    }
+
+    broadcast(req?: any) {
+        const options = createRequestOption(req);
+        return this.http
+            .get(`api/broadcast-push`, { params: options, observe: 'response' })
     }
 }

@@ -97,9 +97,14 @@ public class PushRecordResource {
      */
     @GetMapping("/push-records")
     @Timed
-    public ResponseEntity<List<PushRecord>> getAllPushRecords(Pageable pageable) {
+    public ResponseEntity<List<PushRecord>> getAllPushRecords(Pageable pageable, @RequestParam(required = false) LocalDateTime time) {
         log.debug("REST request to get a page of PushRecords");
-        Page<PushRecord> page = pushRecordService.findAll(pageable);
+        Page<PushRecord> page;
+        if (time != null) {
+            page = pushRecordService.findAllByPushTime(pageable,time);
+        } else {
+            page = pushRecordService.findAll(pageable);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/push-records");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -133,6 +138,17 @@ public class PushRecordResource {
     }
 
     /**
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+     */
+    @GetMapping("/push-timestamps")
+    @Timed
+    public ResponseEntity<List<LocalDateTime>> getPushTimes() throws WxErrorException, MalformedURLException {
+        List<LocalDateTime> localDateTimes = pushRecordService.getPushTimes();
+        return ResponseEntity.ok().body(localDateTimes);
+    }
+
+    /**
      * GET  /push-user-asked/:id : 用户主动获取最佳配对，返回计算得到的推送记录.
      *
      * @param id 用户的openid
@@ -150,13 +166,13 @@ public class PushRecordResource {
     }
 
     /**
-     * GET  /broadcast : 群发消息。分成两个事务：1.计算生成推送记录；2.向用户群发消息（只是一个带时间戳的地址）
+     * GET  /broadcast : 直接群发（不提供后台预览确认的机会）。分成两个事务：1.计算生成推送记录；2.向用户群发消息（只是一个带时间戳的地址）
      *
      * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
      */
-    @GetMapping("/broadcast")
+    @GetMapping("/broadcast-immediate")
     @Timed
-    public ResponseEntity<List<PushRecord>> broadcast() throws WxErrorException, MalformedURLException {
+    public ResponseEntity<List<PushRecord>> broadcastImmediate() throws WxErrorException, MalformedURLException {
         LocalDateTime localDateTime = LocalDateTime.now();
         // 计算生成新的推送记录（同时更新usermatch部分）
         List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
@@ -164,30 +180,62 @@ public class PushRecordResource {
         return ResponseEntity.ok().body(pushRecords);
     }
 
+//    /**
+//     * GET  /broadcast : 测试群发：1.计算所有活跃用户的最新配对；2.推送给指定人预览
+//     *
+//     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+//     */
+//    @GetMapping("/broadcast-test")
+//    @Timed
+//    public ResponseEntity<List<PushRecord>> testBroadcast(@RequestParam String openid) throws WxErrorException, MalformedURLException {
+//        LocalDateTime localDateTime = LocalDateTime.now();
+//        // 计算生成新的推送记录（同时更新usermatch部分）
+//        List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
+//        pushRecordService.wxMassPreview(localDateTime, openid);
+//        return ResponseEntity.ok().body(pushRecords);
+//    }
+
     /**
-     * GET  /broadcast : 测试群发：1.计算所有活跃用户的最新配对；2.推送给指定人预览
+     * GET  /broadcast-records : 生成群发推送结果
      *
      * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
      */
-    @GetMapping("/broadcast-test")
+    @GetMapping("/broadcast-records")
     @Timed
-    public ResponseEntity<List<PushRecord>> testBroadcast(@RequestParam String openid) throws WxErrorException, MalformedURLException {
+    public ResponseEntity<LocalDateTime> broadcastRecords() {
         LocalDateTime localDateTime = LocalDateTime.now();
         // 计算生成新的推送记录（同时更新usermatch部分）
         List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
-        pushRecordService.wxMassPreview(localDateTime, openid);
-        return ResponseEntity.ok().body(pushRecords);
+        return ResponseEntity.ok().body(localDateTime);
     }
 
     /**
-     * GET  /mass-preview : 群发消息预览
+     * GET  /broadcast-push : 群发指定时间戳的已生成记录
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
+     */
+    @GetMapping("/broadcast-push")
+    @Timed
+    public ResponseEntity broadcastPush(@RequestParam LocalDateTime timestamp) throws WxErrorException, MalformedURLException {
+        // 根据时间戳查找相应的推送记录
+        List<PushRecord> pushRecords = pushRecordService.findAllByPushTime(timestamp);
+        pushRecordService.wxBroadcast(timestamp, pushRecords);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
+            .body(null);
+    }
+
+    /**
+     * GET  /mass-preview : 群发消息微信预览
      *
      * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
      */
     @GetMapping("/mass-preview")
     @Timed
-    public ResponseEntity<PushRecord> massPreview(@RequestParam LocalDateTime timestamp, @RequestParam String openid) throws WxErrorException, MalformedURLException {
+    public ResponseEntity massPreview(@RequestParam LocalDateTime timestamp, @RequestParam String openid) throws WxErrorException, MalformedURLException {
         pushRecordService.wxMassPreview(timestamp, openid);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
+            .body(null);
     }
 }

@@ -1,13 +1,47 @@
 <div>
     <h2 id="page-heading">
         <span>Push Records</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-push-record" [routerLink]="['/push-record/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
-            <span >
-            Create new Push Record
-            </span>
-        </button>
+
+
+<!--        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-push-record" [routerLink]="['/push-record/new']">-->
+<!--            <fa-icon [icon]="'plus'"></fa-icon>-->
+<!--            <span >-->
+<!--            Create new Push Record-->
+<!--            </span>-->
+<!--        </button>-->
     </h2>
+    <button class="btn btn-primary float-right" (click)="massPreview()">
+            <span >
+            发送微信端预览
+            </span>
+    </button>
+    <div class="float-right">
+        <label class="" for="field_user">预览人</label>
+        <input type="text" class="" name="wxUserPreview" id="field_user" placeholder="请输入预览人的openId"
+               [(ngModel)]="wxUserPreview" maxlength="28"/>
+    </div>
+    <button class="btn btn-primary float-right" (click)="broadcast()">
+            <span >
+            群发此批记录
+            </span>
+    </button>
+    <button class="btn btn-primary float-right" (click)="loadAll()">
+            <span >
+            查询
+            </span>
+    </button>
+    <div class="float-right">
+        <label class="" for="field_timestamp">时间批次:</label>
+        <select class="" id="field_timestamp" name="timestamp" [(ngModel)]="choosenTime" >
+            <option [ngValue]="null"></option>
+            <option [ngValue]="timeOption === choosenTime ? choosenTime : timeOption" *ngFor="let timeOption of timestamps; ">{{timeOption | date:'medium'}}</option>
+        </select>
+    </div>
+    <button class="btn btn-primary float-right" (click)="generateNewRecords()">
+            <span >
+            新生成一批记录
+            </span>
+    </button>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="table-responsive" *ngIf="pushRecords">
@@ -54,6 +88,11 @@
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                        <button type="submit"
+                                class="btn btn-danger btn-sm" (click)="preview(pushRecord.id)">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">预览结果</span>
                         </button>
                     </div>
                 </td>
