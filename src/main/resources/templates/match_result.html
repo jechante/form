@@ -18,6 +18,7 @@
             flex-direction: row;
             justify-content: center;
             width: 100%;
+            text-align: center;
         }
 
         .col-th-1 {
@@ -39,7 +40,7 @@
             text-align: center;
             line-height: 19px;
             background: rgba(255,182,193,0.5);
-            border-radius: 8px;
+            /*border-radius: 8px;*/
             border: 10px solid white;
         }
 
@@ -51,7 +52,7 @@
             text-align: center;
             line-height: 19px;
             background: rgba(135,206,2500,0.5);
-            border-radius: 8px;
+            /*border-radius: 8px;*/
             border: 10px solid white;
         }
 
@@ -67,9 +68,9 @@
     </style>
 </head>
 <body>
-<div th:each="match, matchStat : ${userMatchList}" >
+<div th:each="match, matchStat : ${userMatchList}" style="margin: 0px auto">
     <!-- 下面的比较符是否执行的是equals方法，还是仅仅是==。答：这里貌似就是equals，参见：http://forum.thymeleaf.org/th-if-comparing-objects-td4026839.html   -->
-    <div th:with="otherUser = ((${match.userA} == ${user}) ? ${match.userB} : ${match.userA})">
+    <div th:with="otherUser = ((${match.userA} == ${user}) ? ${match.userB} : ${match.userA})" style="width: 100%">
         <h5 style="margin-top: 10px" th:text="|匹配结果${matchStat.count}|"></h5>
         <div style="margin: 5px 0px 5px 0px">
         <span th:switch="${{match.matchType}}">
@@ -83,7 +84,7 @@
             <!--<img th:src="@{/girl.png}"/>-->
         </div>
         <div class="rich_media_content " id="js_content">
-            <table height="1463" border=1 frame=void rules=none >
+            <table height="1463" border=1 frame=void rules=none style="margin: 0px auto">
                 <colgroup>
                     <col width="275" style="width:206.25pf;">
                     <col width="248" style="width:186.00pf;">
