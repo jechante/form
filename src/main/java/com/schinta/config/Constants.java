@@ -12,8 +12,13 @@ public final class Constants {
     public static final String ANONYMOUS_USER = "anonymoususer";
     public static final String DEFAULT_LANGUAGE = "en";
 
+    // 测试用常数，最后需要注释掉
     public static final String WX_TEST_OPENID = "oPhnp5scZ4Mf0b9hObV6vj7FqfeA";
-    
+    public static final String WX_APPID = "wx87d2791c2c3a3ded";
+
+    // 每个用户默认的推送限制，需要改为从配置文件中获取
+//    public static final int PUSH_LIMIT = 2;
+
     private Constants() {
     }
 }

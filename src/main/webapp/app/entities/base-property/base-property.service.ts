@@ -13,6 +13,7 @@ type EntityArrayResponseType = HttpResponse<IBaseProperty[]>;
 export class BasePropertyService {
     private resourceUrl = SERVER_API_URL + 'api/base-properties';
     private findAllUrl = SERVER_API_URL + 'api/base-properties-all';
+    private userPropertyDemandsUrl = SERVER_API_URL + 'api/user-properties-demands';
 
     constructor(private http: HttpClient) {}
 
@@ -40,5 +41,13 @@ export class BasePropertyService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    }
+
+    findUserPropertyDemands(id: string): Observable<EntityArrayResponseType> {
+        return this.http.get<IBaseProperty[]>(`${this.userPropertyDemandsUrl}/${id}`, { observe: 'response' });
+    }
+
+    saveUserPropertyDemands(baseProperties: IBaseProperty[]) {
+        return this.http.post<IBaseProperty[]>(this.userPropertyDemandsUrl, baseProperties, { observe: 'response' });
     }
 }

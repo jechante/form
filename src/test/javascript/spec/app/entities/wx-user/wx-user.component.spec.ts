@@ -51,7 +51,7 @@ describe('Component Tests', () => {
             spyOn(service, 'query').and.returnValue(
                 of(
                     new HttpResponse({
-                        body: [new WxUser(123)],
+                        body: [new WxUser("123")],
                         headers
                     })
                 )
@@ -62,7 +62,7 @@ describe('Component Tests', () => {
 
             // THEN
             expect(service.query).toHaveBeenCalled();
-            expect(comp.wxUsers[0]).toEqual(jasmine.objectContaining({ id: 123 }));
+            expect(comp.wxUsers[0]).toEqual(jasmine.objectContaining({ id: "123" }));
         });
 
         it('should load a page', () => {
@@ -71,7 +71,7 @@ describe('Component Tests', () => {
             spyOn(service, 'query').and.returnValue(
                 of(
                     new HttpResponse({
-                        body: [new WxUser(123)],
+                        body: [new WxUser("123")],
                         headers
                     })
                 )
@@ -82,7 +82,7 @@ describe('Component Tests', () => {
 
             // THEN
             expect(service.query).toHaveBeenCalled();
-            expect(comp.wxUsers[0]).toEqual(jasmine.objectContaining({ id: 123 }));
+            expect(comp.wxUsers[0]).toEqual(jasmine.objectContaining({ id: "123" }));
         });
 
         it('should re-initialize the page', () => {
@@ -91,7 +91,7 @@ describe('Component Tests', () => {
             spyOn(service, 'query').and.returnValue(
                 of(
                     new HttpResponse({
-                        body: [new WxUser(123)],
+                        body: [new WxUser("123")],
                         headers
                     })
                 )
@@ -104,7 +104,7 @@ describe('Component Tests', () => {
             // THEN
             expect(comp.page).toEqual(0);
             expect(service.query).toHaveBeenCalledTimes(2);
-            expect(comp.wxUsers[0]).toEqual(jasmine.objectContaining({ id: 123 }));
+            expect(comp.wxUsers[0]).toEqual(jasmine.objectContaining({ id: "123" }));
         });
         it('should calculate the sort attribute for an id', () => {
             // WHEN

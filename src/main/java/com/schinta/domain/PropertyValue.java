@@ -37,12 +37,14 @@ public abstract class PropertyValue implements Serializable {
     @Column(name = "remark", length = 2000)
     private String remark;
 
-    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("properties")
-    @NaturalId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("properties")
+    @NaturalId(mutable = true)
     private WxUser wxUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)    @JsonIgnoreProperties("propertyValues")
-    @NaturalId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"propertyValues", "demandValues"}) // todo 为什么请求返回的json没有该字段
+    @NaturalId(mutable = true)
     private BaseProperty base;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -133,7 +135,13 @@ public abstract class PropertyValue implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(wxUser.getId() + base.getId());
+        // 使用自然键实现hashCode方法时，需要特别注意空指针错误，例如以下写法即导致Jackson解序列化的时候因为base为空而报错
+//        return Objects.hashCode(wxUser.getId() + base.getId());
+        if (wxUser != null && base != null) {
+            return Objects.hashCode(wxUser.getId() + base.getId());
+        } else {
+            return Objects.hashCode(getId()); // id为空时也不会报空指针错误
+        }
     }
 
     @Override

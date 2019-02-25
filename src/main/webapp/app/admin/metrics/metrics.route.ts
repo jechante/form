@@ -6,6 +6,6 @@ export const metricsRoute: Route = {
     path: 'jhi-metrics',
     component: JhiMetricsMonitoringComponent,
     data: {
-        pageTitle: 'Application Metrics'
+        pageTitle: '系统监控'
     }
 };

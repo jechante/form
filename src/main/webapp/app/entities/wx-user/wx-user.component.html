@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
         <span>Wx Users</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-wx-user" [routerLink]="['/wx-user/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-wx-user" (click)="sync()" >
+<!--            <fa-icon [icon]="'plus'"></fa-icon>-->
             <span >
-            Create new Wx User
+            同步小伊用户信息
             </span>
         </button>
     </h2>
@@ -14,20 +14,20 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="id"><span>openId</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="wxNickName"><span>Wx Nick Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="wxGender"><span>Wx Gender</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="wxCountry"><span>Wx Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="wxProvince"><span>Wx Province</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="wxCity"><span>Wx City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="wxHeadimgurl"><span>Wx Headimgurl</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="wxUnionid"><span>Wx Unionid</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="wxLanguage"><span>Wx Language</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+<!--            <th jhiSortBy="wxHeadimgurl"><span>Wx Headimgurl</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
+<!--            <th jhiSortBy="wxUnionid"><span>Wx Unionid</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
+<!--            <th jhiSortBy="wxLanguage"><span>Wx Language</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
             <th jhiSortBy="gender"><span>Gender</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="userStatus"><span>User Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="registerChannel"><span>Register Channel</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+<!--            <th jhiSortBy="registerChannel"><span>Register Channel</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
             <th jhiSortBy="registerDateTime"><span>Register Date Time</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="pushLimit"><span>Push Limit</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="pushLimit"><span>次推送用户数限制</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="broker.name"><span>Broker</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
@@ -40,12 +40,12 @@
                 <td>{{wxUser.wxCountry}}</td>
                 <td>{{wxUser.wxProvince}}</td>
                 <td>{{wxUser.wxCity}}</td>
-                <td>{{wxUser.wxHeadimgurl}}</td>
-                <td>{{wxUser.wxUnionid}}</td>
-                <td>{{wxUser.wxLanguage}}</td>
+<!--                <td>{{wxUser.wxHeadimgurl}}</td>-->
+<!--                <td>{{wxUser.wxUnionid}}</td>-->
+<!--                <td>{{wxUser.wxLanguage}}</td>-->
                 <td>{{wxUser.gender}}</td>
                 <td>{{wxUser.userStatus}}</td>
-                <td>{{wxUser.registerChannel}}</td>
+<!--                <td>{{wxUser.registerChannel}}</td>-->
                 <td>{{wxUser.registerDateTime | date:'medium'}}</td>
                 <td>{{wxUser.pushLimit}}</td>
                 <td>
@@ -74,6 +74,12 @@
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/wx-user', wxUser.id, 'property']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">用户属性与需求</span>
                         </button>
                     </div>
                 </td>

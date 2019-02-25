@@ -27,7 +27,7 @@ export const enum RegisterChannel {
 }
 
 export interface IWxUser {
-    id?: number;
+    id?: string;
     wxNickName?: string;
     wxGender?: Gender;
     wxCountry?: string;
@@ -52,7 +52,7 @@ export interface IWxUser {
 
 export class WxUser implements IWxUser {
     constructor(
-        public id?: number,
+        public id?: string,
         public wxNickName?: string,
         public wxGender?: Gender,
         public wxCountry?: string,

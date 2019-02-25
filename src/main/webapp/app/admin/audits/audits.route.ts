@@ -11,7 +11,7 @@ export const auditsRoute: Route = {
         pagingParams: JhiResolvePagingParams
     },
     data: {
-        pageTitle: 'Audits',
+        pageTitle: '审计',
         defaulSort: 'auditEventDate,desc'
     }
 };

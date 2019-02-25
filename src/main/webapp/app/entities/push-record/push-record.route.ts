@@ -36,7 +36,7 @@ export const pushRecordRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'PushRecords'
+            pageTitle: '推送结果'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const pushRecordRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'PushRecords'
+            pageTitle: '推送结果'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const pushRecordRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'PushRecords'
+            pageTitle: '推送结果'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const pushRecordRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'PushRecords'
+            pageTitle: '推送结果'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const pushRecordPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'PushRecords'
+            pageTitle: '推送结果'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

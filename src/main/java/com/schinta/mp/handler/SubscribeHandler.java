@@ -1,20 +1,14 @@
 package com.schinta.mp.handler;
 
-import com.schinta.domain.BaseForm;
-import com.schinta.domain.User;
 import com.schinta.domain.WxUser;
-import com.schinta.domain.enumeration.Gender;
 import com.schinta.domain.enumeration.UserStatus;
-import com.schinta.mp.builder.TextBuilder;
 import com.schinta.repository.BaseFormRepository;
 import com.schinta.repository.WxUserRepository;
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlOutImageMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutNewsMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
@@ -25,12 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 
 /**
  * @author Binary Wang(https://github.com/binarywang)
@@ -54,26 +43,12 @@ public class SubscribeHandler extends AbstractHandler {
             WxMpUser userWxInfo = wxMpService.getUserService()
                 .userInfo(openId, null);
             if (userWxInfo != null) {
-                // TODO 可以添加关注用户到本地数据库
                 WxUser wxUser = new WxUser();
-                wxUser.setId(userWxInfo.getOpenId());
-                if (userWxInfo.getSubscribe()){
-                    wxUser.setUserStatus(UserStatus.ACTIVE);
-                }
-                wxUser.setWxNickName(userWxInfo.getNickname());
-                if (userWxInfo.getSexDesc().equals("男")) {
-                    wxUser.setGender(Gender.男);
-                } else {
-                    wxUser.setGender(Gender.女);
-                }
-                wxUser.setWxLanguage(userWxInfo.getLanguage());
-                wxUser.setWxCity(userWxInfo.getCity());
-                wxUser.setWxProvince(userWxInfo.getProvince());
-                wxUser.setWxCountry(userWxInfo.getCountry());
-                wxUser.setRegisterDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(userWxInfo.getSubscribeTime()), TimeZone
-                    .getDefault().toZoneId()));
-                wxUser.setWxHeadimgurl(userWxInfo.getHeadImgUrl());
+                wxUser.refreshWxInfo(userWxInfo); // 设置微信相关信息
                 wxUser.setPushLimit(2); // 默认两条 todo 应该改为可配置
+//                if (userWxInfo.getSubscribe()){ // 这里肯定是true，因此这是关注事件，所以openid一定是关注用户的openid
+                wxUser.setUserStatus(UserStatus.ACTIVE);
+//                }
                 wxUserRepository.save(wxUser);
             }
         } catch (WxErrorException e) {
@@ -102,7 +77,7 @@ public class SubscribeHandler extends AbstractHandler {
             if (servletRequestAttributes != null) {
                 HttpServletRequest request = servletRequestAttributes.getRequest();
                 URL requestURL = new URL(request.getRequestURL().toString());
-                picUrl = String.format("%s://%s/content/images/logo-xiaoyi.jpg", requestURL.getProtocol(),requestURL.getHost());
+                picUrl = String.format("%s://%s/content/images/logo-xiaoyi.jpg", requestURL.getProtocol(), requestURL.getHost());
             }
 
             WxMpXmlOutNewsMessage.Item item = new WxMpXmlOutNewsMessage.Item();

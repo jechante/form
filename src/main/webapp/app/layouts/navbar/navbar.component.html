@@ -102,7 +102,7 @@
                     <span>
                         <fa-icon [icon]="'th-list'"></fa-icon>
                         <span>
-                            配对信息
+                            配对计算结果
                         </span>
                     </span>
                 </a>
@@ -110,13 +110,26 @@
                     <li>
                         <a class="dropdown-item" routerLink="user-match" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                            <span>用户配对</span>
+                            <span>配对计算结果</span>
                         </a>
                     </li>
+                    <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
+                </ul>
+            </li>
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="push-menu">
+                    <span>
+                        <fa-icon [icon]="'th-list'"></fa-icon>
+                        <span>
+                            结果群发与预览
+                        </span>
+                    </span>
+                </a>
+                <ul class="dropdown-menu" ngbDropdownMenu>
                     <li>
                         <a class="dropdown-item" routerLink="push-record" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                            <span>推送记录</span>
+                            <span>结果群发与预览</span>
                         </a>
                     </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
@@ -173,12 +186,12 @@
                         </a>
                     </li>
                     <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
-                    <li *ngIf="!inProduction">
-                        <a class="dropdown-item" href='./h2-console' target="_tab" (click)="collapseNavbar()">
-                            <fa-icon [icon]="'hdd'" [fixedWidth]="true"></fa-icon>
-                            <span>h2数据库控制台</span>
-                        </a>
-                    </li>
+<!--                    <li *ngIf="!inProduction">-->
+<!--                        <a class="dropdown-item" href='./h2-console' target="_tab" (click)="collapseNavbar()">-->
+<!--                            <fa-icon [icon]="'hdd'" [fixedWidth]="true"></fa-icon>-->
+<!--                            <span>h2数据库控制台</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
                 </ul>
             </li>
             <li ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

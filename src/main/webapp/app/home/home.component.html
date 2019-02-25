@@ -3,39 +3,39 @@
         <span class="hipster img-fluid rounded"></span>
     </div>
     <div class="col-md-9">
-        <h1 class="display-4">Welcome, Java Hipster!</h1>
-        <p class="lead">This is your homepage</p>
+        <h1 class="display-4">欢迎, 小伊配对管理员!</h1>
+<!--        <p class="lead">请登入</p>-->
 
         <div [ngSwitch]="isAuthenticated()">
             <div class="alert alert-success" *ngSwitchCase="true">
                 <span id="home-logged-message" *ngIf="account"
-                   > You are logged in as user "{{account.login}}". </span>
+                   > 你已经作为用户"{{account.login}}"登入. </span>
             </div>
 
             <div class="alert alert-warning" *ngSwitchCase="false">
-                <span>If you want to </span>
-                <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
+<!--                <span>If you want to </span>-->
+                <a class="alert-link" (click)="login()">登入</a><!--<span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>-->
             </div>
             <div class="alert alert-warning" *ngSwitchCase="false">
-                <span>You don't have an account yet?</span>&nbsp;
-                <a class="alert-link" routerLink="register">Register a new account</a>
+                <span>还没有账号吗?</span>&nbsp;
+                <a class="alert-link" routerLink="register">注册一个新的账号</a>
             </div>
         </div>
 
         <p>
-            If you have any question on JHipster:
+            小伊配对中心后台管理系统功能包括:
         </p>
 
         <ul>
-            <li><a href="https://www.jhipster.tech/" target="_blank" rel="noopener">JHipster homepage</a></li>
-            <li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener">JHipster on Stack Overflow</a></li>
-            <li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener">JHipster bug tracker</a></li>
-            <li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener">JHipster public chat room</a></li>
-            <li><a href="https://twitter.com/java_hipster" target="_blank" rel="noopener">follow @java_hipster on Twitter</a></li>
+            <li>基础配置：匹配算法、第三方配对信息填报表单相关配置</li>
+            <li>小伊用户信息：1）微信后台用户信息更新同步与维护；2）用户属性、需求信息维护；3）第三方表单推送填报数据维护</li>
+            <li>配对计算结果：基于所配置的配对算法，根据用户需求、属性自动计算的配对结果维护</li>
+            <li>结果群发与预览：1）从当前最新的配对计算矩阵中，一次性为每个用户生成其最新的配对结果页面与链接；2）支持页面预览：包括Web端直接预览以及指定用户的微信端预览（微信端预览暂时仅支持接受用户自身配对结果的预览）；3）确认无误后以一次微信图文消息群发消息发送给所有用户（服务号每月最多可发送4次）；4）除定期群发外，用户每次提交表单填写或更新其个人信息均会立刻收到其自身的配对结果。</li>
+            <li>系统管理：包括后台用户管理、系统监控、健康、登入审计、日志、API接口等</li>
         </ul>
 
-        <p>
-            <span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!
-        </p>
+<!--        <p>-->
+<!--            <span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!-->
+<!--        </p>-->
     </div>
 </div>

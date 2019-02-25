@@ -7,6 +7,7 @@ import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
 import com.schinta.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -124,4 +125,22 @@ public class WxUserResource {
         wxUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+
+    /**
+     * GET  /wx-users : 微信用户信息同步.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of wxUsers in body
+     */
+    @GetMapping("/wx-users/sync")
+    @Timed
+    public ResponseEntity syncAllWxUsers() throws WxErrorException {
+        log.debug("请求微信用户信息同步");
+        wxUserService.syncAllWxUsers();
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
+            .body(null);
+    }
+
+
 }

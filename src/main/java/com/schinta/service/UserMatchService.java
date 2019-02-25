@@ -114,6 +114,12 @@ public class UserMatchService {
     // todo 判断是否启动了批处理
     public void computeUserToOthers(FormSubmit formSubmit) throws IOException {
         WxUser wxUser = formSubmit.getWxUser();
+        computeUserToOthers(wxUser);
+        formSubmit.setComputed(true);
+        entityManager.merge(formSubmit);
+    }
+
+    public void computeUserToOthers(WxUser wxUser) throws IOException {
         // 获取默认算法
         Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
         // 获取用户与其他所有用户已有的效用结果
@@ -220,8 +226,6 @@ public class UserMatchService {
             }
 
         }
-        formSubmit.setComputed(true);
-        entityManager.merge(formSubmit);
     }
 
 

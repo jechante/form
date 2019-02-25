@@ -31,7 +31,7 @@ export const basePropertyRoute: Routes = [
         component: BasePropertyComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseProperties'
+            pageTitle: '基础属性'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -43,7 +43,7 @@ export const basePropertyRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseProperties'
+            pageTitle: '基础属性'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -55,7 +55,7 @@ export const basePropertyRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseProperties'
+            pageTitle: '基础属性'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -67,7 +67,7 @@ export const basePropertyRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseProperties'
+            pageTitle: '基础属性'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -82,7 +82,7 @@ export const basePropertyPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseProperties'
+            pageTitle: '基础属性'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

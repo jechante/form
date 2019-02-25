@@ -11,6 +11,7 @@ import { WxUserDetailComponent } from './wx-user-detail.component';
 import { WxUserUpdateComponent } from './wx-user-update.component';
 import { WxUserDeletePopupComponent } from './wx-user-delete-dialog.component';
 import { IWxUser } from 'app/shared/model/wx-user.model';
+import {UserPropertyDemandComponent} from 'app/entities/wx-user/user-property-demand/user-property-demand.component';
 
 @Injectable({ providedIn: 'root' })
 export class WxUserResolve implements Resolve<IWxUser> {
@@ -31,7 +32,7 @@ export const wxUserRoute: Routes = [
         component: WxUserComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'WxUsers'
+            pageTitle: '小伊微信用户'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -43,7 +44,7 @@ export const wxUserRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'WxUsers'
+            pageTitle: '小伊微信用户'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -55,7 +56,7 @@ export const wxUserRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'WxUsers'
+            pageTitle: '小伊微信用户'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -67,7 +68,19 @@ export const wxUserRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'WxUsers'
+            pageTitle: '小伊微信用户'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'wx-user/:id/property',
+        component: UserPropertyDemandComponent,
+        resolve: {
+            wxUser: WxUserResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: '小伊微信用户'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -82,7 +95,7 @@ export const wxUserPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'WxUsers'
+            pageTitle: '小伊微信用户'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

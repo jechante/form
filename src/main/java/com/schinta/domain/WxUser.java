@@ -3,6 +3,7 @@ package com.schinta.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -10,11 +11,13 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import com.schinta.domain.enumeration.Gender;
 
@@ -567,5 +570,25 @@ public class WxUser implements Serializable {
             ", registerDateTime='" + getRegisterDateTime() + "'" +
             ", pushLimit=" + getPushLimit() +
             "}";
+    }
+
+    @JsonIgnore
+    // 更新微信相关信息
+    public void refreshWxInfo(WxMpUser userWxInfo) {
+        this.setId(userWxInfo.getOpenId());
+
+        this.setWxNickName(userWxInfo.getNickname());
+        if (userWxInfo.getSexDesc().equals("男")) {
+            this.setGender(Gender.男);
+        } else {
+            this.setGender(Gender.女);
+        }
+        this.setWxLanguage(userWxInfo.getLanguage());
+        this.setWxCity(userWxInfo.getCity());
+        this.setWxProvince(userWxInfo.getProvince());
+        this.setWxCountry(userWxInfo.getCountry());
+        this.setRegisterDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(userWxInfo.getSubscribeTime()), TimeZone
+            .getDefault().toZoneId()));
+        this.setWxHeadimgurl(userWxInfo.getHeadImgUrl());
     }
 }

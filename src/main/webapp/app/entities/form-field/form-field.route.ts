@@ -36,7 +36,7 @@ export const formFieldRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'FormFields'
+            pageTitle: '表单字段'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const formFieldRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormFields'
+            pageTitle: '表单字段'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const formFieldRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormFields'
+            pageTitle: '表单字段'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const formFieldRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormFields'
+            pageTitle: '表单字段'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const formFieldPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormFields'
+            pageTitle: '表单字段'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

@@ -36,7 +36,7 @@ export const userMatchRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'UserMatches'
+            pageTitle: '用户配对'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const userMatchRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserMatches'
+            pageTitle: '用户配对'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const userMatchRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserMatches'
+            pageTitle: '用户配对'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const userMatchRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserMatches'
+            pageTitle: '用户配对'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const userMatchPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserMatches'
+            pageTitle: '用户配对'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

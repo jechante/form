@@ -63,6 +63,8 @@ spring:
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
             hibernate.jdbc.batch_size: 25
+            hibernate.order_updates: true
+            hibernate.order_inserts: true
     liquibase:
         contexts: prod
     mail:

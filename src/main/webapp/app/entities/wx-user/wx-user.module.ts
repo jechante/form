@@ -11,12 +11,13 @@ import {
     wxUserRoute,
     wxUserPopupRoute
 } from './';
+import { UserPropertyDemandComponent } from './user-property-demand/user-property-demand.component';
 
 const ENTITY_STATES = [...wxUserRoute, ...wxUserPopupRoute];
 
 @NgModule({
     imports: [FormSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [WxUserComponent, WxUserDetailComponent, WxUserUpdateComponent, WxUserDeleteDialogComponent, WxUserDeletePopupComponent],
+    declarations: [WxUserComponent, WxUserDetailComponent, WxUserUpdateComponent, WxUserDeleteDialogComponent, WxUserDeletePopupComponent, UserPropertyDemandComponent],
     entryComponents: [WxUserComponent, WxUserUpdateComponent, WxUserDeleteDialogComponent, WxUserDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -31,7 +31,7 @@ export const algorithmRoute: Routes = [
         component: AlgorithmComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Algorithms'
+            pageTitle: '算法'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -43,7 +43,7 @@ export const algorithmRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Algorithms'
+            pageTitle: '算法'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -55,7 +55,7 @@ export const algorithmRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Algorithms'
+            pageTitle: '算法'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -67,7 +67,7 @@ export const algorithmRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Algorithms'
+            pageTitle: '算法'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -82,7 +82,7 @@ export const algorithmPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Algorithms'
+            pageTitle: '算法'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

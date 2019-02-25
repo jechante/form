@@ -183,7 +183,7 @@ public class FormSubmitService {
     }
 
     // 判断提交的json中的属性值是否是空值
-    private boolean hasValue(Object value) {
+    public boolean hasValue(Object value) {
         if (value == null) return false;
         if (value instanceof String) {
             if (value.equals("")) {

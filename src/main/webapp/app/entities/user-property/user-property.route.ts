@@ -36,7 +36,7 @@ export const userPropertyRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'UserProperties'
+            pageTitle: '用户属性'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const userPropertyRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserProperties'
+            pageTitle: '用户属性'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const userPropertyRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserProperties'
+            pageTitle: '用户属性'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const userPropertyRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserProperties'
+            pageTitle: '用户属性'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const userPropertyPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserProperties'
+            pageTitle: '用户属性'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

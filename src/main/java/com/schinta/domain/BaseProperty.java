@@ -1,6 +1,7 @@
 package com.schinta.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -90,6 +91,7 @@ public class BaseProperty implements Serializable {
      */
     @ApiModelProperty(value = "属性-用户属性值")
     @OneToMany(mappedBy = "base")
+    @JsonIgnoreProperties("base")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserProperty> propertyValues = new HashSet<>();
     /**
@@ -97,6 +99,7 @@ public class BaseProperty implements Serializable {
      */
     @ApiModelProperty(value = "属性-用户需求值")
     @OneToMany(mappedBy = "base")
+    @JsonIgnoreProperties("base")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<UserDemand> demandValues = new HashSet<>();
     /**
@@ -230,8 +233,10 @@ public class BaseProperty implements Serializable {
     }
 
     public BaseProperty addPropertyValues(UserProperty userProperty) {
-        this.propertyValues.add(userProperty);
-        userProperty.setBase(this);
+        if (userProperty != null ) {
+            this.propertyValues.add(userProperty);
+            userProperty.setBase(this);
+        }
         return this;
     }
 
@@ -255,8 +260,10 @@ public class BaseProperty implements Serializable {
     }
 
     public BaseProperty addDemandValues(UserDemand userDemand) {
-        this.demandValues.add(userDemand);
-        userDemand.setBase(this);
+        if (userDemand != null) {
+            this.demandValues.add(userDemand);
+            userDemand.setBase(this);
+        }
         return this;
     }
 

@@ -110,11 +110,13 @@ public class TestResource {
 //        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
 
         // 测试Jackson（支撑转化为Number\String\List\Map等类型）
-//        ObjectMapper mapper = new ObjectMapper(); //转换器
-//        // OneToMany：数组（取第一个）对数组或者String对数组
-//        String string = "13.4";
-//        Object result =  mapper.readValue(string, Object.class);
-//        return new ResponseEntity<>(result, null, HttpStatus.OK);
+        ObjectMapper mapper = new ObjectMapper(); //转换器
+        // OneToMany：数组（取第一个）对数组或者String对数组
+//        String string = ""; // 报错（感觉也可以算小bug）
+        String string = "\"\""; // 可行，解析的结果为：""（感觉很奇葩）
+
+        Object result =  mapper.readValue(string, Object.class);
+        return new ResponseEntity<>(result, null, HttpStatus.OK);
 
         // 测试HashMap的get方法
 //        Map map = new HashMap();
@@ -138,9 +140,9 @@ public class TestResource {
 //        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
 
         // 测试localdatetime 与 string 间的转化
-        LocalDateTime time = LocalDateTime.now();
-        String timeStr = time.toString();
-        LocalDateTime time1 = LocalDateTime.parse(timeStr);
-        return new ResponseEntity<>(time1, null, HttpStatus.OK);
+//        LocalDateTime time = LocalDateTime.now();
+//        String timeStr = time.toString();
+//        LocalDateTime time1 = LocalDateTime.parse(timeStr);
+//        return new ResponseEntity<>(time1, null, HttpStatus.OK);
     }
 }

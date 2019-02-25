@@ -31,7 +31,7 @@ export const baseFormRoute: Routes = [
         component: BaseFormComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseForms'
+            pageTitle: '表单基础信息'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -43,7 +43,7 @@ export const baseFormRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseForms'
+            pageTitle: '表单基础信息'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -55,7 +55,7 @@ export const baseFormRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseForms'
+            pageTitle: '表单基础信息'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -67,7 +67,7 @@ export const baseFormRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseForms'
+            pageTitle: '表单基础信息'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -82,7 +82,7 @@ export const baseFormPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BaseForms'
+            pageTitle: '表单基础信息'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

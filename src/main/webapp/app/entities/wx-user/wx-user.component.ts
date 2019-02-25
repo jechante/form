@@ -105,4 +105,10 @@ export class WxUserComponent implements OnInit, OnDestroy {
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
+
+    // 用户同步
+    private sync() {
+        this.wxUserService.sync().subscribe(() => this.reset(),
+            (res: HttpErrorResponse) => this.onError(res.message));
+    }
 }

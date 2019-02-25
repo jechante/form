@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -139,5 +140,35 @@ public class BasePropertyResource {
         log.debug("REST request to delete BaseProperty : {}", id);
         basePropertyService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * GET  /user-properties-demands/:id : 获取用户的全部属性、需求 .
+     *
+     * @param id 用户的openId
+     * @return the ResponseEntity with status 200 (OK) and with body the baseProperty, or with status 404 (Not Found)
+     */
+    @GetMapping("/user-properties-demands/{id}")
+    @Timed
+    public ResponseEntity<List<BaseProperty>> getUserPropertyDemands(@PathVariable String id) {
+        log.debug("获取用户的全部属性、需求 : {}", id);
+        List<BaseProperty> userPropertyDemands = basePropertyService.findUserPropertyDemands(id);
+        return ResponseEntity.ok(userPropertyDemands);
+    }
+
+    /**
+     * POST  /user-properties-demands/:id : 保存用户的全部属性、需求 .
+     *
+     * @return the ResponseEntity with status 201 (Created) and with body the new baseProperty, or with status 400 (Bad Request) if the baseProperty has already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/user-properties-demands")
+    @Timed
+    public ResponseEntity saveUserProperty(@Valid @RequestBody List<BaseProperty> baseProperties) throws URISyntaxException, IOException {
+        log.debug("通过小伊管理后台保存用户的全部属性、需求");
+        basePropertyService.saveUserProperties(baseProperties);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success",""))
+            .body(null);
     }
 }

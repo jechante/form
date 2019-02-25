@@ -36,7 +36,7 @@ export const formSubmitRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'FormSubmits'
+            pageTitle: '提交表单'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const formSubmitRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormSubmits'
+            pageTitle: '提交表单'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const formSubmitRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormSubmits'
+            pageTitle: '提交表单'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const formSubmitRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormSubmits'
+            pageTitle: '提交表单'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const formSubmitPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'FormSubmits'
+            pageTitle: '提交表单'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

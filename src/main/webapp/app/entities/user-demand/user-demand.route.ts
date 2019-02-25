@@ -36,7 +36,7 @@ export const userDemandRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'UserDemands'
+            pageTitle: '用户需求'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const userDemandRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserDemands'
+            pageTitle: '用户需求'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const userDemandRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserDemands'
+            pageTitle: '用户需求'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const userDemandRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserDemands'
+            pageTitle: '用户需求'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const userDemandPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'UserDemands'
+            pageTitle: '用户需求'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

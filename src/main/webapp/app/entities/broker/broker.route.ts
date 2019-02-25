@@ -36,7 +36,7 @@ export const brokerRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'Brokers'
+            pageTitle: '广告商'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const brokerRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Brokers'
+            pageTitle: '广告商'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -60,7 +60,7 @@ export const brokerRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Brokers'
+            pageTitle: '广告商'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -72,7 +72,7 @@ export const brokerRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Brokers'
+            pageTitle: '广告商'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -87,7 +87,7 @@ export const brokerPopupRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Brokers'
+            pageTitle: '广告商'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

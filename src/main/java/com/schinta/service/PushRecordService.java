@@ -58,7 +58,7 @@ public class PushRecordService {
     @Autowired
     private EntityManager entityManager;
 
-    private String appid = "wx87d2791c2c3a3ded"; // todo 当用多个公众号时，应该从url中获取（即金数据表单的数据推送url中需要带有appid）
+    private String appid = Constants.WX_APPID; // todo 当用多个公众号时，应该从url中获取（即金数据表单的数据推送url中需要带有appid）
 
     private WxMpService wxMpService;
     public PushRecordService(PushRecordRepository pushRecordRepository,

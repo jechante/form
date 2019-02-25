@@ -32,7 +32,7 @@ export class WxUserService {
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    find(id: number): Observable<EntityResponseType> {
+    find(id: string): Observable<EntityResponseType> {
         return this.http
             .get<IWxUser>(`${this.resourceUrl}/${id}`, { observe: 'response' })
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
@@ -45,7 +45,7 @@ export class WxUserService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    delete(id: number): Observable<HttpResponse<any>> {
+    delete(id: string): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
@@ -66,5 +66,10 @@ export class WxUserService {
             wxUser.registerDateTime = wxUser.registerDateTime != null ? moment(wxUser.registerDateTime) : null;
         });
         return res;
+    }
+
+    sync(): Observable<HttpResponse<any>> {
+        return this.http
+            .get<any>(`${this.resourceUrl}/sync`, { observe: 'response' });
     }
 }
