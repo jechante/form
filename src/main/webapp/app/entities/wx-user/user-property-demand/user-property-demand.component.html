@@ -1,0 +1,74 @@
+<div>
+    <h2 id="page-heading">
+        <span>用户{{wxUser.wxNickName}}属性与需求</span>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <div class="table-responsive" *ngIf="baseProperties">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th><span>ID</span></th>
+                    <th><span>属性名称</span></th>
+    <!--                <th><span>属性描述</span></th>-->
+    <!--                <th><span>属性类型</span></th>-->
+                    <th><span>属性分值</span></th>
+                    <th><span>属性最高分</span></th>
+                    <th><span>匹配类型</span></th>
+    <!--                <th><span>对完成率占比</span></th>-->
+                    <th><span>属性值</span></th>
+                    <th><span>需求值</span></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let baseProperty of baseProperties;let i = index">
+                    <td><a [routerLink]="['/base-property', baseProperty.id, 'view' ]">{{baseProperty.id}}</a></td>
+                    <td>{{baseProperty.propertyName}}</td>
+    <!--                <td>{{baseProperty.propertyDescribe}}</td>-->
+    <!--                <td>{{baseProperty.propertyType}}</td>-->
+                    <td>{{baseProperty.propertyScore}}</td>
+                    <td>{{baseProperty.propertyMaxScore}}</td>
+                    <td>{{baseProperty.formyType}}</td>
+    <!--                <td>{{baseProperty.completionRate}}</td>-->
+<!--                    <td>{{baseProperty.propertyValues[0].propertyValue}}</td>-->
+<!--                    <td>{{baseProperty.demandValues[0].propertyValue}}</td>-->
+                    <td>
+                            <input type="text" class="form-control property-value" [name]="'property'+i" [placeholder]="propertyDemo(baseProperty.formyType,'property')"
+                                   [(ngModel)]="baseProperty.propertyValues[0].propertyValue" maxlength="1000"/>
+                            <div [hidden]="!(editForm.controls['property'+i]?.dirty && editForm.controls['property'+i]?.invalid)">
+                                <small class="form-text text-danger"
+                                       [hidden]="!editForm.controls['property'+i]?.errors?.maxlength">
+                                    This field cannot be longer than 1000 characters.
+                                </small>
+                            </div>
+                    </td>
+                    <td>
+                            <!-- name的命名不需要与变量名一致，但是必须是唯一的，否则会导致不报错，但是多个字段显示相同的值，尤其是在for循环中，特别要注意。两种解决方案：
+                            1）去掉form标签，可以不需要设置name属性，但是无法使用校验功能；
+                            2）使用属性绑定，配合循环中的index为name命名-->
+                            <input type="text" class="form-control  property-value" [name]="'demand'+i" [placeholder]="propertyDemo(baseProperty.formyType,'demand')"
+                                   [(ngModel)]="baseProperty.demandValues[0].propertyValue" maxlength="1000"/>
+                            <div [hidden]="!(editForm.controls['demand'+i]?.dirty && editForm.controls['demand'+i]?.invalid)">
+                                <small class="form-text text-danger"
+                                       [hidden]="!editForm.controls['demand'+i]?.errors?.maxlength">
+                                    This field cannot be longer than 1000 characters.
+                                </small>
+                            </div>
+<!--                        </div>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+            </button>
+            <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+            </button>
+        </div>
+    </form>
+</div>
