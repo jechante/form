@@ -43,10 +43,10 @@ public class MsgHandler extends AbstractHandler {
         }
 
         //TODO 组装回复消息
-        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage);
+//        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage);
 
-        return new TextBuilder().build(content, wxMessage, weixinService);
-
+//        return new TextBuilder().build(content, wxMessage, weixinService);
+        return null; // todo 是否可以回复null，另外为什么后台配置的自动回复还会生效
     }
 
 }

@@ -254,8 +254,8 @@ public class FormSubmitService {
         BaseForm baseForm = baseFormRepository.findByFormCode((String) form.get("form")).orElse(null);
         formSubmit.setBase(baseForm);
 
-//        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生产环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
-        String openid = Constants.WX_TEST_OPENID; // 开发环境启用，为微信测试号的openid。实际小伊中个人的openid为：oMzbs1A71vYPVjOPtWKPXyL2jFHU
+        String openid = (String)entry.get("x_field_weixin_openid"); // todo 生产环境启用（测试阶段，由于金数据无法配置微信测试号来收集用户信息，因此实际获取的openid并非微信测试号的openid，而是小伊配对中心的openid）
+//        String openid = Constants.WX_TEST_OPENID; // 开发环境启用，为微信测试号的openid。实际小伊中个人的openid为：oMzbs1A71vYPVjOPtWKPXyL2jFHU
         WxUser user = wxUserRepository.findById(openid).orElse(null); // todo orElseGet （如果可以向未关注用户推送匹配结果，也可以在这里创建用户）
         formSubmit.setWxUser(user);
         formSubmit = this.save(formSubmit);

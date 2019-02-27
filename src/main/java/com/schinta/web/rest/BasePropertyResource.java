@@ -164,7 +164,7 @@ public class BasePropertyResource {
      */
     @PostMapping("/user-properties-demands")
     @Timed
-    public ResponseEntity saveUserProperty(@Valid @RequestBody List<BaseProperty> baseProperties) throws URISyntaxException, IOException {
+    public ResponseEntity saveUserProperty(@Valid @RequestBody List<BaseProperty> baseProperties) throws IOException {
         log.debug("通过小伊管理后台保存用户的全部属性、需求");
         basePropertyService.saveUserProperties(baseProperties);
         return ResponseEntity.ok()

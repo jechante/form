@@ -304,8 +304,8 @@ public class PushRecordService {
 //        article2.setTitle("Happy Day");
 
         WxMpKefuMessage message = WxMpKefuMessage.NEWS()
-            .toUser(Constants.WX_TEST_OPENID) // todo 测试用
-//            .toUser(user.getId()) //
+//            .toUser(Constants.WX_TEST_OPENID) // todo 测试用
+            .toUser(user.getId()) // 生产用
             .addArticle(article1)
 //            .addArticle(article2)
             .build();
@@ -371,7 +371,7 @@ public class PushRecordService {
         massMessage.setMsgType(WxConsts.MassMsgType.MPNEWS);
         massMessage.setMediaId(massUploadResult.getMediaId());
 //        massMessage.setToWxUserOpenid(Constants.WX_TEST_OPENID); // todo 测试环境使用
-        massMessage.setToWxUserOpenid(openid); // todo 测试环境使用
+        massMessage.setToWxUserOpenid(openid); // todo 生产及测试环境使用
         WxMpMassSendResult massResult = wxMpService.getMassMessageService().massMessagePreview(massMessage); // todo 测试群发成功的WxMpMassSendResult包括哪些信息，有什么用
 
     }
