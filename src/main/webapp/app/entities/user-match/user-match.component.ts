@@ -129,4 +129,9 @@ export class UserMatchComponent implements OnInit, OnDestroy {
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
+
+    regenerate() {
+        this.userMatchService.regenerate().subscribe(() => this.loadAll(),
+            (res: HttpErrorResponse) => this.onError(res.message));
+    }
 }

@@ -12,6 +12,7 @@ import { WxUserUpdateComponent } from './wx-user-update.component';
 import { WxUserDeletePopupComponent } from './wx-user-delete-dialog.component';
 import { IWxUser } from 'app/shared/model/wx-user.model';
 import {UserPropertyDemandComponent} from 'app/entities/wx-user/user-property-demand/user-property-demand.component';
+import {UserPictureComponent} from "app/entities/wx-user/user-picture/user-picture.component";
 
 @Injectable({ providedIn: 'root' })
 export class WxUserResolve implements Resolve<IWxUser> {
@@ -27,6 +28,15 @@ export class WxUserResolve implements Resolve<IWxUser> {
 }
 
 export const wxUserRoute: Routes = [
+    {
+        path: 'user-picture',
+        component: UserPictureComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: '小伊用户头像'
+        },
+        canActivate: [UserRouteAccessService]
+    },
     {
         path: 'wx-user',
         component: WxUserComponent,

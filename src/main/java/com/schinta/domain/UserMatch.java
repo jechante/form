@@ -21,6 +21,7 @@ import org.hibernate.annotations.NaturalIdCache;
 
 /**
  * A UserMatch.
+ * 可以考虑保存的时候userA和userB的id需要保证按照字符串排序，userA位于userB前面，这样存储的时候就无须双向判断
  */
 @Entity
 @Table(name = "user_match")

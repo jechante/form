@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -128,5 +129,19 @@ public class UserMatchResource {
         log.debug("REST request to delete UserMatch : {}", id);
         userMatchService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * GET  /user-matches-regenerate : 重新计算效用矩阵
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of userMatches in body
+     */
+    @GetMapping("/user-matches-regenerate")
+    @Timed
+    public ResponseEntity getAllUserMatches() throws IOException {
+        userMatchService.regenerate();
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
+            .body(null);
     }
 }

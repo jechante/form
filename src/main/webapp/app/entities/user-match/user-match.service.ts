@@ -35,4 +35,9 @@ export class UserMatchService {
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
+
+    // 重建效用阵
+    regenerate(): Observable<any> {
+        return this.http.get('api/user-matches-regenerate', { observe: 'response' });
+    }
 }

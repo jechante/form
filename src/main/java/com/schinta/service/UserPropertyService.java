@@ -71,4 +71,8 @@ public class UserPropertyService {
         log.debug("Request to delete UserProperty : {}", id);
         userPropertyRepository.deleteById(id);
     }
+
+    public Page<UserProperty> findAllUserPictures(Pageable pageable) {
+        return userPropertyRepository.findAllUserPictures(pageable);
+    }
 }

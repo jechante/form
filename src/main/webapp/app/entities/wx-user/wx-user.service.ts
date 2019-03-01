@@ -72,4 +72,6 @@ export class WxUserService {
         return this.http
             .get<any>(`${this.resourceUrl}/sync`, { observe: 'response' });
     }
+
+
 }

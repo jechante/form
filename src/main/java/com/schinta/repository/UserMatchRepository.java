@@ -29,8 +29,13 @@ public interface UserMatchRepository extends JpaRepository<UserMatch, Long> {
     @Query("select user_match from UserMatch user_match left join fetch user_match.pushRecords where user_match.id =:id")
     Optional<UserMatch> findOneWithEagerRelationships(@Param("id") Long id);
 
+    // 查询某个算法下某个用户的所有匹配结果
     @Query("select user_match from UserMatch user_match where (user_match.userA =:user or user_match.userB = :user) and user_match.algorithm = :algorithm")
     List<UserMatch> findAllByWxUserAndAlgorithm(@Param("user")WxUser user, @Param("algorithm")Algorithm algorithm);
+
+    // 查询某个算法下全部激活用户的匹配结果
+    @Query("select user_match from UserMatch user_match where user_match.algorithm = :algorithm and user_match.userA.userStatus = 'ACTIVE' and user_match.userB.userStatus = 'ACTIVE'")
+    List<UserMatch> findAllByAlgorithm(@Param("algorithm")Algorithm algorithm);
 
     // 查询某个算法下某个用户未被推送的匹配（仅激活状态用户）
     @Query("select user_match from UserMatch user_match where ( user_match.userA =:user and (user_match.pushStatus is null or user_match.pushStatus = 'B' ) and user_match.userB.userStatus = 'ACTIVE' ) or (user_match.userB = :user and (user_match.pushStatus is null or user_match.pushStatus = 'A' ) and user_match.userA.userStatus = 'ACTIVE' ) and user_match.algorithm = :algorithm")

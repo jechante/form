@@ -136,14 +136,8 @@ public class UserMatchService {
         List<UserProperty> userProperties = allPropertiesMap.remove(wxUser);
         List<UserDemand> userDemands = allDemandsMap.remove(wxUser);
         // 转化成Map，BaseProperty可以作key，因为按id实现了equals和hashCode方法，不论其是否初始化，都认为是相等的
-        Map<BaseProperty, UserProperty> userPropertyMap = null;
-        Map<BaseProperty, UserDemand> userDemandMap = null;
-        if (userProperties != null) {
-            userPropertyMap = userProperties.stream().collect(Collectors.toMap(UserProperty::getBase, userProperty -> userProperty));
-        }
-        if (userDemands != null) {
-            userDemandMap = userDemands.stream().collect(Collectors.toMap(UserDemand::getBase, userDemand -> userDemand));
-        }
+        Map<BaseProperty, UserProperty> userPropertyMap = userPropertyMap(userProperties);
+        Map<BaseProperty, UserDemand> userDemandMap = userDemandMap(userDemands);
 
         // 计算目前可能的最大相互效用分
         int maxScore = algorithm.getScoreProperties().stream().collect(Collectors.summingInt(BaseProperty::getPropertyMaxScore)) + baseScore;
@@ -165,67 +159,97 @@ public class UserMatchService {
             }
             List<UserProperty> toUserProperties = allPropertiesMap.get(toUser);
             List<UserDemand> toUserDemands = allDemandsMap.get(toUser);
-            Map<BaseProperty, UserProperty> toUserPropertyMap = null;
-            Map<BaseProperty, UserDemand> toUserDemandMap = null;
+            Map<BaseProperty, UserProperty> toUserPropertyMap = userPropertyMap(toUserProperties);
+            Map<BaseProperty, UserDemand> toUserDemandMap = userDemandMap(toUserDemands);
 
-            if (toUserProperties != null) {
-                toUserPropertyMap = toUserProperties.stream().collect(Collectors.toMap(UserProperty::getBase, userProperty -> userProperty));
-            }
-            if (toUserDemands != null) {
-                toUserDemandMap = toUserDemands.stream().collect(Collectors.toMap(UserDemand::getBase, userDemand -> userDemand));
-            }
-            // 以该用户需求对其他用户属性打分，即计算scoreAtoB
-            float scoreAtoB = scoreOnOneSide(userDemandMap, toUserPropertyMap, algorithm);
-            // 以其他用户需求对该用户属性打分，即计算scoreBtoA
-            float scoreBtoA = scoreOnOneSide(toUserDemandMap, userPropertyMap, algorithm);
-            if (scoreAtoB != 0 || scoreBtoA != 0) { // 如果有一方得分不为0，则将结果存库 todo 如果有1方得分为0，是否还要推送（需要看过滤条件是否是强过滤条件，例如身高不是强过滤、性别是强过滤）
-                String type = "new";
-                UserMatch userMatch = new UserMatch();
-                userMatch.setAlgorithm(algorithm);
-
-                userMatch.setUserA(wxUser);
-                userMatch.setUserB(toUser);
-                int index = userMatches.indexOf(userMatch);
-                if (index != -1) { // 如果已经有该记录，且user为A，toUser为B
-                    type = "AToB";
-                    userMatch = userMatches.get(index);
-                } else { // 如果没有该记录
-                    userMatch.setUserA(toUser);
-                    userMatch.setUserB(wxUser);
-                    index = userMatches.indexOf(userMatch);
-                    if (index != -1) { // 如果已经有该记录，且user为B，toUser为A
-                        type = "BToA";
-                        userMatch = userMatches.get(index);
-                    }
-                }
-                if (type.equals("new") || type.equals("AToB")) {
-                    userMatch.setScoreAtoB(scoreAtoB);
-                    userMatch.setScoreBtoA(scoreBtoA);
-                } else if (type.equals("BToA")){
-                    userMatch.setScoreAtoB(scoreBtoA);
-                    userMatch.setScoreBtoA(scoreAtoB);
-                }
-
-                // 获取性别
-                BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性（必填属性？）
-                String sexA = readSingleValue(userPropertyMap.get(sex));
-                String sexB = readSingleValue(toUserPropertyMap.get(sex));
-                float total;
-                float genderWeight = algorithm.getGenderWeight(); // 需求权重
-                if (sexA.equals("男") && sexB.equals("女")) {
-                    total = (1-genderWeight)*scoreAtoB + genderWeight*scoreBtoA;
-                } else if (sexA.equals("女") && sexB.equals("男")) {
-                    total = genderWeight*scoreAtoB + (1-genderWeight)*scoreBtoA;
-                } else {
-                    total = (scoreAtoB+scoreBtoA)/2; // (float) (0.5*scoreAtoB + 0.5*scoreBtoA);
-                }
-                userMatch.setScoreTotal(total);
-                userMatch.setRatio(total/maxScore);
-                entityManager.persist(userMatch); // 这里merge也可以，但感觉尽量merge尽量还是用于detached的实体，其余情况用persist更高校
-                i ++;
-            }
+//            if (wxUser.getId().compareTo(toUser.getId()) <= 0) { // wxUser是userA
+                i = i + computeUserAToUserB(wxUser, toUser, algorithm, userMatches, maxScore, userPropertyMap, userDemandMap, toUserPropertyMap, toUserDemandMap);
+//            } else { // wxUser是userB
+//                i = i + computeUserAToUserB(toUser, wxUser, algorithm, userMatches, maxScore, toUserPropertyMap, toUserDemandMap, userPropertyMap, userDemandMap);
+//            }
 
         }
+    }
+
+    private Map<BaseProperty, UserProperty> userPropertyMap(List<UserProperty> userProperties) {
+        Map<BaseProperty, UserProperty> userPropertyMap = null;
+        if (userProperties != null) {
+            userPropertyMap = userProperties.stream().collect(Collectors.toMap(UserProperty::getBase, userProperty -> userProperty));
+        }
+        return userPropertyMap;
+    }
+
+    private Map<BaseProperty, UserDemand> userDemandMap(List<UserDemand> userDemands) {
+        Map<BaseProperty, UserDemand> userDemandMap = null;
+        if (userDemands != null) {
+            userDemandMap = userDemands.stream().collect(Collectors.toMap(UserDemand::getBase, userDemand -> userDemand));
+        }
+        return userDemandMap;
+    }
+
+    // 如果两者有一方得分不为0，则返回1，否则返回0
+    // 该方法已经考虑了UserMatch结果userA和userB的无方向性
+    private int computeUserAToUserB(WxUser wxUser, WxUser toUser, Algorithm algorithm, List<UserMatch> userMatches, int maxScore,
+                                    Map<BaseProperty, UserProperty> userPropertyMap, Map<BaseProperty, UserDemand> userDemandMap, Map<BaseProperty, UserProperty> toUserPropertyMap, Map<BaseProperty, UserDemand> toUserDemandMap) throws IOException {
+
+        // 以该用户需求对其他用户属性打分，即计算scoreAtoB
+        float scoreAtoB = scoreOnOneSide(userDemandMap, toUserPropertyMap, algorithm);
+        // 以其他用户需求对该用户属性打分，即计算scoreBtoA
+        float scoreBtoA = scoreOnOneSide(toUserDemandMap, userPropertyMap, algorithm);
+        if (scoreAtoB != 0 || scoreBtoA != 0) { // 如果有一方得分不为0，则将结果存库 todo 如果有1方得分为0，是否还要推送（需要看过滤条件是否是强过滤条件，例如身高不是强过滤、性别是强过滤）
+            UserMatch userMatch;
+            String type;
+
+            UserMatch atoB = new UserMatch();
+            atoB.setAlgorithm(algorithm);
+            atoB.setUserA(wxUser);
+            atoB.setUserB(toUser);
+
+            UserMatch btoA = new UserMatch();
+            btoA.setAlgorithm(algorithm);
+            btoA.setUserA(toUser);
+            btoA.setUserB(wxUser);
+
+            int indexAtoB = userMatches.indexOf(atoB);
+            int indexBtoA = userMatches.indexOf(btoA);
+
+            if (indexAtoB != -1) { // 如果已经有该记录，且user为A，toUser为B
+                type = "AToB";
+                userMatch = userMatches.get(indexAtoB);
+            } else if (indexBtoA != -1) { // 如果已经有该记录，且user为B，toUser为A
+                type = "BToA";
+                userMatch = userMatches.get(indexBtoA);
+            } else { // 如果没有该记录
+                type = "new";
+                userMatch = atoB; // 新记录按A、B存
+            }
+            if (type.equals("new") || type.equals("AToB")) {
+                userMatch.setScoreAtoB(scoreAtoB);
+                userMatch.setScoreBtoA(scoreBtoA);
+            } else if (type.equals("BToA")){
+                userMatch.setScoreAtoB(scoreBtoA);
+                userMatch.setScoreBtoA(scoreAtoB);
+            }
+
+            // 获取性别
+            BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性（必填属性？）
+            String sexA = readSingleValue(userPropertyMap.get(sex));
+            String sexB = readSingleValue(toUserPropertyMap.get(sex));
+            float total;
+            float genderWeight = algorithm.getGenderWeight(); // 需求权重
+            if (sexA.equals("男") && sexB.equals("女")) {
+                total = (1-genderWeight)*scoreAtoB + genderWeight*scoreBtoA;
+            } else if (sexA.equals("女") && sexB.equals("男")) {
+                total = genderWeight*scoreAtoB + (1-genderWeight)*scoreBtoA;
+            } else {
+                total = (scoreAtoB+scoreBtoA)/2; // (float) (0.5*scoreAtoB + 0.5*scoreBtoA);
+            }
+            userMatch.setScoreTotal(total);
+            userMatch.setRatio(total/maxScore);
+            entityManager.persist(userMatch); // 这里merge也可以，但感觉尽量merge尽量还是用于detached的实体，其余情况用persist更高校
+            return 1;
+        }
+        return 0;
     }
 
 
@@ -459,5 +483,52 @@ public class UserMatchService {
     }
 
 
+    public void regenerate() throws IOException {
+        // 获取默认算法
+        Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
+        // 获取用户与其他所有用户已有的效用结果
+        List<UserMatch> userMatches = userMatchRepository.findAllByAlgorithm(algorithm);
+        // 获取所有用户的属性及需求（由于算法已经急加载出了计算所需的BaseProperty，因此猜测下面的manyToOne到BaseProperty的关系会自动补上）
+        List<UserProperty> allProperties = this.userPropertyRepository.findAllActiveWithUser();
+        List<UserDemand> allDemands = this.userDemandRepository.findAllActiveWithUser();
+        // 按用户分组
+        Map<WxUser, List<UserProperty>> allPropertiesMap = allProperties.stream().collect(Collectors.groupingBy(userProperty -> userProperty.getWxUser(),
+            Collectors.toList()));
+        Map<WxUser, List<UserDemand>> allDemandsMap = allDemands.stream().collect(Collectors.groupingBy(userDemand -> userDemand.getWxUser(),
+            Collectors.toList()));
 
+        // 计算目前可能的最大相互效用分
+        int maxScore = algorithm.getScoreProperties().stream().collect(Collectors.summingInt(BaseProperty::getPropertyMaxScore)) + baseScore;
+
+        // 首先获取所有用户(考虑部分用户只填了属性或者只填了需求的情况)
+        Set<WxUser> allUsersSet = new HashSet<>(); // 需要先用Set添加然后转成list，直接用list添加会有问题
+        allUsersSet.addAll(allPropertiesMap.keySet());
+        allUsersSet.addAll(allDemandsMap.keySet());
+
+        List<WxUser> allUsers = allUsersSet.stream().collect(Collectors.toList());
+
+        // 计算效用分
+        // 批处理（主要是防止内存溢出）
+        int userSize = allUsers.size();
+        int batchSize = 25;
+        int i = 0; // set循环的index记录变量
+        for (int j = 0; j < userSize; j++) {
+            WxUser wxUser = allUsers.get(j);
+            Map<BaseProperty, UserProperty> userPropertyMap = userPropertyMap(allPropertiesMap.get(wxUser));
+            Map<BaseProperty, UserDemand> userDemandMap = userDemandMap(allDemandsMap.get(wxUser));
+            for (int k = 0; k < userSize; k++) {
+                if (k > j) { // 因为userMatch无方向，因此只需要计算一半
+                    WxUser toUser = allUsers.get(k);
+                    if ( i > 0 && i % batchSize == 0 ) {
+                        //flush a batch of inserts and release memory
+                        entityManager.flush();
+                        entityManager.clear();
+                    }
+                    Map<BaseProperty, UserProperty> toUserPropertyMap = userPropertyMap(allPropertiesMap.get(toUser));
+                    Map<BaseProperty, UserDemand> toUserDemandMap = userDemandMap(allDemandsMap.get(toUser));
+                    i = i + computeUserAToUserB(wxUser, toUser, algorithm, userMatches, maxScore, userPropertyMap, userDemandMap, toUserPropertyMap, toUserDemandMap);
+                }
+            }
+        }
+    }
 }

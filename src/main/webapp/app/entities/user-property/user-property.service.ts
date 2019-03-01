@@ -35,4 +35,9 @@ export class UserPropertyService {
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
+
+    userPictures(req?: any): Observable<EntityArrayResponseType> {
+        const options = createRequestOption(req);
+        return this.http.get<IUserProperty[]>('api/user-pictures', { params: options, observe: 'response' });
+    }
 }

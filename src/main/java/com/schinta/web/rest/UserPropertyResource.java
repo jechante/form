@@ -124,4 +124,19 @@ public class UserPropertyResource {
         userPropertyService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * GET  /user-pictures : get all the pictures.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of userProperties in body
+     */
+    @GetMapping("/user-pictures")
+    @Timed
+    public ResponseEntity<List<UserProperty>> getAllUserPictures(Pageable pageable) {
+        log.debug("REST request to get a page of 用户头像");
+        Page<UserProperty> page = userPropertyService.findAllUserPictures(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-pictures");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 }

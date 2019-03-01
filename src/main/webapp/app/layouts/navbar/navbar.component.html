@@ -77,6 +77,12 @@
                             <span>微信用户信息</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="user-picture" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
+                            <span>用户头像</span>
+                        </a>
+                    </li>
 <!--                    <li>-->
 <!--                        <a class="dropdown-item" routerLink="user-property" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">-->
 <!--                            <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>-->
