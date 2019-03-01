@@ -1,0 +1,21 @@
+<div>
+    <h2 id="page-heading">
+        <span>用户头像</span>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="container" *ngIf="pictureGrid" infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+        <div class="row" *ngFor="let row of pictureGrid ;trackBy: trackId">
+            <div class="col-sm" *ngFor="let cell of row">
+                <p><img [src]="cell['url']"></p>
+                <span>{{cell['openId']}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
