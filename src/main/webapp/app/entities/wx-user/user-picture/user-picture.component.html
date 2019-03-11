@@ -5,10 +5,15 @@
     <jhi-alert></jhi-alert>
     <br/>
     <div class="container" *ngIf="pictureGrid" infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
-        <div class="row" *ngFor="let row of pictureGrid ;trackBy: trackId">
-            <div class="col-sm" *ngFor="let cell of row">
-                <p><img [src]="cell['url']"></p>
-                <span>{{cell['openId']}}</span>
+        <div *ngFor="let row of pictureGrid ;trackBy: trackId">
+            <div class="user-picture" *ngFor="let cell of row" >
+                <div class="img-zone">
+                    <img [src]="cell['url']" style="height: 100%">
+                </div>
+                <div class="text-zone">
+                    <a  [routerLink]="['/wx-user', cell['openId'], 'view' ]"><span>{{cell['nickname']}}</span></a>
+                </div>
+
             </div>
         </div>
     </div>
