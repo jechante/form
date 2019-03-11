@@ -339,6 +339,12 @@ public class UserMatch implements Serializable {
         return pushStatus != null && (pushStatus.equals(PushStatus.A) || pushStatus.equals(PushStatus.B));
     }
 
+    // 是否尚未推送给任意一方
+    @JsonIgnore
+    public boolean hasPushedToNeither() {
+        return pushStatus == null || pushStatus.equals(PushStatus.NEITHER);
+    }
+
     // 是否可以被推送给指定用户
     @JsonIgnore
     public boolean toBePushedToUser(WxUser user) {

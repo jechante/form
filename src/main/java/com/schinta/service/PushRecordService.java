@@ -141,7 +141,7 @@ public class PushRecordService {
         // 获取用户与其他所有用户已有的未推送的效用结果
         List<UserMatch> userMatches = userMatchRepository.findUnPushedByWxUserAndAlgorithm(wxUser, algorithm);
         //        if (userMatches.size() == 0) throw new RuntimeException("该用户没有符合的配对");
-        PushRecord pushRecord = getUserPushRecord(algorithm, wxUser, userMatches, LocalDateTime.now(), PushType.ASK);
+        PushRecord pushRecord = getUserAskPushRecord(algorithm, wxUser, userMatches, LocalDateTime.now());
 
         if (pushRecord != null) {
             entityManager.persist(pushRecord);
@@ -164,47 +164,55 @@ public class PushRecordService {
             users.add(userMatch.getUserA());
         });
 
-        List<PushRecord> pushRecords = new ArrayList<>();
+        // 生成所需的map
+        Map<WxUser, PushRecord> userPushRecordMap = new HashMap<>();
+        Map<WxUser, List<UserMatch>> userMatchMap = new HashMap<>();
+        users.forEach(user -> {
+            PushRecord pushRecord = new PushRecord();
+            pushRecord.setPushDateTime(localDateTime);
+            pushRecord.setUser(user);
+            pushRecord.setPushType(PushType.Regular);
+            userPushRecordMap.put(user, pushRecord);
+
+            // 获取可以被推送给该用户且尚未推送的配对
+            List<UserMatch> userMatches = allMatches.stream().filter(userMatch -> {
+                return userMatch.toBePushedToUser(user);
+            }).collect(Collectors.toList());
+            userMatchMap.put(user, userMatches);
+        });
+
+        // 生成所需的pushRecord
+        users.forEach(user -> {
+            getUserRegularPushRecord(algorithm, user, userPushRecordMap, userMatchMap, localDateTime);
+        });
 
         // 生成推送记录
         // 批处理（主要是防止内存溢出）
         int batchSize = 25;
         int i = 0; // set循环的index记录变量
-        for (WxUser user : users) {
+        List<PushRecord> pushRecords = userPushRecordMap.values().stream().filter(pushRecord -> pushRecord.getUserMatches() != null && pushRecord.getUserMatches().size() != 0).collect(Collectors.toList());
+        for (PushRecord pushRecord : pushRecords) {
             if (i > 0 && i % batchSize == 0) {
                 //flush a batch of inserts and release memory
                 entityManager.flush();
                 entityManager.clear();
             }
-            // 获取可以被推送给该用户且尚未推送的配对
-            List<UserMatch> userMatches = allMatches.stream().filter(userMatch -> {
-//                if (userMatch.getUserA().equals(user) && (!userMatch.hasPushedToA())) {
-//                    return true;
-//                } else if (userMatch.getUserB().equals(user) && (!userMatch.hasPushedToB())) {
-//                    return true;
-//                } else return false;
-                return userMatch.toBePushedToUser(user);
-            }).collect(Collectors.toList());
-            PushRecord pushRecord = getUserPushRecord(algorithm, user, userMatches, localDateTime, PushType.Regular);
-            if (pushRecord != null) { // 不是所有活跃用户都有pushRecord，例如已经主动推送给他了等
-                entityManager.persist(pushRecord);
-                pushRecords.add(pushRecord);
-                i++;
-            }
+            entityManager.persist(pushRecord);
+            i++;
         }
-
         return pushRecords;
     }
 
-    // 计算某用户的此次主动配对
-    private PushRecord getUserPushRecord(Algorithm algorithm, WxUser wxUser, List<UserMatch> userMatches, LocalDateTime timestamp, PushType pushType) {
+    // 计算某用户的此次配对
+    // 只能主动配对时使用该方法（主动推送和定期推送的规则略有差异）
+    private PushRecord getUserAskPushRecord(Algorithm algorithm, WxUser wxUser, List<UserMatch> userMatches, LocalDateTime timestamp) {
         if (userMatches == null || userMatches.size() == 0) { // 如果没有记录则为空
             return null;
         }
         PushRecord pushRecord = new PushRecord();
         pushRecord.setPushDateTime(timestamp);
         pushRecord.setUser(wxUser);
-        pushRecord.setPushType(pushType);
+        pushRecord.setPushType(PushType.ASK);
         for (int i = 0; i < wxUser.getPushLimit() && i < userMatches.size(); i++) {
             UserMatch userMatch = userMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
 
@@ -225,8 +233,7 @@ public class PushRecordService {
                     theOther = userMatch.getUserA();
                 }
                 // 计算matchType，是否对于双方都是最佳配对
-                // 这里在查询的之前执行了flush操作。但是是否只更新了UserMatch本身，但是丢失了关系信息？
-
+                // 这里在查询的之前执行了flush操作。todo 但是是否只更新了UserMatch本身，但是丢失了关系信息？（这里的查询会更新上下文，需要特别注意，否则会导致不易察觉的问题）
                 List<UserMatch> theOtherMatches = userMatchRepository.findUnPushedByWxUserAndAlgorithm(theOther, algorithm);
                 for (int j = 0; j < theOther.getPushLimit(); j++) {
                     UserMatch theOherMatch = theOtherMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
@@ -250,6 +257,65 @@ public class PushRecordService {
         return pushRecord;
     }
 
+    // 计算某用户的此次配对
+    // 只能定期配对时使用该方法（主动推送和定期推送的规则略有差异）
+    // 定期推送结束后，需保证匹配记录中没有只推送给其中一方的情况
+    private void getUserRegularPushRecord(Algorithm algorithm, WxUser wxUser, Map<WxUser, PushRecord> userPushRecordMap, Map<WxUser, List<UserMatch>> userMatchMap, LocalDateTime timestamp) {
+        // 重要！循环的必须是复制的list，因为后面会remove
+        List<UserMatch> userMatches =  userMatchMap.get(wxUser).stream().collect(Collectors.toList());
+        if (userMatches == null || userMatches.size() == 0) { // 如果没有记录直接返回
+            return;
+        }
+
+        // 先计算该用户的主动匹配，同时将该配对加入被动一方的推送中去
+        for (int i = 0; i < wxUser.getPushLimit() && i < userMatches.size(); i++) {
+            UserMatch userMatch = userMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
+//            if(userMatch.getPushStatus() != null && (userMatch.getPushStatus().equals(PushStatus.A) || userMatch.getPushStatus().equals(PushStatus.B))) { // 如果已经被推送给其中一个人（说明已经计算了排名、matchType等）
+            if (userMatch.hasPushedToEither()) { // 如果已经被推送给其中任意一个人（这里肯定指对方通过主动匹配获取已经获取过），说明已经计算了排名、matchType等
+                userMatch.setPushStatus(PushStatus.BOTH);
+                userPushRecordMap.get(wxUser).addUserMatches(userMatch);
+            } else if (userMatch.hasPushedToNeither()) { // 如果还未推送过
+                WxUser theOther = null;
+                if (userMatch.getUserA().equals(wxUser)) {
+                    userMatch.setMatchType(MatchType.ATOB);
+                    userMatch.setRankA(i);
+                    theOther = userMatch.getUserB();
+                } else if (userMatch.getUserB().equals(wxUser)) {
+                    userMatch.setMatchType(MatchType.BTOA);
+                    userMatch.setRankB(i);
+                    theOther = userMatch.getUserA();
+                }
+
+                // 重要！循环的必须是复制的list，因为后面会remove
+                List<UserMatch> theOtherMatches = userMatchMap.get(theOther).stream().collect(Collectors.toList());
+                for (int j = 0; j < theOther.getPushLimit(); j++) {
+                    UserMatch theOherMatch = theOtherMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
+                    if (theOherMatch.equals(userMatch)) {
+                        userMatch.setMatchType(MatchType.BIDIRECTIONAL);
+                        if (userMatch.getUserA().equals(wxUser)) {
+                            userMatch.setRankB(j);
+                        } else if (userMatch.getUserB().equals(wxUser)) {
+                            userMatch.setRankA(j);
+                        }
+                        break;
+                    }
+                    theOtherMatches.remove(theOherMatch);
+                }
+                // 不同于主动匹配，必须将结果同时推送给双方
+                userMatch.setPushStatus(PushStatus.BOTH);
+                userPushRecordMap.get(wxUser).addUserMatches(userMatch);
+                userPushRecordMap.get(theOther).addUserMatches(userMatch);
+            }
+            // 移除以计算剩下中的最大值
+            userMatches.remove(userMatch);
+        }
+
+        // 清查剩余（后pushLimit条中）未推送给该用户的匹配记录中已经通过对方的主动请求推送过对方
+        userMatches.stream().filter(userMatch -> userMatch.hasPushedToEither()).forEach(userMatch -> {
+            userMatch.setPushStatus(PushStatus.BOTH);
+            userPushRecordMap.get(wxUser).addUserMatches(userMatch);
+        });
+    }
 
 
     public void wxPush(PushRecord pushRecord) throws WxErrorException, MalformedURLException {
