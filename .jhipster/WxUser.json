@@ -154,7 +154,7 @@
     "dto": "no",
     "pagination": "infinite-scroll",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*"

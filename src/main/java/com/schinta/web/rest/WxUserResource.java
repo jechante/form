@@ -6,6 +6,8 @@ import com.schinta.service.WxUserService;
 import com.schinta.web.rest.errors.BadRequestAlertException;
 import com.schinta.web.rest.util.HeaderUtil;
 import com.schinta.web.rest.util.PaginationUtil;
+import com.schinta.service.dto.WxUserCriteria;
+import com.schinta.service.WxUserQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
@@ -37,8 +39,11 @@ public class WxUserResource {
 
     private final WxUserService wxUserService;
 
-    public WxUserResource(WxUserService wxUserService) {
+    private final WxUserQueryService wxUserQueryService;
+
+    public WxUserResource(WxUserService wxUserService, WxUserQueryService wxUserQueryService) {
         this.wxUserService = wxUserService;
+        this.wxUserQueryService = wxUserQueryService;
     }
 
     /**
@@ -87,15 +92,29 @@ public class WxUserResource {
      * GET  /wx-users : get all the wxUsers.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of wxUsers in body
      */
     @GetMapping("/wx-users")
     @Timed
-    public ResponseEntity<List<WxUser>> getAllWxUsers(Pageable pageable) {
-        log.debug("REST request to get a page of WxUsers");
-        Page<WxUser> page = wxUserService.findAll(pageable);
+    public ResponseEntity<List<WxUser>> getAllWxUsers(WxUserCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get WxUsers by criteria: {}", criteria);
+        Page<WxUser> page = wxUserQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/wx-users");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+    * GET  /wx-users/count : count all the wxUsers.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/wx-users/count")
+    @Timed
+    public ResponseEntity<Long> countWxUsers (WxUserCriteria criteria) {
+        log.debug("REST request to count WxUsers by criteria: {}", criteria);
+        return ResponseEntity.ok().body(wxUserQueryService.countByCriteria(criteria));
     }
 
     /**

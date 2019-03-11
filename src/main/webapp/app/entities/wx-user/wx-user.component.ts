@@ -24,6 +24,8 @@ export class WxUserComponent implements OnInit, OnDestroy {
     queryCount: any;
     reverse: any;
     totalItems: number;
+    nickname: string;
+    openId: string;
 
     constructor(
         private wxUserService: WxUserService,
@@ -43,12 +45,19 @@ export class WxUserComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
+        const param = {
+            page: this.page,
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
+        if (this.nickname) {
+            param['wxNickName.contains'] = this.nickname;
+        }
+        if (this.openId) {
+            param['id.contains'] = this.openId;
+        }
         this.wxUserService
-            .query({
-                page: this.page,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
+            .query(param)
             .subscribe(
                 (res: HttpResponse<IWxUser[]>) => this.paginateWxUsers(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)

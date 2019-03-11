@@ -4,6 +4,7 @@ import com.schinta.FormApp;
 
 import com.schinta.domain.WxUser;
 import com.schinta.repository.WxUserRepository;
+import com.schinta.service.WxUserQueryService;
 import com.schinta.service.WxUserService;
 import com.schinta.web.rest.errors.ExceptionTranslator;
 
@@ -92,6 +93,9 @@ public class WxUserResourceIntTest {
     private WxUserService wxUserService;
 
     @Autowired
+    private WxUserQueryService wxUserQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -110,7 +114,7 @@ public class WxUserResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WxUserResource wxUserResource = new WxUserResource(wxUserService);
+        final WxUserResource wxUserResource = new WxUserResource(wxUserService, wxUserQueryService);
         this.restWxUserMockMvc = MockMvcBuilders.standaloneSetup(wxUserResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

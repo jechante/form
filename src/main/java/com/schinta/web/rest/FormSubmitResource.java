@@ -183,10 +183,15 @@ public class FormSubmitResource {
             // 计算该用户与现有其他用户的效用矩阵
             userMatchService.computeUserToOthers(newSubmit);
             // 推动针对该用户需求的最佳匹配结果
-            // 同样分成了两个事务，1.先计算生产pushRecord
-            PushRecord pushRecord = pushRecordService.getUserAsked(newSubmit.getWxUser());
-            // 2.再推送链接
-            pushRecordService.wxPush(pushRecord);
+
+//            // 同样分成了两个事务，1.先计算生产pushRecord
+//            PushRecord pushRecord = pushRecordService.getUserAsked(newSubmit.getWxUser());
+//            // 2.再推送链接
+//            pushRecordService.wxPush(pushRecord);
+
+            // 一个事务，推送失败直接回滚，而不是由后台再手动推送失败的记录，简化操作。
+            pushRecordService.wxGetUserAskedAndPush(newSubmit.getWxUser());
+
         }
     }
 

@@ -331,7 +331,25 @@ public class UserMatchService {
     private boolean matchOneToRange(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
         // range即需求侧为文本
         String demand = mapper.readValue(userDemand.getPropertyValue(), String.class);
-        int[] demandMinMax = Arrays.stream(demand.split("-")).mapToInt(str -> Integer.valueOf(str)).toArray();
+        String[] rangeStr = demand.split("-");
+        if (rangeStr.length != 2) {
+            return false;
+        }
+        int[] demandMinMax = new int[2];
+        for (int i = 0; i < rangeStr.length; i++) {
+            try {
+                demandMinMax[i] = Integer.valueOf(rangeStr[i]);
+            } catch (NumberFormatException e) { // 如果不是数字，直接返回false
+                e.printStackTrace();
+                return false;
+            }
+        }
+        if (demandMinMax[0] >= demandMinMax[1]) { // 如果填写的区间，前者比后者值大，直接返回false
+            return false;
+        }
+
+//        int[] demandMinMax = Arrays.stream(rangeStr).mapToInt(str -> Integer.valueOf(str)).toArray();
+
         // 属性侧
         int property = -1;
         if (toUserProperty.getBase().getPropertyName().equals("年龄")) { // 年龄需要特殊处理，这里需要急加载BaseProperty

@@ -18,6 +18,7 @@ entity WxUser{
 enum UserStatus {
 	ACTIVE, // 活跃的
     UNACTIVE, // 不活跃
+
     LEFT, // 取关了
     FORBIDDEN // 被拉黑
 }
@@ -226,4 +227,6 @@ relationship ManyToMany {
 paginate * with pagination except WxUser, Algorithm, BaseProperty, BaseForm
 paginate WxUser, Algorithm, BaseProperty, BaseForm with infinite-scroll
 service * with serviceClass
+
+filter WxUser
 

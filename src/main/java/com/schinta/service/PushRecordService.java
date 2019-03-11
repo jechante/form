@@ -24,7 +24,6 @@ import me.chanjar.weixin.mp.bean.result.WxMpMassSendResult;
 import me.chanjar.weixin.mp.bean.result.WxMpMassUploadResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +60,7 @@ public class PushRecordService {
     private String appid = Constants.WX_APPID; // todo 当用多个公众号时，应该从url中获取（即金数据表单的数据推送url中需要带有appid）
 
     private WxMpService wxMpService;
+
     public PushRecordService(PushRecordRepository pushRecordRepository,
                              AlgorithmRepository algorithmRepository,
                              UserMatchRepository userMatchRepository,
@@ -80,7 +80,8 @@ public class PushRecordService {
      * @return the persisted entity
      */
     public PushRecord save(PushRecord pushRecord) {
-        log.debug("Request to save PushRecord : {}", pushRecord);        return pushRecordRepository.save(pushRecord);
+        log.debug("Request to save PushRecord : {}", pushRecord);
+        return pushRecordRepository.save(pushRecord);
     }
 
     /**
@@ -170,7 +171,7 @@ public class PushRecordService {
         int batchSize = 25;
         int i = 0; // set循环的index记录变量
         for (WxUser user : users) {
-            if ( i > 0 && i % batchSize == 0 ) {
+            if (i > 0 && i % batchSize == 0) {
                 //flush a batch of inserts and release memory
                 entityManager.flush();
                 entityManager.clear();
@@ -195,9 +196,9 @@ public class PushRecordService {
         return pushRecords;
     }
 
-    // 计算某用户的此次配对
+    // 计算某用户的此次主动配对
     private PushRecord getUserPushRecord(Algorithm algorithm, WxUser wxUser, List<UserMatch> userMatches, LocalDateTime timestamp, PushType pushType) {
-        if (userMatches == null || userMatches.size() == 0){ // 如果没有记录则为空
+        if (userMatches == null || userMatches.size() == 0) { // 如果没有记录则为空
             return null;
         }
         PushRecord pushRecord = new PushRecord();
@@ -208,7 +209,7 @@ public class PushRecordService {
             UserMatch userMatch = userMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
 
 //            if(userMatch.getPushStatus() != null && (userMatch.getPushStatus().equals(PushStatus.A) || userMatch.getPushStatus().equals(PushStatus.B))) { // 如果已经被推送给其中一个人（说明已经计算了排名、matchType等）
-            if(userMatch.hasPushedToEither()) { // 如果已经被推送给其中任意一个人（说明已经计算了排名、matchType等）
+            if (userMatch.hasPushedToEither()) { // 如果已经被推送给其中任意一个人（说明已经计算了排名、matchType等）
                 userMatch.setPushStatus(PushStatus.BOTH);
             } else { // 如果还未推送过
                 WxUser theOther = null;
@@ -224,6 +225,8 @@ public class PushRecordService {
                     theOther = userMatch.getUserA();
                 }
                 // 计算matchType，是否对于双方都是最佳配对
+                // 这里在查询的之前执行了flush操作。但是是否只更新了UserMatch本身，但是丢失了关系信息？
+
                 List<UserMatch> theOtherMatches = userMatchRepository.findUnPushedByWxUserAndAlgorithm(theOther, algorithm);
                 for (int j = 0; j < theOther.getPushLimit(); j++) {
                     UserMatch theOherMatch = theOtherMatches.stream().max(Comparator.comparing(UserMatch::getScoreTotal)).get();
@@ -236,7 +239,7 @@ public class PushRecordService {
                         }
                         break;
                     }
-                    theOtherMatches.remove(userMatch);
+                    theOtherMatches.remove(theOherMatch);
                 }
             }
 
@@ -245,15 +248,19 @@ public class PushRecordService {
             userMatches.remove(userMatch);
         }
         return pushRecord;
-
     }
+
+
 
     public void wxPush(PushRecord pushRecord) throws WxErrorException, MalformedURLException {
         // 将pushRecord转化为持久态。注意：一定要使用merge的返回值，即pushRecord = 不能漏掉！！！
         if (pushRecord == null)
             return;
-        pushRecord = entityManager.merge(pushRecord);
-        log.debug(""+entityManager.contains(pushRecord));
+        // 如果是detached状态，先转化为持久态
+        if (entityManager.contains(pushRecord)) {
+            pushRecord = entityManager.merge(pushRecord);
+//            log.debug("" + entityManager.contains(pushRecord));
+        }
         WxMpKefuMessage.WxArticle article1 = new WxMpKefuMessage.WxArticle();
 
         // 获取推送结果的url
@@ -278,22 +285,23 @@ public class PushRecordService {
 //        entityManager.merge(userMatch);
 
         String nickName;
-        WxUser user;
-        if (userMatch.getUserA().equals(pushRecord.getUser())) {
-            user = userMatch.getUserB();
+        WxUser matchUser;
+        WxUser pushUser = pushRecord.getUser();
+        if (userMatch.getUserA().equals(pushUser)) {
+            matchUser = userMatch.getUserB();
 //            entityManager.merge(user);
         } else {
-            user = userMatch.getUserA();
+            matchUser = userMatch.getUserA();
 //            entityManager.merge(user);
         }
-        nickName = user.getWxNickName();
+        nickName = matchUser.getWxNickName();
         article1.setUrl(url);
-        article1.setPicUrl(user.getWxHeadimgurl());
+        article1.setPicUrl(matchUser.getWxHeadimgurl());
         article1.setDescription("点击查看你们的配对情况和分数");
         if (num == 1) {
-            article1.setTitle(String.format("已成功与%s完成配对",nickName));
+            article1.setTitle(String.format("已成功与%s完成配对", nickName));
         } else {
-            article1.setTitle(String.format("已成功与%s等%s个人完成配对",nickName,num));
+            article1.setTitle(String.format("已成功与%s等%s个人完成配对", nickName, num));
         }
 
 
@@ -305,7 +313,7 @@ public class PushRecordService {
 
         WxMpKefuMessage message = WxMpKefuMessage.NEWS()
 //            .toUser(Constants.WX_TEST_OPENID) // todo 测试用
-            .toUser(user.getId()) // 生产用
+            .toUser(pushUser.getId()) // 生产用
             .addArticle(article1)
 //            .addArticle(article2)
             .build();
@@ -313,7 +321,7 @@ public class PushRecordService {
         if (success) {
             log.info("发送客服消息成功");
             pushRecord.setSuccess(true);
-        } else {
+        } else { // 貌似失败会直接抛出异常，而不会跳转至这里
             log.error("发送客服消息失败");
             pushRecord.setSuccess(false);
         }
@@ -340,7 +348,7 @@ public class PushRecordService {
             WxMpMassSendResult massResult = wxMpService.getMassMessageService().massOpenIdsMessageSend(massMessage); // todo 测试群发成功的WxMpMassSendResult包括哪些信息，有什么用
             // 将推送记录标记为推送成功
             for (PushRecord pushRecord : pushRecords) {
-                if ( i > 0 && i % batchSize == 0 ) {
+                if (i > 0 && i % batchSize == 0) {
                     //flush a batch of inserts and release memory
                     entityManager.flush();
                     entityManager.clear();
@@ -352,7 +360,7 @@ public class PushRecordService {
             e.printStackTrace();
             // 将推送记录标记为推送失败
             for (PushRecord pushRecord : pushRecords) {
-                if ( i > 0 && i % batchSize == 0 ) {
+                if (i > 0 && i % batchSize == 0) {
                     //flush a batch of inserts and release memory
                     entityManager.flush();
                     entityManager.clear();
@@ -465,5 +473,10 @@ public class PushRecordService {
 
     public List<LocalDateTime> getPushTimes() {
         return pushRecordRepository.findPushTimes();
+    }
+
+    public void wxGetUserAskedAndPush(WxUser wxUser) throws WxErrorException, MalformedURLException {
+        PushRecord pushRecord = this.getUserAsked(wxUser);
+        this.wxPush(pushRecord);
     }
 }

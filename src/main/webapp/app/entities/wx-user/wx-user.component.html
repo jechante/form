@@ -8,6 +8,22 @@
             </span>
         </button>
     </h2>
+    <button id="jh-query" class="btn btn-primary float-right jh-create-entity create-wx-user" (click)="reset()" >
+        <!--            <fa-icon [icon]="'plus'"></fa-icon>-->
+        <span >
+            查询
+            </span>
+    </button>
+    <div class="float-right">
+        <label class="" for="field_openId">openId</label>
+        <input type="text" class="" name="openId" id="field_openId" placeholder=""
+               [(ngModel)]="openId" />
+    </div>
+    <div class="float-right">
+        <label class="" for="field_nickname">用户昵称</label>
+        <input type="text" class="" name="nickname" id="field_nickname" placeholder=""
+               [(ngModel)]="nickname" />
+    </div>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="table-responsive" *ngIf="wxUsers">

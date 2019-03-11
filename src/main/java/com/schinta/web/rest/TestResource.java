@@ -2,10 +2,7 @@ package com.schinta.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.schinta.domain.Algorithm;
-import com.schinta.domain.FormSubmit;
-import com.schinta.domain.User;
-import com.schinta.domain.WxUser;
+import com.schinta.domain.*;
 import com.schinta.repository.AlgorithmRepository;
 import com.schinta.service.UserService;
 import org.slf4j.Logger;
@@ -110,13 +107,13 @@ public class TestResource {
 //        return new ResponseEntity<>(algorithm, null, HttpStatus.OK);
 
         // 测试Jackson（支撑转化为Number\String\List\Map等类型）
-        ObjectMapper mapper = new ObjectMapper(); //转换器
-        // OneToMany：数组（取第一个）对数组或者String对数组
-//        String string = ""; // 报错（感觉也可以算小bug）
-        String string = "\"\""; // 可行，解析的结果为：""（感觉很奇葩）
-
-        Object result =  mapper.readValue(string, Object.class);
-        return new ResponseEntity<>(result, null, HttpStatus.OK);
+//        ObjectMapper mapper = new ObjectMapper(); //转换器
+//        // OneToMany：数组（取第一个）对数组或者String对数组
+////        String string = ""; // 报错（感觉也可以算小bug）
+//        String string = "\"\""; // 可行，解析的结果为：""（感觉很奇葩）
+//
+//        Object result =  mapper.readValue(string, Object.class);
+//        return new ResponseEntity<>(result, null, HttpStatus.OK);
 
         // 测试HashMap的get方法
 //        Map map = new HashMap();
@@ -144,5 +141,31 @@ public class TestResource {
 //        String timeStr = time.toString();
 //        LocalDateTime time1 = LocalDateTime.parse(timeStr);
 //        return new ResponseEntity<>(time1, null, HttpStatus.OK);
+
+        // 测试range异常情况的处理
+//        boolean result;
+//        String demand = "175-185";
+//        String[] rangeStr = demand.split("-");
+//        if (rangeStr.length != 2) {
+//            result = false;
+//        }
+//        int[] demandMinMax = new int[2];
+//        for (int i = 0; i < rangeStr.length; i++) {
+//            try {
+//                demandMinMax[i] = Integer.valueOf(rangeStr[i]);
+//            } catch (NumberFormatException e) { // 如果不是数字，直接返回false
+//                e.printStackTrace();
+//                result = false;
+//            }
+//        }
+//        return new ResponseEntity<>(demandMinMax, null, HttpStatus.OK);
+
+        // 测试多对多存储
+        List<UserMatch> userMatches = entityManager.createQuery("select user_match from UserMatch user_match", UserMatch.class).getResultList();
+        PushRecord pushRecord = new PushRecord();
+        pushRecord.addUserMatches(userMatches.get(0));
+        pushRecord.addUserMatches(userMatches.get(1));
+        entityManager.persist(pushRecord);
+        return new ResponseEntity<>(pushRecord, null, HttpStatus.OK);
     }
 }
