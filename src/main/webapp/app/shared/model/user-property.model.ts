@@ -1,4 +1,4 @@
-import { IWxUser } from 'app/shared/model//wx-user.model';
+import { IWxUser } from 'app/shared/model/wx-user.model';
 import { IBaseProperty } from 'app/shared/model//base-property.model';
 
 export interface IUserProperty {

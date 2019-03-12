@@ -1,21 +1,20 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {IWxUser} from "app/shared/model/wx-user.model";
-import {Subscription} from "rxjs";
-import {WxUserService} from "app/entities/wx-user";
-import {JhiAlertService, JhiEventManager, JhiParseLinks} from "ng-jhipster";
-import {Principal} from "app/core";
-import {ITEMS_PER_PAGE} from "app/shared";
-import {HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {userPropertyRoute, UserPropertyService} from "app/entities/user-property";
-import {IUserProperty} from "app/shared/model/user-property.model";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { IWxUser } from 'app/shared/model/wx-user.model';
+import { Subscription } from 'rxjs';
+import { WxUserService } from 'app/entities/wx-user';
+import { JhiAlertService, JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { Principal } from 'app/core';
+import { ITEMS_PER_PAGE } from 'app/shared';
+import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { userPropertyRoute, UserPropertyService } from 'app/entities/user-property';
+import { IUserProperty } from 'app/shared/model/user-property.model';
 
 @Component({
-  selector: 'jhi-user-picture',
-  templateUrl: './user-picture.component.html',
-  styles: []
+    selector: 'jhi-user-picture',
+    templateUrl: './user-picture.component.html',
+    styles: []
 })
 export class UserPictureComponent implements OnInit, OnDestroy {
-
     pictures: any[];
     pictureGrid: any[][];
     currentAccount: any;
@@ -104,13 +103,16 @@ export class UserPictureComponent implements OnInit, OnDestroy {
     private paginatePictures(data: IUserProperty[], headers: HttpHeaders) {
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
-        for (let i = 0; i < data.length; i++) { // 使用的是无限滚轮
+        for (let i = 0; i < data.length; i++) {
+            // 使用的是无限滚轮
             const userProperty = data[i];
             const picture = {};
             const urls = JSON.parse(userProperty.propertyValue);
             for (let url of urls) {
                 picture['openId'] = userProperty.wxUser.id;
                 picture['url'] = url;
+                // picture['url'] = url;
+                picture['nickname'] = userProperty.wxUser.wxNickName;
                 this.pictures.push(picture);
             }
         }
@@ -127,10 +129,11 @@ export class UserPictureComponent implements OnInit, OnDestroy {
             }
             this.pictureGrid.push(row);
         }
+
+        console.log(this.pictureGrid);
     }
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
-
 }

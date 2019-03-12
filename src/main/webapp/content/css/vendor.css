@@ -1,2 +1,24 @@
 /* after changing this file run 'npm run webpack:build' */
 @import '~bootstrap/dist/css/bootstrap.min.css';
+.user-picture {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 25%;
+    float: left;
+    margin-bottom: 50px;
+    height: 200px;
+}
+
+.user-picture .img-zone {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-picture .text-zone {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+}
