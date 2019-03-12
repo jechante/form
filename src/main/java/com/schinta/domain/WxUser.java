@@ -587,8 +587,8 @@ public class WxUser implements Serializable {
         this.setWxCity(userWxInfo.getCity());
         this.setWxProvince(userWxInfo.getProvince());
         this.setWxCountry(userWxInfo.getCountry());
-        this.setRegisterDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(userWxInfo.getSubscribeTime()), TimeZone
-            .getDefault().toZoneId()));
+        this.setRegisterDateTime(LocalDateTime.ofInstant(Instant.ofEpochSecond(userWxInfo.getSubscribeTime()), TimeZone
+            .getDefault().toZoneId())); // 微信返回的时间戳为秒而不是毫秒，所以应该用 ofEpochSecond
         this.setWxHeadimgurl(userWxInfo.getHeadImgUrl());
     }
 }

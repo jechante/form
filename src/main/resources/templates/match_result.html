@@ -28,7 +28,7 @@
             font-style: normal;
             text-align: center;
             line-height: 19px;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0, 0, 0, 0.1);
             border: 10px solid white;
         }
 
@@ -39,7 +39,7 @@
             font-style: normal;
             text-align: center;
             line-height: 19px;
-            background: rgba(255,182,193,0.5);
+            background: rgba(255, 182, 193, 0.5);
             /*border-radius: 8px;*/
             border: 10px solid white;
         }
@@ -51,7 +51,7 @@
             font-style: normal;
             text-align: center;
             line-height: 19px;
-            background: rgba(135,206,2500,0.5);
+            background: rgba(135, 206, 2500, 0.5);
             /*border-radius: 8px;*/
             border: 10px solid white;
         }
@@ -91,12 +91,12 @@
                     <col width="417" style="width:312.75pf;">
                 </colgroup>
                 <tbody>
-                <tr height="19" >
+                <tr height="19">
                     <td height="19" width="412"
                         class="col-th-1">
                         昵称
                     </td>
-                    <td class="w2ui-grid-data col-th-2" col="79" width="444" >
+                    <td class="w2ui-grid-data col-th-2" col="79" width="444">
                         <div class="image-wrapper small" title="jechante">
                             <img th:src="@{${user.wxHeadimgurl}}" class="weixin-headimg"/>
                             <a
@@ -108,9 +108,9 @@
                                     class="weixin-headimg"></a>
                         </div>
                     </td>
-                    <td class="w2ui-grid-data col-th-3" col="79" width="444" >
+                    <td class="w2ui-grid-data col-th-3" col="79" width="444">
                         <div class="image-wrapper small" title="jechante">
-                            <img th:src="@{${otherUser.wxHeadimgurl}}"  class="weixin-headimg"/>
+                            <img th:src="@{${otherUser.wxHeadimgurl}}" class="weixin-headimg"/>
                             <a
                                 th:text="${otherUser.wxNickName}"
                                 th:href="${otherUser.wxHeadimgurl}"
@@ -122,7 +122,8 @@
                         </div>
                     </td>
                 </tr>
-                <div th:each="base : ${basePropertyList}" >
+                <div th:each="base : ${basePropertyList}"
+                     th:with="userP = ${propertiesMap.get(user).get(base)}, otherUserP = ${propertiesMap.get(otherUser).get(base)}, userD = ${demandsMap.get(user).get(base)}, otherUserD = ${demandsMap.get(otherUser).get(base)}">
                     <div th:switch="${{base.propertyName}}">
                         <div th:case="'头像'"></div>
                         <div th:case="'联系方式'">
@@ -130,41 +131,37 @@
                                 <td th:text="${base.propertyName}" height="19" class="col-th-1">
                                     你的性别
                                 </td>
-                                <td th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}" height="19" class="col-th-2"
+                                <td th:text="${userP} ? ${userP.getShownValue(mapper)}" height="19" class="col-th-2"
                                 >
                                     <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
                                 </td>
-                                <td th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}" height="19" class="col-th-3"
+                                <td th:text="${otherUserP} ? ${otherUserP.getShownValue(mapper)}" height="19" class="col-th-3"
                                     width="5"
                                 >
                                     <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
                                 </td>
                             </tr>
                         </div>
-                        <div th:case="*">
+                        <div th:case="'性别'">
                             <tr height="19">
-                                <td th:text="${base.propertyName} + '(自己)'" height="19"  class="col-th-1">
+                                <td th:text="${base.propertyName} + '(自己)'" height="19" class="col-th-1">
                                     你的性别
                                 </td>
-                                <td  height="19" class="col-th-2">
-                                    <span th:if="${propertiesMap.get(user).get(base).getShownValue(mapper) == '女'}">
+                                <td height="19" class="col-th-2">
+                                    <span th:if="${userP} and ${userP.getShownValue(mapper)} == '女'">
                                         <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
                                     </span>
-                                    <span th:if="${propertiesMap.get(user).get(base).getShownValue(mapper) == '男'}">
+                                    <span th:if="${userP} and ${userP.getShownValue(mapper)} == '男'">
                                         <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
-                                    </span>
-                                    <span th:if="${propertiesMap.get(user).get(base).getShownValue(mapper) != '男' && propertiesMap.get(user).get(base).getShownValue(mapper) != '女'}" th:text="${propertiesMap.get(user).get(base).getShownValue(mapper)}">
                                     </span>
                                 </td>
                                 <td height="19"
                                     width="5" class="col-th-3">
-                                    <span th:if="${propertiesMap.get(otherUser).get(base).getShownValue(mapper) == '女'}">
+                                    <span th:if="${otherUserP} and ${otherUserP.getShownValue(mapper)} == '女'">
                                         <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
                                     </span>
-                                    <span th:if="${propertiesMap.get(otherUser).get(base).getShownValue(mapper) == '男'}">
+                                    <span th:if="${otherUserP} and ${otherUserP.getShownValue(mapper)} == '男'">
                                         <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
-                                    </span>
-                                    <span th:if="${propertiesMap.get(otherUser).get(base).getShownValue(mapper) != '男' && propertiesMap.get(otherUser).get(base).getShownValue(mapper) != '女'}" th:text="${propertiesMap.get(otherUser).get(base).getShownValue(mapper)}">
                                     </span>
                                 </td>
                             </tr>
@@ -173,25 +170,52 @@
                                 >
                                     你想配对
                                 </td>
-                                <td  height="19"
-                                     class="col-th-2">
-                                    <span th:if="${demandsMap.get(user).get(base).getShownValue(mapper) == '女'}">
+                                <td height="19"
+                                    class="col-th-2">
+                                    <span th:if="${userD} and ${userD.getShownValue(mapper)} == '女'">
                                         <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
                                     </span>
-                                    <span th:if="${demandsMap.get(user).get(base).getShownValue(mapper) == '男'}">
+                                    <span th:if="${userD} and ${userD.getShownValue(mapper)} == '男'">
                                         <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
-                                    </span>
-                                    <span th:if="${demandsMap.get(user).get(base).getShownValue(mapper) != '男' && demandsMap.get(user).get(base).getShownValue(mapper) != '女'}" th:text="${demandsMap.get(user).get(base).getShownValue(mapper)}">
                                     </span>
                                 </td>
-                                <td  height="19" class="col-th-3">
-                                    <span th:if="${demandsMap.get(otherUser).get(base).getShownValue(mapper) == '女'}">
+                                <td height="19" class="col-th-3">
+                                    <span th:if="${otherUserD} and ${otherUserD.getShownValue(mapper)} == '女'">
                                         <img th:src="@{/girl.png}" style="width: 20px;height: 20px"/>
                                     </span>
-                                    <span th:if="${demandsMap.get(otherUser).get(base).getShownValue(mapper) == '男'}">
+                                    <span th:if="${otherUserD} and ${otherUserD.getShownValue(mapper)} == '男'">
                                         <img th:src="@{/boy.png}" style="width: 20px;height: 20px"/>
                                     </span>
-                                    <span th:if="${demandsMap.get(otherUser).get(base).getShownValue(mapper) != '男' && demandsMap.get(otherUser).get(base).getShownValue(mapper) != '女'}" th:text="${demandsMap.get(otherUser).get(base).getShownValue(mapper)}">
+                                </td>
+                            </tr>
+                        </div>
+                        <div th:case="*">
+                            <tr height="19">
+                                <td th:text="${base.propertyName} + '(自己)'" height="19" class="col-th-1">
+                                    你的性别
+                                </td>
+                                <td height="19" class="col-th-2">
+                                    <span th:text="${userP} ? ${userP.getShownValue(mapper)}">
+                                    </span>
+                                </td>
+                                <td height="19"
+                                    width="5" class="col-th-3">
+                                    <span th:text="${otherUserP} ? ${otherUserP.getShownValue(mapper)}">
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr height="19">
+                                <td th:text="${base.propertyName} + '(希望对方)'" height="19" class="col-th-1"
+                                >
+                                    你想配对
+                                </td>
+                                <td height="19"
+                                    class="col-th-2">
+                                    <span th:text="${userD} ? ${userD.getShownValue(mapper)}">
+                                    </span>
+                                </td>
+                                <td height="19" class="col-th-3">
+                                    <span th:text="${otherUserD} ? ${otherUserD.getShownValue(mapper)}">
                                     </span>
                                 </td>
                             </tr>
@@ -201,16 +225,16 @@
                 </tbody>
             </table>
 
-            <div th:each="picUrl, picUrlStat : ${userPicsMap == null ? null : userPicsMap.get(user)}" >
+            <div th:each="picUrl, picUrlStat : ${userPicsMap == null ? null : userPicsMap.get(user)}">
                 <p><img th:src="${picUrl}" class="user-pic"></p>
             </div>
-            <div th:each="picUrl, picUrlStat : ${userPicsMap == null ? null : userPicsMap.get(otherUser)}" >
+            <div th:each="picUrl, picUrlStat : ${userPicsMap == null ? null : userPicsMap.get(otherUser)}">
                 <p><img th:src="${picUrl}" class="user-pic"></p>
             </div>
 
 
-<!--            <p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"-->
-<!--                    ></p>-->
+            <!--            <p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/cdOiaolKCuggaOkOl87E77WD4P7yDkgCRusZgy8AD52LKkl2PgO574PqMiaC9vZeiaGKDZ0UZSzj8F3M6y9xpR8ow/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"-->
+            <!--                    ></p>-->
             <p><br></p>
         </div>
         <!--<p>城市： <span th:text="${user.city}"></span></p>-->
