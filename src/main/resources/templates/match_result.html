@@ -15,7 +15,7 @@
         body {
             display: flex;
             align-items: center;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: center;
             width: 100%;
             text-align: center;
@@ -68,7 +68,7 @@
     </style>
 </head>
 <body>
-<div th:each="match, matchStat : ${userMatchList}" style="margin: 0px auto">
+<div th:each="match, matchStat : ${userMatchList}" style="width: 100%">
     <!-- 下面的比较符是否执行的是equals方法，还是仅仅是==。答：这里貌似就是equals，参见：http://forum.thymeleaf.org/th-if-comparing-objects-td4026839.html   -->
     <div th:with="otherUser = ((${match.userA} == ${user}) ? ${match.userB} : ${match.userA})" style="width: 100%">
         <h5 style="margin-top: 10px" th:text="|匹配结果${matchStat.count}|"></h5>
