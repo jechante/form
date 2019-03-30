@@ -33,6 +33,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -322,7 +323,7 @@ public class PushRecordService {
     }
 
 
-    public void wxPush(PushRecord pushRecord) throws WxErrorException, MalformedURLException {
+    public void wxPush(PushRecord pushRecord) throws MalformedURLException {
         // 将pushRecord转化为持久态。注意：一定要使用merge的返回值，即pushRecord = 不能漏掉！！！
         if (pushRecord == null)
             return;
@@ -388,17 +389,30 @@ public class PushRecordService {
             .addArticle(article1)
 //            .addArticle(article2)
             .build();
-        boolean success = wxMpService.getKefuService().sendKefuMessage(message);
-        if (success) {
-            log.info("发送客服消息成功");
-            pushRecord.setSuccess(true);
-        } else { // 貌似失败会直接抛出异常，而不会跳转至这里
-            log.error("发送客服消息失败");
-            pushRecord.setSuccess(false);
+        boolean success = false;
+        try {
+            success = wxMpService.getKefuService().sendKefuMessage(message);
+            // todo 不确定是否存在success为false且没有抛出WxErrorException的情况
+            if (success) {
+                log.info("发送客服消息成功");
+                pushRecord.setSuccess(true);
+            }
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            EntityTransaction txn = entityManager.getTransaction();
+            if ( txn != null && txn.isActive()) txn.rollback();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
+//        else { // 貌似失败会直接抛出异常，而不会跳转至这里
+//            log.error("发送客服消息失败");
+//            pushRecord.setSuccess(false); // 失败直接回滚，而不是改变状态值
+//        }
     }
 
-    public void wxBroadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws WxErrorException, MalformedURLException {
+    public void wxBroadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws MalformedURLException, WxErrorException {
         WxMpMassUploadResult massUploadResult = this.buildMPNews(localDateTime);
 
         WxMpMassOpenIdsMessage massMessage = new WxMpMassOpenIdsMessage();
@@ -436,7 +450,7 @@ public class PushRecordService {
                     entityManager.flush();
                     entityManager.clear();
                 }
-                pushRecord.setSuccess(false);
+                pushRecord.setSuccess(false); // 群发消息分布进行，暂时不存在事务回滚的问题
                 entityManager.merge(pushRecord);
             }
         }
@@ -546,7 +560,7 @@ public class PushRecordService {
         return pushRecordRepository.findPushTimes();
     }
 
-    public void wxGetUserAskedAndPush(WxUser wxUser) throws WxErrorException, MalformedURLException {
+    public void wxGetUserAskedAndPush(WxUser wxUser) throws MalformedURLException {
         PushRecord pushRecord = this.getUserAsked(wxUser);
         this.wxPush(pushRecord);
     }

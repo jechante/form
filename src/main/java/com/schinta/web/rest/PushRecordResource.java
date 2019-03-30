@@ -167,6 +167,7 @@ public class PushRecordResource {
 
     /**
      * GET  /broadcast : 直接群发（不提供后台预览确认的机会）。分成两个事务：1.计算生成推送记录；2.向用户群发消息（只是一个带时间戳的地址）
+     * todo 应该合成一个事务，并且注意捕获WxErrorException并回滚事务
      *
      * @return the ResponseEntity with status 200 (OK) and with body the pushRecord, or with status 404 (Not Found)
      */

@@ -159,7 +159,7 @@ public class FormSubmitResource {
      */
     @PostMapping("/form-submits-jin")
     @Timed
-    public void submitJin(HttpServletResponse response, @Valid @RequestBody String submitJson) throws IOException, InstantiationException, IllegalAccessException, WxErrorException {
+    public void submitJin(HttpServletResponse response, @Valid @RequestBody String submitJson) throws IOException, InstantiationException, IllegalAccessException {
         log.info("收到金数据推送表单 : {}", submitJson);
         // 先返回200结果，小伊后台有2s等待超时重发并一定次数后关闭数据推送的机制
         PrintWriter wr = response.getWriter();
