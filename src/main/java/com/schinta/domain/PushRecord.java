@@ -50,9 +50,15 @@ public class PushRecord implements Serializable {
     @JsonIgnoreProperties("pushRecords")
     private WxUser user;
 
-    @ManyToMany(mappedBy = "pushRecords"/*, cascade = CascadeType.ALL*/) // ManyToMany无需设置级联，即可更新关系表，级联主要用于更新关联对象本身而非关联字段
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JsonIgnore
+
+    /**
+     * 用户配对绩效结果-结果推送
+     */
+    @ApiModelProperty(value = "用户配对绩效结果-结果推送")
+    @ManyToMany    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "user_match_push_records",
+        joinColumns = @JoinColumn(name = "push_records_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "user_matches_id", referencedColumnName = "id"))
     private Set<UserMatch> userMatches = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

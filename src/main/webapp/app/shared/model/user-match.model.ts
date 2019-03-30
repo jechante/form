@@ -10,7 +10,8 @@ export const enum MatchType {
 
 export const enum PushStatus {
     NEITHER = 'NEITHER',
-    EITHER = 'EITHER',
+    A = 'A',
+    B = 'B',
     BOTH = 'BOTH'
 }
 

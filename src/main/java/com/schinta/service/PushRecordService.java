@@ -250,7 +250,11 @@ public class PushRecordService {
                 }
             }
 
+            // 这里需要注意的点：原来userMatch是关系的主动方，因此下次flush的时候会更新userMatch。但此时pushRecord不是持久态，从而会报错。
+            // 因此两种修改方法：1.在该方法里面persist pushRecord；2.将pushRecord改为关系的主动方（owner）。
+            // 使用后者更优，因为批处理的时候，如果使用前者，需要先一次性将所有的pushRecord持久化，而不能分配处理
             pushRecord.addUserMatches(userMatch);
+
             // 移除以计算剩下中的最大值
             userMatches.remove(userMatch);
         }
@@ -323,10 +327,11 @@ public class PushRecordService {
         if (pushRecord == null)
             return;
         // 如果是detached状态，先转化为持久态
-        if (entityManager.contains(pushRecord)) {
+        if (! entityManager.contains(pushRecord)) {
             pushRecord = entityManager.merge(pushRecord);
 //            log.debug("" + entityManager.contains(pushRecord));
         }
+//        throw new RuntimeException("测试事务"); // 经测试好用
         WxMpKefuMessage.WxArticle article1 = new WxMpKefuMessage.WxArticle();
 
         // 获取推送结果的url

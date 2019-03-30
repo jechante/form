@@ -75,14 +75,9 @@ public class UserMatch implements Serializable {
     @Column(name = "push_status")
     private PushStatus pushStatus;
 
-    /**
-     * 用户配对绩效结果-结果推送
-     */
-    @ApiModelProperty(value = "用户配对绩效结果-结果推送")
-    @ManyToMany    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "user_match_push_records",
-               joinColumns = @JoinColumn(name = "user_matches_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "push_records_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "userMatches"/*, cascade = CascadeType.ALL*/) // ManyToMany无需设置级联，即可更新关系表，级联主要用于更新关联对象本身而非关联字段
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<PushRecord> pushRecords = new HashSet<>();
 
     /**
