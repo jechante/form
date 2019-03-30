@@ -18,7 +18,7 @@ public final class Constants {
     public static final String WX_APPID = "wxba1e1e0cfc55f4a9"; // 小伊配对中心
 
     // 每个用户默认的推送限制，需要改为从配置文件中获取
-//    public static final int PUSH_LIMIT = 2;
+    public static final int PUSH_LIMIT = 1;
 
     private Constants() {
     }

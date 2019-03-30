@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.schinta.config.Constants.PUSH_LIMIT;
+
 /**
  * Service Implementation for managing WxUser.
  */
@@ -123,7 +125,7 @@ public class WxUserService {
                 } else {
                     wxUser = new WxUser();
                     wxUser.refreshWxInfo(wxMpUser);
-                    wxUser.setPushLimit(2); // todo 改为从配置中获取
+                    wxUser.setPushLimit(PUSH_LIMIT); // todo 改为从配置中获取
                     wxUser.setUserStatus(UserStatus.ACTIVE);
                     entityManager.persist(wxUser);
                 }

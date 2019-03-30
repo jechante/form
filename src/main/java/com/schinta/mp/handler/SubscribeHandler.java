@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.Map;
 
+import static com.schinta.config.Constants.PUSH_LIMIT;
+
 /**
  * @author Binary Wang(https://github.com/binarywang)
  */
@@ -45,7 +47,7 @@ public class SubscribeHandler extends AbstractHandler {
             if (userWxInfo != null) {
                 WxUser wxUser = new WxUser();
                 wxUser.refreshWxInfo(userWxInfo); // 设置微信相关信息
-                wxUser.setPushLimit(2); // 默认两条 todo 应该改为可配置
+                wxUser.setPushLimit(PUSH_LIMIT); // 默认两条 todo 应该改为可配置
 //                if (userWxInfo.getSubscribe()){ // 这里肯定是true，因此这是关注事件，所以openid一定是关注用户的openid
                 wxUser.setUserStatus(UserStatus.ACTIVE);
 //                }
