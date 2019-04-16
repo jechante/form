@@ -105,4 +105,8 @@ export class BaseFormComponent implements OnInit, OnDestroy {
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
+
+    refreshMenu() {
+        this.baseFormService.refreshMenu().subscribe(() => this.reset(), (res: HttpErrorResponse) => this.onError(res.message));
+    }
 }

@@ -9,6 +9,8 @@ import { Principal } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { FormFieldService } from './form-field.service';
+import { IBaseForm } from 'app/shared/model/base-form.model';
+import { BaseFormService } from 'app/entities/base-form';
 
 @Component({
     selector: 'jhi-form-field',
@@ -29,6 +31,8 @@ export class FormFieldComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
+    baseForm: any;
+    baseforms: IBaseForm[];
 
     constructor(
         private formFieldService: FormFieldService,
@@ -37,7 +41,8 @@ export class FormFieldComponent implements OnInit, OnDestroy {
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private baseFormService: BaseFormService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
@@ -49,12 +54,14 @@ export class FormFieldComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
+        let option = {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
+        if (this.baseForm) option['formId'] = this.baseForm.id;
         this.formFieldService
-            .query({
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
+            .query(option)
             .subscribe(
                 (res: HttpResponse<IFormField[]>) => this.paginateFormFields(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
@@ -97,6 +104,12 @@ export class FormFieldComponent implements OnInit, OnDestroy {
             this.currentAccount = account;
         });
         this.registerChangeInFormFields();
+        this.baseFormService.query().subscribe(
+            (res: HttpResponse<IBaseForm[]>) => {
+                this.baseforms = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     ngOnDestroy() {

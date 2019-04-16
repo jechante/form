@@ -1,26 +1,49 @@
 <div>
     <h2 id="page-heading">
         <span>表单字段</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-form-field" [routerLink]="['/form-field/new']">
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-form-field"
+                [routerLink]="['/form-field/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span >
+            <span>
             创建新的表单字段
             </span>
         </button>
     </h2>
+    <button id="jh-query" class="btn btn-primary float-right jh-create-entity create-wx-user" (click)="loadAll()">
+        <span>查询</span>
+    </button>
+    <div class="float-right">
+        <label class="" for="field_baseForm">基础表单:</label>
+        <select class="" id="field_baseForm" name="baseForm" [(ngModel)]="baseForm" >
+            <option [ngValue]="null"></option>
+            <option [ngValue]="formOption.id === baseForm?.id ? baseForm : formOption" *ngFor="let formOption of baseforms; ">{{formOption.formName}}</option>
+        </select>
+    </div>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="table-responsive" *ngIf="formFields">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="fieldName"><span>字段名</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="fieldDesc"><span>字段描述</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="fieldType"><span>字段类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="baseForm.formName"><span>所属表单</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="baseProperty.propertyName"><span>对应属性</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
+                <th jhiSortBy="id"><span>ID</span>
+                    <fa-icon [icon]="'sort'"></fa-icon>
+                </th>
+                <th jhiSortBy="fieldName"><span>字段名</span>
+                    <fa-icon [icon]="'sort'"></fa-icon>
+                </th>
+                <th jhiSortBy="fieldDesc"><span>字段描述</span>
+                    <fa-icon [icon]="'sort'"></fa-icon>
+                </th>
+                <th jhiSortBy="fieldType"><span>字段类型</span>
+                    <fa-icon [icon]="'sort'"></fa-icon>
+                </th>
+                <th jhiSortBy="baseForm.formName"><span>所属表单</span>
+                    <fa-icon [icon]="'sort'"></fa-icon>
+                </th>
+                <th jhiSortBy="baseProperty.propertyName"><span>对应属性</span>
+                    <fa-icon [icon]="'sort'"></fa-icon>
+                </th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -31,12 +54,12 @@
                 <td>{{formField.fieldType}}</td>
                 <td>
                     <div *ngIf="formField.baseForm">
-                        <a [routerLink]="['../base-form', formField.baseForm?.id, 'view' ]" >{{formField.baseForm?.formName}}</a>
+                        <a [routerLink]="['../base-form', formField.baseForm?.id, 'view' ]">{{formField.baseForm?.formName}}</a>
                     </div>
                 </td>
                 <td>
                     <div *ngIf="formField.baseProperty">
-                        <a [routerLink]="['../base-property', formField.baseProperty?.id, 'view' ]" >{{formField.baseProperty?.propertyName}}</a>
+                        <a [routerLink]="['../base-property', formField.baseProperty?.id, 'view' ]">{{formField.baseProperty?.propertyName}}</a>
                     </div>
                 </td>
                 <td class="text-right">
@@ -69,10 +92,12 @@
     </div>
     <div *ngIf="formFields && formFields.length">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5"
+                            [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
         <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
+                            [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
         </div>
     </div>
 </div>

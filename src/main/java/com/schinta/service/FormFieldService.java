@@ -59,7 +59,8 @@ public class FormFieldService {
     @Transactional(readOnly = true)
     public Optional<FormField> findOne(Long id) {
         log.debug("Request to get FormField : {}", id);
-        return formFieldRepository.findById(id);
+//         return formFieldRepository.findById(id);
+         return formFieldRepository.findByIdWithBase(id);
     }
 
     /**
@@ -70,5 +71,9 @@ public class FormFieldService {
     public void delete(Long id) {
         log.debug("Request to delete FormField : {}", id);
         formFieldRepository.deleteById(id);
+    }
+
+    public Page<FormField> findAllByFormId(Pageable pageable, Long formId) {
+        return formFieldRepository.findAllByFormId(pageable, formId);
     }
 }

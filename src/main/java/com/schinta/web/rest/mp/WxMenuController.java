@@ -2,6 +2,7 @@ package com.schinta.web.rest.mp;
 
 import com.schinta.config.wx.WxMpConfiguration;
 import com.schinta.repository.BaseFormRepository;
+import com.schinta.web.rest.util.HeaderUtil;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.bean.menu.WxMenuButton;
@@ -9,6 +10,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.menu.WxMpGetSelfMenuInfoResult;
 import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -106,7 +108,7 @@ public class WxMenuController {
 
     // 小伊菜单
     @GetMapping("/create-xy")
-    public String menuCreateXy(@PathVariable String appid) throws WxErrorException, MalformedURLException {
+    public ResponseEntity menuCreateXy(@PathVariable String appid) throws WxErrorException, MalformedURLException {
         WxMenu menu = new WxMenu();
 
         String url = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
@@ -115,7 +117,11 @@ public class WxMenuController {
         button1.setName("完善或修改配对条件");
         button1.setUrl(url);
         menu.getButtons().add(button1);
-        return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
+//        return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
+        WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
+            .body(null);
     }
 
     /**

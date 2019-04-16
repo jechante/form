@@ -397,19 +397,26 @@ public class PushRecordService {
                 log.info("发送客服消息成功");
                 pushRecord.setSuccess(true);
             }
+//        else { // 貌似失败会直接抛出异常，而不会跳转至这里
+//            log.error("发送客服消息失败");
+//            pushRecord.setSuccess(false); // 失败直接回滚，而不是改变状态值
+//        }
         } catch (WxErrorException e) {
             e.printStackTrace();
-            EntityTransaction txn = entityManager.getTransaction();
-            if ( txn != null && txn.isActive()) txn.rollback();
+            // 这么写报错，提示Not allowed to create transaction on shared EntityManager - use Spring transactions or EJB CMT instead
+            // 但回滚却能成功，猜测是抛出的spring相关异常可以被异常处理框架捕获并回滚
+//            EntityTransaction txn = entityManager.getTransaction();
+//            if ( txn != null && txn.isActive()) txn.rollback();
+
+            // 方法一，直接抛出runtime异常 todo 方法二：在方法上添加 @Transactional(rollbackFor=WxErrorException.class)
+            throw new RuntimeException("主动发送匹配结果失败");
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
             }
         }
-//        else { // 貌似失败会直接抛出异常，而不会跳转至这里
-//            log.error("发送客服消息失败");
-//            pushRecord.setSuccess(false); // 失败直接回滚，而不是改变状态值
-//        }
+
     }
 
     public void wxBroadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws MalformedURLException, WxErrorException {

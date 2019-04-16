@@ -45,9 +45,9 @@ spring:
 #        password:
 #        hikari:
 #            auto-commit: false
-#    h2:
-#        console:
-#            enabled: false
+    h2:
+        console:
+            enabled: false
     jpa:
         database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         database: MYSQL

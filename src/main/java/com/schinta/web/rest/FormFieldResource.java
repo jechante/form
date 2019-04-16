@@ -90,9 +90,14 @@ public class FormFieldResource {
      */
     @GetMapping("/form-fields")
     @Timed
-    public ResponseEntity<List<FormField>> getAllFormFields(Pageable pageable) {
+    public ResponseEntity<List<FormField>> getAllFormFields(Pageable pageable, @RequestParam(required = false) Long formId) {
         log.debug("REST request to get a page of FormFields");
-        Page<FormField> page = formFieldService.findAll(pageable);
+        Page<FormField> page;
+        if (formId != null) {
+            page = formFieldService.findAllByFormId(pageable, formId);
+        } else {
+            page = formFieldService.findAll(pageable);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/form-fields");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

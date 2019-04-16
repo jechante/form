@@ -42,12 +42,17 @@ export class FormFieldUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.basePropertyService.query().subscribe(
-            (res: HttpResponse<IBaseProperty[]>) => {
-                this.baseproperties = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        // 分页默认只有20条，应该增加
+        this.basePropertyService
+            .query({
+                size: 1000
+            })
+            .subscribe(
+                (res: HttpResponse<IBaseProperty[]>) => {
+                    this.baseproperties = res.body;
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
 
     previousState() {

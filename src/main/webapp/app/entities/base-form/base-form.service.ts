@@ -35,4 +35,8 @@ export class BaseFormService {
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
+
+    refreshMenu(): Observable<any> {
+        return this.http.get<any>(`wx/menu/wxba1e1e0cfc55f4a9/create-xy`, { observe: 'response' });
+    }
 }
