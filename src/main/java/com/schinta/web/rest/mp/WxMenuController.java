@@ -1,12 +1,14 @@
 package com.schinta.web.rest.mp;
 
+import com.schinta.config.Constants;
 import com.schinta.config.wx.WxMpConfiguration;
-import com.schinta.repository.BaseFormRepository;
+import com.schinta.repository.*;
 import com.schinta.web.rest.util.HeaderUtil;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.bean.menu.WxMenuButton;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.menu.WxMpGetSelfMenuInfoResult;
 import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import static me.chanjar.weixin.common.api.WxConsts.MenuButtonType;
 
@@ -27,8 +30,17 @@ import static me.chanjar.weixin.common.api.WxConsts.MenuButtonType;
 @RestController
 @RequestMapping("/wx/menu/{appid}")
 public class WxMenuController {
+
     @Autowired
     private BaseFormRepository baseFormRepository;
+
+    private WxMpService wxMpService;
+    private String appid = Constants.WX_APPID; // todo 当用多个公众号时，应该从url中获取（即金数据表单的数据推送url中需要带有appid）
+
+    public WxMenuController(Map<String, WxMpService> mpServices) {
+        this.wxMpService = mpServices.get(appid);
+    }
+
     /**
      * <pre>
      * 自定义菜单创建接口
@@ -111,12 +123,39 @@ public class WxMenuController {
     public ResponseEntity menuCreateXy(@PathVariable String appid) throws WxErrorException, MalformedURLException {
         WxMenu menu = new WxMenu();
 
-        String url = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
+        String formUrl = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
+
+        String resultUrl = null;
+        ServletRequestAttributes servletRequestAttributes =
+            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes != null) {
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            URL requestURL = new URL(request.getRequestURL().toString());
+            resultUrl = wxMpService
+                .oauth2buildAuthorizationUrl(
+                    String.format("%s://%s/wx/redirect/%s/match-result-list", requestURL.getProtocol(), requestURL.getHost(), appid),
+                    WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // todo 采用静默授权
+        }
+
         WxMenuButton button1 = new WxMenuButton();
         button1.setType(MenuButtonType.VIEW);
-        button1.setName("完善或修改配对条件");
-        button1.setUrl(url);
+        button1.setName("我要匹配");
+        button1.setUrl(formUrl);
         menu.getButtons().add(button1);
+
+
+        WxMenuButton button2 = new WxMenuButton();
+        button2.setType(MenuButtonType.VIEW);
+        button2.setName("查看记录");
+        button2.setUrl(resultUrl);
+        menu.getButtons().add(button2);
+
+        WxMenuButton button3 = new WxMenuButton();
+        button3.setType(MenuButtonType.VIEW);
+        button3.setName("反馈意见");
+        button3.setUrl("https://jinshuju.net/f/6PomRo");
+        menu.getButtons().add(button3);
+
 //        return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
         WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
         return ResponseEntity.ok()

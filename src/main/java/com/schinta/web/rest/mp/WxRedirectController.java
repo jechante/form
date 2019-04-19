@@ -1,12 +1,10 @@
 package com.schinta.web.rest.mp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.schinta.config.Constants;
 import com.schinta.config.wx.WxMpConfiguration;
 import com.schinta.domain.*;
-import com.schinta.repository.BasePropertyRepository;
-import com.schinta.repository.PushRecordRepository;
-import com.schinta.repository.UserDemandRepository;
-import com.schinta.repository.UserPropertyRepository;
+import com.schinta.repository.*;
 import com.schinta.service.PushRecordService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -54,6 +52,11 @@ public class WxRedirectController {
     @Autowired
     private Map<String, WxMpService> mpServices;
 
+    @Autowired
+    private UserMatchRepository userMatchRepository;
+
+    @Autowired
+    private AlgorithmRepository algorithmRepository;
 
     @RequestMapping("/greet")
     public String greetUser(@PathVariable String appid, @RequestParam String code, ModelMap map) {
@@ -88,18 +91,18 @@ public class WxRedirectController {
             throw new RuntimeException("该用户无权查看该配对结果,推送id为："+id);
         }
 
-        this.buildModelMapFromPushRecord(pushRecord,map);
+        this.buildModelMapFromPushRecord(pushRecord.getUserMatches(), map, pushRecord.getUser());
         return "match_result";
     }
 
-    // 主动请求结果预览，根据pushRecord的id获取配对结果
+    // 主动请求结果预览，根据pushRecord的id获取配对结果(测试预览用)
     @RequestMapping("/match-result-preview")
     // 只读事务
     @Transactional(readOnly = true)
     public String getAskMatchPreviewResult(@PathVariable String appid, ModelMap map, @RequestParam Long id) {
         // 判断是否有权限查看该配对结果
         PushRecord pushRecord = pushRecordRepository.findWithMatchesAndUser(id).orElseThrow(() -> new RuntimeException("没有该条记录"));
-        this.buildModelMapFromPushRecord(pushRecord,map);
+        this.buildModelMapFromPushRecord(pushRecord.getUserMatches(), map, pushRecord.getUser());
         return "match_result";
     }
 
@@ -115,21 +118,102 @@ public class WxRedirectController {
         WxMpUser user = mpService.oauth2getUserInfo(accessToken, null);
 
         PushRecord pushRecord = pushRecordRepository.findAllByUserIdAndPushDateTimeWithMatchesAndUser(user.getOpenId(), timestamp).orElseThrow(() -> new RuntimeException("没有该条记录"));
-        this.buildModelMapFromPushRecord(pushRecord,map);
+        this.buildModelMapFromPushRecord(pushRecord.getUserMatches(), map, pushRecord.getUser());
         return "match_result";
     }
 
+    // 主动请求，根据pushRecord的id获取配对结果
+    @RequestMapping("/history-match-result")
+    // 只读事务
+    @Transactional(readOnly = true)
+    public String getHistoryMatchResult(@PathVariable String appid, @RequestParam String openId, ModelMap map, @RequestParam Long matchId) throws WxErrorException {
+        UserMatch userMatch = userMatchRepository.findOneWithUsers(matchId).get();
+        Set<UserMatch> userMatches = new HashSet<>();
+        userMatches.add(userMatch);
+        WxUser user;
+        if (userMatch.getUserA().getId().equals(openId)) {
+            user = userMatch.getUserA();
+        } else {
+            user = userMatch.getUserB();
+        }
+        this.buildModelMapFromPushRecord(userMatches, map, user);
+        return "match_result";
+    }
+
+    // 查看当前所有匹配记录
+    @RequestMapping("/match-result-list")
+    // 只读事务
+    @Transactional(readOnly = true)
+    public String getMatchResultList(@PathVariable String appid, @RequestParam String code, ModelMap map) throws WxErrorException {
+        // 根据时间戳和用户id获取推送记录
+        WxMpService mpService = mpServices.get(appid);
+        WxMpOAuth2AccessToken accessToken = mpService.oauth2getAccessToken(code);
+        WxMpUser user = mpService.oauth2getUserInfo(accessToken, null);
+
+        Algorithm algorithm = algorithmRepository.findEnabledOne().get();
+        List<UserMatch> userMatches = userMatchRepository.findUserPushed(user.getOpenId(), algorithm);
+        List<WxUser> otherUsers = userMatches.stream().map(userMatch -> {
+            if (userMatch.getUserA().getId().equals(user.getOpenId())) {
+                return userMatch.getUserB();
+            } else {
+                return userMatch.getUserA();
+            }
+        }).collect(Collectors.toList());
+
+        List<Map> infos = new ArrayList<>();
+
+        for (int i = 0; i < userMatches.size(); i++) {
+            WxUser otherUser = otherUsers.get(i);
+            Map hashMap = new HashMap();
+            hashMap.put("nickName", otherUser.getWxNickName());
+            hashMap.put("imageUrl", otherUser.getWxHeadimgurl());
+            hashMap.put("url", "/wx/redirect/" + Constants.WX_APPID + "/history-match-result?openId=" + user.getOpenId() + "&matchId=" + userMatches.get(i).getId());
+            infos.add(hashMap);
+        }
+        map.put("infos", infos);
+        return "match_list";
+    }
+
+    // 查看当前所有匹配记录(测试预览用)
+    @RequestMapping("/match-result-list-preview")
+    // 只读事务
+    @Transactional(readOnly = true)
+    public String getMatchResultListPreview(@PathVariable String appid, @RequestParam String openId, ModelMap map) throws WxErrorException {
+        // 根据时间戳和用户id获取推送记录
+        Algorithm algorithm = algorithmRepository.findEnabledOne().get();
+        List<UserMatch> userMatches = userMatchRepository.findUserPushed(openId, algorithm);
+        List<WxUser> otherUsers = userMatches.stream().map(userMatch -> {
+            if (userMatch.getUserA().getId().equals(openId)) {
+                return userMatch.getUserB();
+            } else {
+                return userMatch.getUserA();
+            }
+        }).collect(Collectors.toList());
+
+        List<Map> infos = new ArrayList<>();
+
+        for (int i = 0; i < userMatches.size(); i++) {
+            WxUser otherUser = otherUsers.get(i);
+            Map hashMap = new HashMap();
+            hashMap.put("nickName", otherUser.getWxNickName());
+            hashMap.put("imageUrl", otherUser.getWxHeadimgurl());
+            hashMap.put("url", "/wx/redirect/" + Constants.WX_APPID + "/history-match-result?openId=" + openId + "&matchId=" + userMatches.get(i).getId());
+            infos.add(hashMap);
+        }
+        map.put("infos", infos);
+        return "match_list";
+    }
+
     // pushRecord最好已经急加载了user和userMatchList
-    private void buildModelMapFromPushRecord(PushRecord pushRecord, ModelMap map) {
+    private void buildModelMapFromPushRecord(Set<UserMatch> userMatches, ModelMap map, WxUser wxUser) {
 
         // 构造模板需要用的变量信息
         ObjectMapper mapper = new ObjectMapper();
         map.put("mapper", mapper);
-        map.put("pushRecord", pushRecord);
-        map.put("user", pushRecord.getUser());
+        map.put("user", wxUser);
 
         // 获取匹配结果，并按总分从大到小排序
-        List<UserMatch> userMatchList = pushRecord.getUserMatches().stream().sorted(Comparator.comparing(UserMatch::getScoreTotal).reversed()).collect(Collectors.toList());
+        List<UserMatch> userMatchList = userMatches.stream().sorted(Comparator.comparing(UserMatch::getScoreTotal).reversed()).collect(Collectors.toList());
         map.put("userMatchList", userMatchList);
 
 

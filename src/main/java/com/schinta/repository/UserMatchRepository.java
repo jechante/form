@@ -49,4 +49,11 @@ public interface UserMatchRepository extends JpaRepository<UserMatch, Long> {
     @EntityGraph(attributePaths = {"algorithm","userA","userB"})
     Page<UserMatch> findAll(Pageable pageable);
 
+    // 查询用户的历史匹配记录（推送给任意一方用户）
+    @Query("select user_match from UserMatch user_match left join fetch user_match.userA left join fetch user_match.userB where user_match.pushStatus is not null and user_match.algorithm = :algorithm and (user_match.userA.id = :openId or user_match.userB.id = :openId) order by user_match.scoreTotal desc ")
+    List<UserMatch> findUserPushed(@Param("openId") String openId, @Param("algorithm") Algorithm algorithm);
+
+    @Query("select user_match from UserMatch user_match left join fetch user_match.userA left join fetch user_match.userB where user_match.id =:id")
+    Optional<UserMatch> findOneWithUsers(@Param("id") Long id);
+
 }
