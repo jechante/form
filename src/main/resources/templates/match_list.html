@@ -18,6 +18,7 @@
     </style>
 </head>
 <body>
+<span th:text="|你当前共有${#lists.size(infos)}个匹配对象|"></span>
 <ul class="list-group">
     <div th:each="info, infoStat : ${infos}">
         <a th:href="${info.url}">
