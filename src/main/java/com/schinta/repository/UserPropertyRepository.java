@@ -5,6 +5,7 @@ import com.schinta.domain.WxUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,5 +29,8 @@ public interface UserPropertyRepository extends JpaRepository<UserProperty, Long
         countQuery = "select count(property) from UserProperty property where property.base.propertyName = '头像'")
     Page<UserProperty> findAllUserPictures(Pageable pageable);
 
-    int deleteAllByWxUser(WxUser wxUser);
+    @Modifying
+    @Query("delete from UserProperty property where property.wxUser = :wxUser")
+    int deleteAllByWxUser(@Param("wxUser") WxUser wxUser);
+
 }

@@ -3,6 +3,7 @@ package com.schinta.repository;
 import com.schinta.domain.UserDemand;
 import com.schinta.domain.WxUser;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +24,7 @@ public interface UserDemandRepository extends JpaRepository<UserDemand, Long> {
 
     List<UserDemand> findAllByWxUserIn(Set<WxUser> userSet);
 
-    int deleteAllByWxUser(WxUser wxUser);
+    @Modifying
+    @Query("delete from UserDemand demand where demand.wxUser = :wxUser")
+    int deleteAllByWxUser(@Param("wxUser") WxUser wxUser);
 }
