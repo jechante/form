@@ -25,6 +25,8 @@ public interface UserPropertyRepository extends JpaRepository<UserProperty, Long
     List<UserProperty> findAllByWxUserIn(Set<WxUser> userSet);
 
     @Query(value = "select property from UserProperty property left join fetch property.wxUser where property.base.propertyName = '头像'",
-    countQuery = "select count(property) from UserProperty property where property.base.propertyName = '头像'")
+        countQuery = "select count(property) from UserProperty property where property.base.propertyName = '头像'")
     Page<UserProperty> findAllUserPictures(Pageable pageable);
+
+    int deleteAllByWxUser(WxUser wxUser);
 }

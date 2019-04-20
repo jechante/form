@@ -106,7 +106,7 @@ public class FormSubmitService {
     // 需要注意的点：需要使用批处理，提高性能
     // 避免更新或插入（upsert）前的逐条记录查询（先查询出所有结果，然后通过hashCode或者equals等方法判断是否已经有该记录）
     // todo 1）验证批处理是否成功；
-    public void updateUserPropertyAndDemand(FormSubmit formSubmit) throws IOException, IllegalAccessException, InstantiationException {
+    public void upsertUserPropertyAndDemand(FormSubmit formSubmit) throws IOException, IllegalAccessException, InstantiationException {
         ObjectMapper mapper = new ObjectMapper(); //转换器
         Map form = mapper.readValue(formSubmit.getSubmitJosn(), Map.class);
         Map entry = (Map) form.get("entry");
@@ -160,6 +160,14 @@ public class FormSubmitService {
 //                    property.setPropertyValue(value);
 //                }
             }
+
+            // 新表单可以保存之前填的信息，需要删除未填字段
+            // 方法一：如果之前没有则逐条删除；方法二：先批量删除，再批量插入
+            // 这里是方法一
+            else {
+                // 如果已经有该属性，则删除
+
+            }
         }
 
         // 处理完成后将formSubmit状态改为已处理
@@ -176,11 +184,58 @@ public class FormSubmitService {
 //        entityManager.merge(newForm); // 可行，同this.save(newForm);
 
         formSubmit.setDealflag(true);
-        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx；如果setter放前面，可以不需要formSubmit =
+        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx（因为这里的save其实是调用的merge）；如果setter放前面，可以不需要formSubmit =
 //        this.save(formSubmit); // 如果没有，之后执行的setter方法不会转化成update
 //        formSubmit.setDealflag(true);
         return;
     }
+
+    // 新表单可以保存之前填的信息，需要删除未填字段
+    // 方法一：如果之前没有则逐条删除；方法二：先批量删除，再批量插入
+    // 这里是方法二
+    public void replaceUserPropertyAndDemand(FormSubmit formSubmit) throws IOException, IllegalAccessException, InstantiationException {
+        ObjectMapper mapper = new ObjectMapper(); //转换器
+        Map form = mapper.readValue(formSubmit.getSubmitJosn(), Map.class);
+        Map entry = (Map) form.get("entry");
+
+        WxUser user = formSubmit.getWxUser();
+
+        // 先删除该用户的所有属性和需求
+        userPropertyRepository.deleteAllByWxUser(user);
+        userDemandRepository.deleteAllByWxUser(user);
+
+        // 再批量插入
+        List<FormField> fields = formFieldRepository.findAllByBaseFormWithBaseProperty(formSubmit.getBase());
+        for (FormField formField : fields) {
+            Object object = entry.get(formField.getFieldName());
+            if (this.hasValue(object)) { // 如果有值
+                String value = mapper.writeValueAsString(object); // 不能使用object.toString();否则无法解析数据
+                BaseProperty baseProperty = formField.getBaseProperty();
+//                String value = object == null ? null : object.toString();
+                Class propertyClass = PropertyValue.getClassFromFieldType(formField.getFieldType());
+                // 这里与一般的增删改查应用的区别在于通过金数据表单提交的属性不知道是新增属性还是修改属性，只能通过id或者NaturalId查询确定，所以这里的查询是不可避免的，事先一次性查出全部加载到内存中不是一个好策略（因为如果是新增属性，不会走缓存，还是会执行通过id查询）
+//                PropertyValue property = (PropertyValue) entityManager
+//                    .unwrap(Session.class)
+//                    .byNaturalId(propertyClass)
+//                    .using("wxUser", user)
+//                    .using("base", baseProperty)
+//                    .load(); // select userdemand_.id as id1_14_ from user_demand userdemand_ where userdemand_.base_id=? and userdemand_.wx_user_id=?
+//                if (property == null) { // 如果是新增属性
+                PropertyValue property = (PropertyValue) propertyClass.newInstance();
+                property.setBase(baseProperty);
+                property.setWxUser(user);
+                property.setPropertyValue(value);
+
+                entityManager.persist(property); //
+            }
+        }
+
+        // 处理完成后将formSubmit状态改为已处理
+        formSubmit.setDealflag(true);
+        formSubmit = this.save(formSubmit); // 如果要将setter方法放在save方法后面执行，必须要formSubmit = xx（因为这里的save其实是调用的merge）；如果setter放前面，可以不需要formSubmit =
+        return;
+    }
+
 
     // 判断提交的json中的属性值是否是空值
     public boolean hasValue(Object value) {

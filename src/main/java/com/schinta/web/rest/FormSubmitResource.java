@@ -179,7 +179,8 @@ public class FormSubmitResource {
         } else {
             log.info("不是重复推送");
             // 更新用户属性和需求值
-            formSubmitService.updateUserPropertyAndDemand(newSubmit);
+//            formSubmitService.upsertUserPropertyAndDemand(newSubmit); // 以前表单（不保留用户填写记录）
+            formSubmitService.replaceUserPropertyAndDemand(newSubmit);// 现在表单（保留用户填写记录）
             // 计算该用户与现有其他用户的效用矩阵
             userMatchService.computeUserToOthers(newSubmit);
             // 推动针对该用户需求的最佳匹配结果

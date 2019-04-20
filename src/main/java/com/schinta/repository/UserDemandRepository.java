@@ -22,4 +22,6 @@ public interface UserDemandRepository extends JpaRepository<UserDemand, Long> {
     List<UserDemand> findAllByWxUser(WxUser user);
 
     List<UserDemand> findAllByWxUserIn(Set<WxUser> userSet);
+
+    int deleteAllByWxUser(WxUser wxUser);
 }
