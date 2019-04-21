@@ -252,7 +252,7 @@ public class UserMatchService {
         return 0;
     }
 
-
+    // 之前的位置信息匹配方式，要么符合，要么不符合
     private boolean matchLocation(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
         Map<String, String> userLocation = mapper.readValue(userDemand.getPropertyValue(), Map.class); // 需求
         Map<String, String> toUserLocation = mapper.readValue(toUserProperty.getPropertyValue(), Map.class);
@@ -272,6 +272,80 @@ public class UserMatchService {
             );
         }
 
+    }
+
+    // 现在的方式，1，0.8，0.6，0递减
+    private float filterLocation(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        Map<String, String> userLocation = mapper.readValue(userDemand.getPropertyValue(), Map.class); // 需求
+        Map<String, String> toUserLocation = mapper.readValue(toUserProperty.getPropertyValue(), Map.class);
+        if (StringUtil.isNullOrEmpty(userLocation.get("district"))) {
+            if (StringUtil.isNullOrEmpty(userLocation.get("city"))) { // 如果只填到省
+                if (matchProvince(userLocation, toUserLocation)) { // 如果只到省相同
+                    return 0.6f;
+                } else return 0;
+            } else { // 如果填到了市
+                if (matchCity(userLocation, toUserLocation)) { // 如果只到区相同
+                    return 0.8f;
+                } else if (matchProvince(userLocation, toUserLocation)) { // 如果只到省相同
+                    return 0.6f;
+                } else return 0;
+            }
+        } else { // 如果填到了区/县
+            if (matchDistrict(userLocation, toUserLocation)) { // 如果到县都相同
+              return 1;
+            } else if (matchCity(userLocation, toUserLocation)) { // 如果只到区相同
+                return 0.8f;
+            } else if (matchProvince(userLocation, toUserLocation)) { // 如果只到省相同
+                return 0.6f;
+            } else return 0;
+        }
+
+    }
+
+    // 30，20，10，0递减
+    private int scoreLocation(UserDemand userDemand, UserProperty toUserProperty) throws IOException {
+        Map<String, String> userLocation = mapper.readValue(userDemand.getPropertyValue(), Map.class); // 需求
+        Map<String, String> toUserLocation = mapper.readValue(toUserProperty.getPropertyValue(), Map.class);
+        if (StringUtil.isNullOrEmpty(userLocation.get("district"))) {
+            if (StringUtil.isNullOrEmpty(userLocation.get("city"))) { // 如果只填到省
+                if (matchProvince(userLocation, toUserLocation)) { // 如果只到省相同
+                    return 10;
+                } else return 0;
+            } else { // 如果填到了市
+                if (matchCity(userLocation, toUserLocation)) { // 如果只到区相同
+                    return 20;
+                } else if (matchProvince(userLocation, toUserLocation)) { // 如果只到省相同
+                    return 10;
+                } else return 0;
+            }
+        } else { // 如果填到了区/县
+            if (matchDistrict(userLocation, toUserLocation)) { // 如果到县都相同
+                return 30;
+            } else if (matchCity(userLocation, toUserLocation)) { // 如果只到区相同
+                return 20;
+            } else if (matchProvince(userLocation, toUserLocation)) { // 如果只到省相同
+                return 10;
+            } else return 0;
+        }
+
+    }
+
+    private boolean matchDistrict(Map<String, String> userLocation, Map<String, String> toUserLocation) {
+        return (userLocation.get("district") + userLocation.get("city") + userLocation.get("province")).equals(
+            toUserLocation.get("district") + toUserLocation.get("city") + toUserLocation.get("province")
+        );
+    }
+
+    private boolean matchCity(Map<String, String> userLocation, Map<String, String> toUserLocation) {
+        return (userLocation.get("city") + userLocation.get("province")).equals(
+            toUserLocation.get("city") + toUserLocation.get("province")
+        );
+    }
+
+    private boolean matchProvince(Map<String, String> userLocation, Map<String, String> toUserLocation) {
+        return (userLocation.get("province")).equals(
+            toUserLocation.get("province")
+        );
     }
 
     // 性别（取向）、体型等
@@ -434,10 +508,13 @@ public class UserMatchService {
 //                            break;
 //                        }
                             // 方案二：采用表单中的位置信息
-                            if (!matchLocation(userDemand, toUserProperty)) {
-                                filterRate = 0;
-                                break;
-                            }
+//                            if (!matchLocation(userDemand, toUserProperty)) {
+//                                filterRate = 0;
+//                                break;
+//                            }
+                            // 位置信息分级计算系数
+                            filterRate = filterLocation(userDemand, toUserProperty);
+                            if (filterRate == 0) break;
                         } else if (baseProperty.getFormyType() == FormyType.ONETOMANY) { // 如果是性别等
                             if (!matchOneToMany(userDemand, toUserProperty)) {
                                 filterRate = 0;
@@ -475,9 +552,7 @@ public class UserMatchService {
                 } else {
                     if (userDemand != null && toUserProperty != null) { // 仅需求和属性均不为空时，才计算配对分
                         if (baseProperty.getFormyType() == FormyType.LOCATION) { // 如果是家乡等
-                            if (matchLocation(userDemand, toUserProperty)) { // 如果匹配
-                                score += baseProperty.getPropertyScore();
-                            }
+                            score += scoreLocation(userDemand, toUserProperty);
                         } else if (baseProperty.getFormyType() == FormyType.ONETOMANY) { // 如果是体型、学历等
                             if (matchOneToMany(userDemand, toUserProperty)) { // 如果匹配
                                 score += baseProperty.getPropertyScore();
