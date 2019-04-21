@@ -49,10 +49,11 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="pushType"><span>Push Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="pushDateTime"><span>Push Date Time</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="success"><span>Success</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="user.wxNickName"><span>User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="pushType"><span>推送类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="pushDateTime"><span>推送时间</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="success"><span>是否推送成功</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="user.wxNickName"><span>用户昵称</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="resultUrl"><span>群发结果地址</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -67,6 +68,7 @@
                         <a [routerLink]="['../wx-user', pushRecord.user?.id, 'view' ]" >{{pushRecord.user?.wxNickName}}</a>
                     </div>
                 </td>
+                <td>{{pushRecord.resultUrl}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

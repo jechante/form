@@ -117,9 +117,14 @@ public class WxRedirectController {
         WxMpOAuth2AccessToken accessToken = mpService.oauth2getAccessToken(code);
         WxMpUser user = mpService.oauth2getUserInfo(accessToken, null);
 
-        PushRecord pushRecord = pushRecordRepository.findAllByUserIdAndPushDateTimeWithMatchesAndUser(user.getOpenId(), timestamp).orElseThrow(() -> new RuntimeException("没有该条记录"));
-        this.buildModelMapFromPushRecord(pushRecord.getUserMatches(), map, pushRecord.getUser());
-        return "match_result";
+        try {
+            PushRecord pushRecord = pushRecordRepository.findAllByUserIdAndPushDateTimeWithMatchesAndUser(user.getOpenId(), timestamp).get(); // orElseThrow(() -> new RuntimeException("没有该条记录"));
+            this.buildModelMapFromPushRecord(pushRecord.getUserMatches(), map, pushRecord.getUser());
+            return "match_result";
+        } catch (NoSuchElementException exception) { // 如果没有匹配结果
+            return "no_such_result";
+        }
+
     }
 
     // 主动请求，根据pushRecord的id获取配对结果

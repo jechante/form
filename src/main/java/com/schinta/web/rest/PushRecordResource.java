@@ -203,7 +203,7 @@ public class PushRecordResource {
      */
     @GetMapping("/broadcast-records")
     @Timed
-    public ResponseEntity<LocalDateTime> broadcastRecords() {
+    public ResponseEntity<LocalDateTime> broadcastRecords() throws MalformedURLException {
         LocalDateTime localDateTime = LocalDateTime.now();
         // 计算生成新的推送记录（同时更新usermatch部分）
         List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);

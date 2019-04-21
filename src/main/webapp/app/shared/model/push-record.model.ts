@@ -12,6 +12,7 @@ export interface IPushRecord {
     pushType?: PushType;
     pushDateTime?: Moment;
     success?: boolean;
+    resultUrl?: string;
     user?: IWxUser;
     userMatches?: IUserMatch[];
 }
@@ -22,6 +23,7 @@ export class PushRecord implements IPushRecord {
         public pushType?: PushType,
         public pushDateTime?: Moment,
         public success?: boolean,
+        public resultUrl?: string,
         public user?: IWxUser,
         public userMatches?: IUserMatch[]
     ) {

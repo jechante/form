@@ -153,7 +153,7 @@ public class PushRecordService {
 
     // 计算后台群发的此次配对(更新match、新建pushRecord)
     // todo 已经取消关注的用户之前的配对信息是否还应推送给其他人，目前应该为不被推送。
-    public List<PushRecord> getBroadcast(LocalDateTime localDateTime) {
+    public List<PushRecord> getBroadcast(LocalDateTime localDateTime) throws MalformedURLException {
         // 获取默认算法
         Algorithm algorithm = algorithmRepository.findEnabledOneWithEagerRelationships().get();
         // 获取已有活跃用户未被推送的效用结果
@@ -168,11 +168,14 @@ public class PushRecordService {
         // 生成所需的map
         Map<WxUser, PushRecord> userPushRecordMap = new HashMap<>();
         Map<WxUser, List<UserMatch>> userMatchMap = new HashMap<>();
-        users.forEach(user -> {
+//        users.forEach(user -> {
+        for (WxUser user: users) {
             PushRecord pushRecord = new PushRecord();
             pushRecord.setPushDateTime(localDateTime);
             pushRecord.setUser(user);
             pushRecord.setPushType(PushType.Regular);
+            // 生成群发消息的地址
+            pushRecord.setResultUrl(this.buildBroadcastResultUrl(localDateTime));
             userPushRecordMap.put(user, pushRecord);
 
             // 获取可以被推送给该用户且尚未推送的配对
@@ -180,7 +183,8 @@ public class PushRecordService {
                 return userMatch.toBePushedToUser(user);
             }).collect(Collectors.toList());
             userMatchMap.put(user, userMatches);
-        });
+        }
+//        });
 
         // 生成所需的pushRecord
         users.forEach(user -> {
@@ -508,17 +512,7 @@ public class PushRecordService {
 //            "  </body>\n" +
 //            "</html>";
         // 获取推送结果的url
-        String contentSourceUrl = null;
-        ServletRequestAttributes servletRequestAttributes =
-            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (servletRequestAttributes != null) {
-            HttpServletRequest request = servletRequestAttributes.getRequest();
-            URL requestURL = new URL(request.getRequestURL().toString());
-            contentSourceUrl = wxMpService
-                .oauth2buildAuthorizationUrl(
-                    String.format("%s://%s/wx/redirect/%s/regular-match-result?timestamp=%s", requestURL.getProtocol(), Constants.XIAOYI_HOST/*requestURL.getHost()*/, appid, localDateTime.toString()),
-                    WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // todo 采用静默授权
-        }
+        String contentSourceUrl = this.buildBroadcastResultUrl(localDateTime);
 
         String content = "<!DOCTYPE html>\n" +
             "<html>\n" +
@@ -552,6 +546,22 @@ public class PushRecordService {
 
         WxMpMassUploadResult massUploadResult = wxMpService.getMassMessageService().massNewsUpload(news);
         return massUploadResult;
+    }
+
+    // 创建群发结果地址
+    private String buildBroadcastResultUrl(LocalDateTime localDateTime) throws MalformedURLException {
+        String contentSourceUrl = null;
+        ServletRequestAttributes servletRequestAttributes =
+            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes != null) {
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            URL requestURL = new URL(request.getRequestURL().toString());
+            contentSourceUrl = wxMpService
+                .oauth2buildAuthorizationUrl(
+                    String.format("%s://%s/wx/redirect/%s/regular-match-result?timestamp=%s", requestURL.getProtocol(), Constants.XIAOYI_HOST/*requestURL.getHost()*/, appid, localDateTime.toString()),
+                    WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // todo 采用静默授权
+        }
+        return contentSourceUrl;
     }
 
 

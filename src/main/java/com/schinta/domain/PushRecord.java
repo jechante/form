@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -50,6 +51,14 @@ public class PushRecord implements Serializable {
     @JsonIgnoreProperties("pushRecords")
     private WxUser user;
 
+    /**
+     * 群发结果地址
+     */
+    @Size(max = 2000)
+    @ApiModelProperty(value = "群发结果地址")
+    @Column(name = "result_url", length = 2000)
+    private String resultUrl;
+
 
     /**
      * 用户配对绩效结果-结果推送
@@ -62,6 +71,16 @@ public class PushRecord implements Serializable {
     private Set<UserMatch> userMatches = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+
+
+    public String getResultUrl() {
+        return resultUrl;
+    }
+
+    public void setResultUrl(String resultUrl) {
+        this.resultUrl = resultUrl;
+    }
+
     public Long getId() {
         return id;
     }
