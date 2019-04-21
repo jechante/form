@@ -20,6 +20,9 @@ public final class Constants {
     // 每个用户默认的推送限制，需要改为从配置文件中获取
     public static final int PUSH_LIMIT = 1;
 
+    // 服务器域名
+    public static final String XIAOYI_HOST = "www.xiaoyimate.com"; // 小伊配对中心
+
     private Constants() {
     }
 }

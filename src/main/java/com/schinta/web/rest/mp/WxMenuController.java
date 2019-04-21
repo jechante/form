@@ -105,7 +105,7 @@ public class WxMenuController {
             URL requestURL = new URL(request.getRequestURL().toString());
             String url = WxMpConfiguration.getMpServices().get(appid)
                 .oauth2buildAuthorizationUrl(
-                    String.format("%s://%s/wx/redirect/%s/greet", requestURL.getProtocol(), requestURL.getHost(), appid),
+                    String.format("%s://%s/wx/redirect/%s/greet", requestURL.getProtocol(), Constants.XIAOYI_HOST/*requestURL.getHost()*/, appid),
                     WxConsts.OAuth2Scope.SNSAPI_USERINFO, null);
             button34.setUrl(url);
         }
@@ -133,7 +133,7 @@ public class WxMenuController {
             URL requestURL = new URL(request.getRequestURL().toString());
             resultUrl = wxMpService
                 .oauth2buildAuthorizationUrl(
-                    String.format("%s://%s/wx/redirect/%s/match-result-list", requestURL.getProtocol(), requestURL.getHost(), appid),
+                    String.format("%s://%s/wx/redirect/%s/match-result-list", requestURL.getProtocol(), Constants.XIAOYI_HOST/*requestURL.getHost()*/, appid),
                     WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // todo 采用静默授权
         }
 

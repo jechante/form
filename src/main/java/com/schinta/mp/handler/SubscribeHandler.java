@@ -1,5 +1,6 @@
 package com.schinta.mp.handler;
 
+import com.schinta.config.Constants;
 import com.schinta.domain.WxUser;
 import com.schinta.domain.enumeration.UserStatus;
 import com.schinta.repository.BaseFormRepository;
@@ -79,7 +80,7 @@ public class SubscribeHandler extends AbstractHandler {
             if (servletRequestAttributes != null) {
                 HttpServletRequest request = servletRequestAttributes.getRequest();
                 URL requestURL = new URL(request.getRequestURL().toString());
-                picUrl = String.format("%s://%s/content/images/logo-xiaoyi.jpg", requestURL.getProtocol(), requestURL.getHost());
+                picUrl = String.format("%s://%s/content/images/logo-xiaoyi.jpg", requestURL.getProtocol(), Constants.XIAOYI_HOST/*requestURL.getHost()*/);
             }
 
             WxMpXmlOutNewsMessage.Item item = new WxMpXmlOutNewsMessage.Item();

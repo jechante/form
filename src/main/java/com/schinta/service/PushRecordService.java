@@ -344,7 +344,7 @@ public class PushRecordService {
             URL requestURL = new URL(request.getRequestURL().toString());
             url = wxMpService
                 .oauth2buildAuthorizationUrl(
-                    String.format("%s://%s/wx/redirect/%s/ask-match-result?id=%s", requestURL.getProtocol()/*"http"*/, requestURL.getHost()/*"120acf31.ngrok.io"*/, appid, pushRecord.getId()),
+                    String.format("%s://%s/wx/redirect/%s/ask-match-result?id=%s", requestURL.getProtocol()/*"http"*/, Constants.XIAOYI_HOST/*requestURL.getHost()*//*"120acf31.ngrok.io"*/, appid, pushRecord.getId()),
                     WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // 虽然是用户信息授权，但在公众号内打开效果同静默授权
         }
 
@@ -516,7 +516,7 @@ public class PushRecordService {
             URL requestURL = new URL(request.getRequestURL().toString());
             contentSourceUrl = wxMpService
                 .oauth2buildAuthorizationUrl(
-                    String.format("%s://%s/wx/redirect/%s/regular-match-result?timestamp=%s", requestURL.getProtocol(), requestURL.getHost(), appid, localDateTime.toString()),
+                    String.format("%s://%s/wx/redirect/%s/regular-match-result?timestamp=%s", requestURL.getProtocol(), Constants.XIAOYI_HOST/*requestURL.getHost()*/, appid, localDateTime.toString()),
                     WxConsts.OAuth2Scope.SNSAPI_USERINFO, null); // todo 采用静默授权
         }
 
