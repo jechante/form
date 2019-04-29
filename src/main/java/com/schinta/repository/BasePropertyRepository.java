@@ -1,5 +1,6 @@
 package com.schinta.repository;
 
+import com.schinta.domain.BaseForm;
 import com.schinta.domain.BaseProperty;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
@@ -29,7 +30,12 @@ public interface BasePropertyRepository extends JpaRepository<BaseProperty, Long
     List<Object[]> findUserPropertyDemands(@Param("id") String id);
 
 //    List<BaseProperty> findAllByB(Set<Long> ids);
+    @Query("select base_property from BaseProperty base_property where base_property.propertyName = '性别'")
+    BaseProperty findSex();
 
+    // 查询某个表单所涵盖的所有属性
+    @Query("select base_property from BaseProperty base_property join base_property.fields form_field where form_field.baseForm = :baseForm")
+    List<BaseProperty> findBaseFormProperty(@Param("baseForm") BaseForm baseForm);
 
 }
 

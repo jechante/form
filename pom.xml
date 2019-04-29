@@ -519,10 +519,10 @@
                     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
                     <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                     <driver>com.mysql.jdbc.Driver</driver>
-                    <url>jdbc:mysql://47.99.44.77:3306/xiaoyi</url>
+                    <url>jdbc:mysql://47.98.196.7:3306/xiaoyi</url>
                     <defaultSchemaName></defaultSchemaName>
                     <username>root</username>
-                    <password>zml@123456</password>
+                    <password>Zml@123456!</password>
                     <referenceUrl>hibernate:spring:com.schinta.domain?dialect=org.hibernate.dialect.MySQL5InnoDBDialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
                     <verbose>true</verbose>
                     <logging>debug</logging>

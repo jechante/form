@@ -5,161 +5,51 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-POST http://www.xiaoyimate.com/api/form-submits-jin
+POST http://localhost:8081/api/form-submits-jin
 Content-Type: application/json
 
 {
-    "form": "nmTE0V",
-    "form_name": "匹配单2019.4.5",
+    "form": "7jOqd8",
+    "form_name": "《都挺好》主题表单",
     "entry": {
-        "serial_number": 38,
-        "field_85": "",
-        "field_123": "",
-        "field_86": "15-17",
-        "field_87": [
-            "33-35"
+        "serial_number": 14,
+        "field_1": [
+            "反对无效后只能妥协"
         ],
-        "field_88": "150-160",
-        "field_89": [
-            "161-165"
+        "field_6": [
+            "反对无效后只能妥协"
         ],
-        "field_90": "偏瘦",
+        "field_2": [
+            "拒绝，明确表示自己负担不起"
+        ],
+        "field_7": [
+            "拒绝，明确表示自己负担不起"
+        ],
+        "field_3": [
+            "停止啃老，自己更生"
+        ],
+        "field_8": [
+            "停止啃老，自己更生"
+        ],
+        "field_4": [
+            "放过明成，但不会原谅"
+        ],
         "field_9": [
-            "强壮"
+            "判他坐牢才解气"
         ],
-        "field_93": {
-            "province": "内蒙古自治区",
-            "city": "",
-            "district": "",
-            "street": ""
-        },
-        "field_94": {
-            "province": "山西省",
-            "city": "",
-            "district": "",
-            "street": ""
-        },
-        "field_95": {
-            "province": "吉林省",
-            "city": "",
-            "district": "",
-            "street": ""
-        },
-        "field_96": {
-            "province": "内蒙古自治区",
-            "city": "",
-            "district": "",
-            "street": ""
-        },
-        "field_97": "本科",
-        "field_17": [
-            "大专"
+        "field_5": [
+            "泡面大神",
+            "煲汤大神",
+            "蛋炒饭大神",
+            "我就是石天冬"
         ],
-        "field_100": "体制内",
-        "field_101": [
-            "体制内"
+        "field_10": [
+            "泡面大神",
+            "煲汤大神",
+            "蛋炒饭大神",
+            "我就是石天冬"
         ],
-        "field_104": "3万以下",
-        "field_29": [
-            "6万-10万"
-        ],
-        "field_30": [
-            "刚好月光"
-        ],
-        "field_31": [
-            "适当理财"
-        ],
-        "field_105": "基督教",
-        "field_33": [
-            "天主教"
-        ],
-        "field_108": "女",
-        "field_109": "男",
-        "field_110": "差",
-        "field_37": [
-            "差"
-        ],
-        "field_111": "差",
-        "field_39": [
-            "差"
-        ],
-        "field_112": [
-            "眉眼",
-            "下巴",
-            "耳垂"
-        ],
-        "field_113": [
-            "眉眼",
-            "耳垂"
-        ],
-        "field_42": [],
-        "field_124": [
-            "怯生"
-        ],
-        "field_45": [
-            "冷场"
-        ],
-        "field_46": [
-            "深沉"
-        ],
-        "field_47": [
-            "深沉"
-        ],
-        "field_48": [
-            "不想扫兴勉强同意"
-        ],
-        "field_49": [
-            "如果对方坚持会妥协"
-        ],
-        "field_50": [
-            "主动"
-        ],
-        "field_51": [
-            "主动"
-        ],
-        "field_118": [
-            "率性不拘"
-        ],
-        "field_119": [
-            "条理缜密"
-        ],
-        "field_52": [
-            "易纠结"
-        ],
-        "field_53": [
-            "干脆果断"
-        ],
-        "field_54": [
-            "安静的做自己的事"
-        ],
-        "field_55": [
-            "安静的做自己的事"
-        ],
-        "field_57": [
-            "一见钟情"
-        ],
-        "field_58": [
-            "一见钟情"
-        ],
-        "field_59": [
-            "有自己的空间"
-        ],
-        "field_60": [
-            "有自己的空间"
-        ],
-        "field_61": [
-            "隐隐暗示对方"
-        ],
-        "field_62": [
-            "隐隐暗示对方"
-        ],
-        "field_65": [
-            "会存钱，但不会透支购买"
-        ],
-        "field_66": [
-            "会存钱，但不会透支购买"
-        ],
-        "field_83": "11",
+        "field_11": "11",
         "x_field_weixin_nickname": "啊托",
         "x_field_weixin_gender": "男",
         "x_field_weixin_country": "中国",
@@ -170,11 +60,16 @@ Content-Type: application/json
         "x_field_weixin_openid": "oMzbs1AjHHELJZI4So4nR5W8ZYs4",
         "x_field_weixin_headimgurl": "http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erHsT073H36WbeJUj0EMBUwLELsgQlFYUVSjfK0emCGqPzPVM2iarANACplKQxib2FHYwf2NUicrl7ew/132",
         "creator_name": "",
-        "created_at": "2019-04-20T08:03:44.390Z",
-        "updated_at": "2019-04-21T12:03:44.757Z",
-        "info_remote_ip": "125.110.205.193"
+        "created_at": "2019-04-28T07:53:10.776Z",
+        "updated_at": "2019-04-28T07:56:10.907Z",
+        "info_remote_ip": "223.104.247.240"
     }
 }
+
+
+
+
+
 
 ###
 
@@ -188,5 +83,22 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX
 GET http://localhost:9000/api/form-fields/1
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU1NjUxNTg5NH0.qzGYPeYU2wY-bYesoD603WToFUswWKBznFx9iECkpAkz49ycnQ4bD-n4NRLq2skEoU9CrIRPtLJZUdnCw8ZQIw
+
+###
+
+#获取token（系统账号密码登入）
+POST http://localhost:8081/api/authenticate
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+###
+
+GET http://localhost:8081/api/user-matches-regenerate
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU1NjQzOTE3M30.wfJjPg3S5cLokkz0MlJ9ZsHelRECgqmld9XrETzQvppKFqY1w1FXA2FeDcTxGNoc1qtzX6KuURekPPEBSvTPUA
 
 ###

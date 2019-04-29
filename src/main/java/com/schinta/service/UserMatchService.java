@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.util.StringUtil;
 import com.schinta.domain.*;
 import com.schinta.domain.enumeration.FormyType;
-import com.schinta.repository.AlgorithmRepository;
-import com.schinta.repository.UserDemandRepository;
-import com.schinta.repository.UserMatchRepository;
-import com.schinta.repository.UserPropertyRepository;
+import com.schinta.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,7 @@ public class UserMatchService {
     private final UserPropertyRepository userPropertyRepository;
     private final UserDemandRepository userDemandRepository;
     private final AlgorithmRepository algorithmRepository;
+    private final BasePropertyRepository basePropertyRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -48,11 +46,13 @@ public class UserMatchService {
     public UserMatchService(UserMatchRepository userMatchRepository,
                             UserPropertyRepository userPropertyRepository,
                             UserDemandRepository userDemandRepository,
-                            AlgorithmRepository algorithmRepository) {
+                            AlgorithmRepository algorithmRepository,
+                            BasePropertyRepository basePropertyRepository) {
         this.userMatchRepository = userMatchRepository;
         this.userPropertyRepository = userPropertyRepository;
         this.userDemandRepository = userDemandRepository;
         this.algorithmRepository = algorithmRepository;
+        this.basePropertyRepository = basePropertyRepository;
     }
 
     /**
@@ -232,7 +232,9 @@ public class UserMatchService {
             }
 
             // 获取性别
-            BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性（必填属性？）
+//            BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性（必填属性？）
+            BaseProperty sex = basePropertyRepository.findSex();
+
             String sexA = readSingleValue(userPropertyMap.get(sex));
             String sexB = readSingleValue(toUserPropertyMap.get(sex));
             float total;

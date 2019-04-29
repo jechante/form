@@ -1,5 +1,6 @@
 package com.schinta.repository;
 
+import com.schinta.domain.BaseProperty;
 import com.schinta.domain.UserProperty;
 import com.schinta.domain.WxUser;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public interface UserPropertyRepository extends JpaRepository<UserProperty, Long
     Page<UserProperty> findAllUserPictures(Pageable pageable);
 
     @Modifying
-    @Query("delete from UserProperty property where property.wxUser = :wxUser")
-    int deleteAllByWxUser(@Param("wxUser") WxUser wxUser);
+    @Query("delete from UserProperty property where property.wxUser = :wxUser and property.base in :properties")
+    int deleteAllByWxUser(@Param("wxUser") WxUser wxUser, @Param("properties") List<BaseProperty> properties);
 
 }

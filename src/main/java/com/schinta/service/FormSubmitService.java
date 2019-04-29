@@ -38,6 +38,7 @@ public class FormSubmitService {
     private final UserPropertyRepository userPropertyRepository;
     private final UserDemandRepository userDemandRepository;
     private final FormFieldRepository formFieldRepository;
+    private final BasePropertyRepository basePropertyRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -47,13 +48,15 @@ public class FormSubmitService {
                              WxUserRepository wxUserRepository,
                              UserPropertyRepository userPropertyRepository,
                              FormFieldRepository formFieldRepository,
-                             UserDemandRepository userDemandRepository) {
+                             UserDemandRepository userDemandRepository,
+                             BasePropertyRepository basePropertyRepository) {
         this.formSubmitRepository = formSubmitRepository;
         this.baseFormRepository = baseFormRepository;
         this.wxUserRepository = wxUserRepository;
         this.userPropertyRepository = userPropertyRepository;
         this.formFieldRepository = formFieldRepository;
         this.userDemandRepository = userDemandRepository;
+        this.basePropertyRepository = basePropertyRepository;
     }
 
     /**
@@ -200,9 +203,14 @@ public class FormSubmitService {
 
         WxUser user = formSubmit.getWxUser();
 
-        // 先删除该用户的所有属性和需求
-        userPropertyRepository.deleteAllByWxUser(user);
-        userDemandRepository.deleteAllByWxUser(user);
+        // 先删除该用户、该表单对应所有属性和需求
+        // 先查询该表单包含的属性和需求
+        List<BaseProperty> baseProperties = basePropertyRepository.findBaseFormProperty(formSubmit.getBase());
+
+        if (baseProperties != null && baseProperties.size() > 0) {
+            userPropertyRepository.deleteAllByWxUser(user, baseProperties);
+            userDemandRepository.deleteAllByWxUser(user, baseProperties);
+        }
 
         // 再批量插入
         List<FormField> fields = formFieldRepository.findAllByBaseFormWithBaseProperty(formSubmit.getBase());

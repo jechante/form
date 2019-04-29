@@ -36,9 +36,9 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://47.99.44.77:3306/xiaoyi?useUnicode=true&characterEncoding=utf8&useSSL=false
+        url: jdbc:mysql://47.98.196.7:3306/xiaoyi?useUnicode=true&characterEncoding=utf8&useSSL=false
         username: root
-        password: zml@123456
+        password: Zml@123456!
         hikari:
             auto-commit: false
             data-source-properties:
