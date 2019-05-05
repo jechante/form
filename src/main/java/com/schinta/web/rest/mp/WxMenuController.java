@@ -123,7 +123,7 @@ public class WxMenuController {
     public ResponseEntity menuCreateXy(@PathVariable String appid) throws WxErrorException, MalformedURLException {
         WxMenu menu = new WxMenu();
 
-        String formUrl = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
+//        String formUrl = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
 
         String resultUrl = null;
         ServletRequestAttributes servletRequestAttributes =
@@ -138,11 +138,30 @@ public class WxMenuController {
         }
 
         WxMenuButton button1 = new WxMenuButton();
-        button1.setType(MenuButtonType.VIEW);
+//        button1.setType(MenuButtonType.VIEW);
         button1.setName("我要匹配");
-        button1.setUrl(formUrl);
+//        button1.setUrl(formUrl);
         menu.getButtons().add(button1);
 
+        WxMenuButton button11 = new WxMenuButton();
+        button11.setType(MenuButtonType.VIEW);
+        button11.setName("基础表单");
+//        button11.setUrl("https://jinshuju.net/f/End9iE");
+        button11.setUrl("https://jinshuju.net/f/nmTE0V");
+
+        WxMenuButton button12 = new WxMenuButton();
+        button12.setType(MenuButtonType.VIEW);
+        button12.setName("性格表单");
+        button12.setUrl("https://jinshuju.net/f/NrgI5K");
+
+        WxMenuButton button13 = new WxMenuButton();
+        button13.setType(MenuButtonType.VIEW);
+        button13.setName("观念&外表表单");
+        button13.setUrl("https://jinshuju.net/f/snsyEZ");
+
+        button1.getSubButtons().add(button11);
+        button1.getSubButtons().add(button12);
+        button1.getSubButtons().add(button13);
 
         WxMenuButton button2 = new WxMenuButton();
         button2.setType(MenuButtonType.VIEW);

@@ -73,7 +73,11 @@
                     <input type="number" class="form-control" name="completionRate" id="field_completionRate"
                         [(ngModel)]="baseProperty.completionRate" />
                 </div>
-
+                <div class="form-group">
+                    <label class="form-control-label" for="field_serialNumber" ngbTooltip="序号">序号</label>
+                    <input type="number" class="form-control" name="serialNumber" id="field_serialNumber"
+                           [(ngModel)]="baseProperty.serialNumber" />
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

@@ -87,6 +87,13 @@ public class BaseProperty implements Serializable {
     private Integer completionRate;
 
     /**
+     * 排序值
+     */
+    @ApiModelProperty(value = "排序值")
+    @Column(name = "serial_number")
+    private Integer serialNumber;
+
+    /**
      * 属性-用户属性值
      */
     @ApiModelProperty(value = "属性-用户属性值")
@@ -130,6 +137,14 @@ public class BaseProperty implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(Integer serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     public String getPropertyName() {

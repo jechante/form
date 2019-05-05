@@ -52,6 +52,7 @@ entity BaseProperty{
     propertyMaxScore Integer /**属性最高分*/
     formyType FormyType /**匹配类型：1对1、1对多、多对多、其他(不计分项，例如照片等)*/
     completionRate Integer /**对完成率所占比重：5等*/
+    serialNumber Integer /**排序号*/
 }
 
 enum PropertyType {

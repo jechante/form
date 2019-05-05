@@ -239,13 +239,18 @@ public class UserMatchService {
             String sexB = readSingleValue(toUserPropertyMap.get(sex));
             float total;
             float genderWeight = algorithm.getGenderWeight(); // 需求权重
-            if (sexA.equals("男") && sexB.equals("女")) {
-                total = (1-genderWeight)*scoreAtoB + genderWeight*scoreBtoA;
-            } else if (sexA.equals("女") && sexB.equals("男")) {
-                total = genderWeight*scoreAtoB + (1-genderWeight)*scoreBtoA;
-            } else {
+            if (sexA == null || sexB == null) { // 如果没有填性别和性取向（即可能没有填基础表单）
                 total = (scoreAtoB+scoreBtoA)/2; // (float) (0.5*scoreAtoB + 0.5*scoreBtoA);
+            } else {
+                if (sexA.equals("男") && sexB.equals("女")) {
+                    total = (1-genderWeight)*scoreAtoB + genderWeight*scoreBtoA;
+                } else if (sexA.equals("女") && sexB.equals("男")) {
+                    total = genderWeight*scoreAtoB + (1-genderWeight)*scoreBtoA;
+                } else {
+                    total = (scoreAtoB+scoreBtoA)/2; // (float) (0.5*scoreAtoB + 0.5*scoreBtoA);
+                }
             }
+
             userMatch.setScoreTotal(total);
             userMatch.setRatio(total/maxScore);
             entityManager.persist(userMatch); // 这里merge也可以，但感觉尽量merge尽量还是用于detached的实体，其余情况用persist更高校

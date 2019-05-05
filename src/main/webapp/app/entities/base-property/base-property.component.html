@@ -22,6 +22,7 @@
             <th jhiSortBy="propertyMaxScore"><span>属性最高分</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="formyType"><span>匹配类型</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="completionRate"><span>对完成率占比</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="serialNumber"><span>序号</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -35,6 +36,7 @@
                 <td>{{baseProperty.propertyMaxScore}}</td>
                 <td>{{baseProperty.formyType}}</td>
                 <td>{{baseProperty.completionRate}}</td>
+                <td>{{baseProperty.serialNumber}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

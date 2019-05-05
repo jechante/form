@@ -18,7 +18,8 @@ import java.util.Set;
 @Repository
 public interface BasePropertyRepository extends JpaRepository<BaseProperty, Long> {
 
-    List<BaseProperty> findAllByIdIn(Set<Long> ids);
+    @Query("select base_property from BaseProperty base_property where base_property.id in :ids order by base_property.serialNumber nulls last ")
+    List<BaseProperty> findAllByIdIn(@Param("ids") Set<Long> ids);
 
     // 第一个查询有问题，查出来的baseProperty不完整
 //    @Query("select distinct base_property from BaseProperty base_property left join fetch base_property.propertyValues property left join fetch base_property.demandValues demand " +

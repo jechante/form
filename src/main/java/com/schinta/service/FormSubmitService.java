@@ -311,7 +311,11 @@ public class FormSubmitService {
         formSubmit.setDealflag(false);
         formSubmit.setCreatedDateTime(LocalDateTime.ofInstant(Instant.parse((String) entry.get("created_at")), ZoneId.systemDefault()));
         formSubmit.setUpdatedDateTime(updateTime);
-        formSubmit.setCreatorName((String) entry.get("creator_name"));
+        String creatorName = (String) entry.get("creator_name");
+        if (! StringUtil.isNullOrEmpty(creatorName)) {
+            formSubmit.setCreatorName(creatorName);
+//            formSubmit.setCreatorName((String) entry.get("creator_name"));
+        }
         formSubmit.setInfoRemoteIp((String) entry.get("info_remote_ip"));
 
         BaseForm baseForm = baseFormRepository.findByFormCode((String) form.get("form")).orElse(null);
