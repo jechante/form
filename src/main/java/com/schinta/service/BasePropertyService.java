@@ -10,6 +10,7 @@ import com.schinta.repository.UserDemandRepository;
 import com.schinta.repository.UserPropertyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.schinta.config.Constants.CACHE_SEX;
 
 /**
  * Service Implementation for managing BaseProperty.
@@ -159,5 +162,10 @@ public class BasePropertyService {
         // 计算该用户与现有其他用户的效用矩阵
         log.info("计算该用户与现有其他用户的效用矩阵");
         userMatchService.computeUserToOthers(wxUser);
+    }
+
+    @Cacheable(cacheNames = CACHE_SEX)
+    public BaseProperty findSex() {
+        return basePropertyRepository.findSex();
     }
 }

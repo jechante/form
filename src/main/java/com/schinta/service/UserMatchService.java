@@ -35,6 +35,7 @@ public class UserMatchService {
     private final UserDemandRepository userDemandRepository;
     private final AlgorithmRepository algorithmRepository;
     private final BasePropertyRepository basePropertyRepository;
+//    private final BasePropertyService basePropertyService;
 
     @Autowired
     private EntityManager entityManager;
@@ -47,12 +48,15 @@ public class UserMatchService {
                             UserPropertyRepository userPropertyRepository,
                             UserDemandRepository userDemandRepository,
                             AlgorithmRepository algorithmRepository,
-                            BasePropertyRepository basePropertyRepository) {
+                            BasePropertyRepository basePropertyRepository
+//                            BasePropertyService basePropertyService
+    ) {
         this.userMatchRepository = userMatchRepository;
         this.userPropertyRepository = userPropertyRepository;
         this.userDemandRepository = userDemandRepository;
         this.algorithmRepository = algorithmRepository;
         this.basePropertyRepository = basePropertyRepository;
+//        this.basePropertyService = basePropertyService;
     }
 
     /**
@@ -149,14 +153,15 @@ public class UserMatchService {
 
         // 计算效用分
         // 批处理（主要是防止内存溢出）
-        int batchSize = 25;
+//        int batchSize = 25;
         int i = 0; // set循环的index记录变量
         for (WxUser toUser : allUsers) {
-            if ( i > 0 && i % batchSize == 0 ) {
-                //flush a batch of inserts and release memory
-                entityManager.flush();
-                entityManager.clear();
-            }
+            // todo 这里使用entityManager.clear()会将初始化查询出的userMatches移除上下文
+//            if ( i > 0 && i % batchSize == 0 ) {
+//                //flush a batch of inserts and release memory
+//                entityManager.flush();
+//                entityManager.clear();
+//            }
             List<UserProperty> toUserProperties = allPropertiesMap.get(toUser);
             List<UserDemand> toUserDemands = allDemandsMap.get(toUser);
             Map<BaseProperty, UserProperty> toUserPropertyMap = userPropertyMap(toUserProperties);
@@ -233,6 +238,7 @@ public class UserMatchService {
 
             // 获取性别
 //            BaseProperty sex = algorithm.getFilterProperties().stream().filter(baseProperty -> baseProperty.getPropertyName().equals("性别")).findAny().get(); // todo 性别一定要是过滤属性（必填属性？）
+//            BaseProperty sex = basePropertyService.findSex();
             BaseProperty sex = basePropertyRepository.findSex();
 
             String sexA = readSingleValue(userPropertyMap.get(sex));
@@ -251,6 +257,9 @@ public class UserMatchService {
                 }
             }
 
+            if (! entityManager.contains(userMatch)) {
+                System.out.println("aaaa");
+            }
             userMatch.setScoreTotal(total);
             userMatch.setRatio(total/maxScore);
             entityManager.persist(userMatch); // 这里merge也可以，但感觉尽量merge尽量还是用于detached的实体，其余情况用persist更高校
@@ -610,7 +619,7 @@ public class UserMatchService {
         // 计算效用分
         // 批处理（主要是防止内存溢出）
         int userSize = allUsers.size();
-        int batchSize = 25;
+//        int batchSize = 25;
         int i = 0; // set循环的index记录变量
         for (int j = 0; j < userSize; j++) {
             WxUser wxUser = allUsers.get(j);
@@ -619,11 +628,13 @@ public class UserMatchService {
             for (int k = 0; k < userSize; k++) {
                 if (k > j) { // 因为userMatch无方向，因此只需要计算一半
                     WxUser toUser = allUsers.get(k);
-                    if ( i > 0 && i % batchSize == 0 ) {
-                        //flush a batch of inserts and release memory
-                        entityManager.flush();
-                        entityManager.clear();
-                    }
+                    // todo 这里不完全是插入，也有update。如果全部是update，则需要结合scroll()方法，防止entityManager.clear()执行的时候清空之前查询出来的上下文，这里的userMatches就是这种情况
+//                    if ( i > 0 && i % batchSize == 0 ) {
+//                        // 注意：只能当完全是insert时使用
+//                        //flush a batch of inserts and release memory
+//                        entityManager.flush();
+//                        entityManager.clear();
+//                    }
                     Map<BaseProperty, UserProperty> toUserPropertyMap = userPropertyMap(allPropertiesMap.get(toUser));
                     Map<BaseProperty, UserDemand> toUserDemandMap = userDemandMap(allDemandsMap.get(toUser));
                     i = i + computeUserAToUserB(wxUser, toUser, algorithm, userMatches, maxScore, userPropertyMap, userDemandMap, toUserPropertyMap, toUserDemandMap);

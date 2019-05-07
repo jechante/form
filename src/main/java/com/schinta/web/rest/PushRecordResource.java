@@ -176,8 +176,7 @@ public class PushRecordResource {
     public ResponseEntity<List<PushRecord>> broadcastImmediate() throws WxErrorException, MalformedURLException {
         LocalDateTime localDateTime = LocalDateTime.now();
         // 计算生成新的推送记录（同时更新usermatch部分）
-        List<PushRecord> pushRecords = pushRecordService.getBroadcast(localDateTime);
-        pushRecordService.wxBroadcast(localDateTime, pushRecords);
+        List<PushRecord> pushRecords = pushRecordService.wxBroadcastImmediate(localDateTime);
         return ResponseEntity.ok().body(pushRecords);
     }
 
@@ -219,8 +218,7 @@ public class PushRecordResource {
     @Timed
     public ResponseEntity broadcastPush(@RequestParam LocalDateTime timestamp) throws WxErrorException, MalformedURLException {
         // 根据时间戳查找相应的推送记录
-        List<PushRecord> pushRecords = pushRecordService.findAllByPushTime(timestamp);
-        pushRecordService.wxBroadcast(timestamp, pushRecords);
+        pushRecordService.wxBroadcastPush(timestamp);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
             .body(null);

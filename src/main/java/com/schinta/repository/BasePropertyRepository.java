@@ -2,6 +2,7 @@ package com.schinta.repository;
 
 import com.schinta.domain.BaseForm;
 import com.schinta.domain.BaseProperty;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Set;
+
+import static com.schinta.config.Constants.CACHE_SEX;
 
 
 /**
@@ -31,6 +34,7 @@ public interface BasePropertyRepository extends JpaRepository<BaseProperty, Long
     List<Object[]> findUserPropertyDemands(@Param("id") String id);
 
 //    List<BaseProperty> findAllByB(Set<Long> ids);
+    @Cacheable(cacheNames = CACHE_SEX)
     @Query("select base_property from BaseProperty base_property where base_property.propertyName = '性别'")
     BaseProperty findSex();
 

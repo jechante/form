@@ -119,6 +119,6 @@ Content-Type: application/json
 
 GET http://localhost:8081/api/user-matches-regenerate
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU1NjQzOTE3M30.wfJjPg3S5cLokkz0MlJ9ZsHelRECgqmld9XrETzQvppKFqY1w1FXA2FeDcTxGNoc1qtzX6KuURekPPEBSvTPUA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU1NzI4OTkyMX0.YODAWrPcfW6cc12-iwx6K674nfV2_BavswbxpVw6JD4jTFBgPTEgHepJ635VmgMPUd-WMPFBC1KDNAAXyVTiEA
 
 ###

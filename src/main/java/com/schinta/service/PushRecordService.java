@@ -193,15 +193,16 @@ public class PushRecordService {
 
         // 生成推送记录
         // 批处理（主要是防止内存溢出）
-        int batchSize = 25;
+//        int batchSize = 25;
         int i = 0; // set循环的index记录变量
         List<PushRecord> pushRecords = userPushRecordMap.values().stream().filter(pushRecord -> pushRecord.getUserMatches() != null && pushRecord.getUserMatches().size() != 0).collect(Collectors.toList());
         for (PushRecord pushRecord : pushRecords) {
-            if (i > 0 && i % batchSize == 0) {
-                //flush a batch of inserts and release memory
-                entityManager.flush();
-                entityManager.clear();
-            }
+            // todo 虽然pushRecord全部为insert，但同时update了userMatch的部分字段，因此不能entityManager.clear()
+//            if (i > 0 && i % batchSize == 0) {
+//                //flush a batch of inserts and release memory
+//                entityManager.flush();
+//                entityManager.clear();
+//            }
             entityManager.persist(pushRecord);
             i++;
         }
@@ -423,7 +424,8 @@ public class PushRecordService {
 
     }
 
-    public void wxBroadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws MalformedURLException, WxErrorException {
+    // 这里传入的pushRecords一定是持久态的
+    private void wxBroadcast(LocalDateTime localDateTime, List<PushRecord> pushRecords) throws MalformedURLException, WxErrorException {
         WxMpMassUploadResult massUploadResult = this.buildMPNews(localDateTime);
 
         WxMpMassOpenIdsMessage massMessage = new WxMpMassOpenIdsMessage();
@@ -438,31 +440,32 @@ public class PushRecordService {
 
         // 更新pushRecord的状态
         // 批处理（主要是防止内存溢出）
-        int batchSize = 25;
+//        int batchSize = 25;
         int i = 0; // set循环的index记录变量
         try {
             WxMpMassSendResult massResult = wxMpService.getMassMessageService().massOpenIdsMessageSend(massMessage); // todo 测试群发成功的WxMpMassSendResult包括哪些信息，有什么用
             // 将推送记录标记为推送成功
             for (PushRecord pushRecord : pushRecords) {
-                if (i > 0 && i % batchSize == 0) {
-                    //flush a batch of inserts and release memory
-                    entityManager.flush();
-                    entityManager.clear();
-                }
+                // todo 这里不能这么用，且这么用无意义，因为是一次性先persist或者查询的全部pushRecords
+//                if (i > 0 && i % batchSize == 0) {
+//                    //flush a batch of inserts and release memory
+//                    entityManager.flush();
+//                    entityManager.clear();
+//                }
                 pushRecord.setSuccess(true);
-                entityManager.merge(pushRecord);
+//                entityManager.merge(pushRecord);
             }
         } catch (WxErrorException e) {
             e.printStackTrace();
             // 将推送记录标记为推送失败
             for (PushRecord pushRecord : pushRecords) {
-                if (i > 0 && i % batchSize == 0) {
-                    //flush a batch of inserts and release memory
-                    entityManager.flush();
-                    entityManager.clear();
-                }
+//                if (i > 0 && i % batchSize == 0) {
+//                    //flush a batch of inserts and release memory
+//                    entityManager.flush();
+//                    entityManager.clear();
+//                }
                 pushRecord.setSuccess(false); // 群发消息分布进行，暂时不存在事务回滚的问题
-                entityManager.merge(pushRecord);
+//                entityManager.merge(pushRecord);
             }
         }
     }
@@ -580,5 +583,17 @@ public class PushRecordService {
     public void wxGetUserAskedAndPush(WxUser wxUser) throws MalformedURLException {
         PushRecord pushRecord = this.getUserAsked(wxUser);
         this.wxPush(pushRecord);
+    }
+
+
+    public List<PushRecord> wxBroadcastImmediate(LocalDateTime localDateTime) throws MalformedURLException, WxErrorException {
+        List<PushRecord> pushRecords = this.getBroadcast(localDateTime);
+        this.wxBroadcast(localDateTime, pushRecords);
+        return pushRecords;
+    }
+
+    public void wxBroadcastPush(LocalDateTime timestamp) throws MalformedURLException, WxErrorException {
+        List<PushRecord> pushRecords = this.findAllByPushTime(timestamp);
+        this.wxBroadcast(timestamp, pushRecords);
     }
 }

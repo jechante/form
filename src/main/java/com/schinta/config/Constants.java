@@ -23,6 +23,10 @@ public final class Constants {
     // 服务器域名
     public static final String XIAOYI_HOST = "www.xiaoyimate.com"; // 小伊配对中心
 
+    // 性别缓存
+    public static final String CACHE_SEX = "CACHE_SEX";
+
+
     private Constants() {
     }
 }
