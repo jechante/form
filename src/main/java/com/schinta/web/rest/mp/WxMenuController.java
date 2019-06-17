@@ -118,9 +118,26 @@ public class WxMenuController {
         return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
     }
 
-    // 小伊菜单
+    // 创建预定义的小伊菜单
     @GetMapping("/create-xy")
     public ResponseEntity menuCreateXy(@PathVariable String appid) throws WxErrorException, MalformedURLException {
+        WxMenu menu = this.xyMenu();
+//        return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
+        WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
+            .body(null);
+    }
+
+    // 获取小伊菜单
+    @GetMapping("/query-xy")
+    public ResponseEntity menuQueryXy(@PathVariable String appid) throws MalformedURLException {
+        WxMenu menu = this.xyMenu();
+        return ResponseEntity.ok()
+            .body(menu);
+    }
+
+    private WxMenu xyMenu() throws MalformedURLException {
         WxMenu menu = new WxMenu();
 
 //        String formUrl = baseFormRepository.findByEnabled(true).map(baseForm -> baseForm.getFormWeb()).orElse("https://www.baidu.com/");
@@ -175,11 +192,7 @@ public class WxMenuController {
         button3.setUrl("https://jinshuju.net/f/6PomRo");
         menu.getButtons().add(button3);
 
-//        return WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
-        WxMpConfiguration.getMpServices().get(appid).getMenuService().menuCreate(menu);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createAlert("success", /*null*/"")) // 这里不能为中文，，否则会让webpack dev server报错并奔溃，不知道生产环境下服务器是否会报错
-            .body(null);
+        return menu;
     }
 
     /**
@@ -265,4 +278,7 @@ public class WxMenuController {
     public WxMpGetSelfMenuInfoResult getSelfMenuInfo(@PathVariable String appid) throws WxErrorException {
         return WxMpConfiguration.getMpServices().get(appid).getMenuService().getSelfMenuInfo();
     }
+
+
+
 }

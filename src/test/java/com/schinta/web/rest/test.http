@@ -12,16 +12,19 @@ Content-Type: application/json
     "form": "nmTE0V",
     "form_name": "基础匹配单",
     "entry": {
-        "serial_number": 162,
+        "serial_number": 475,
         "field_85": "男",
         "field_123": "女",
-        "field_86": "27-29",
+        "field_86": "30-32",
         "field_87": [
-            "27-29"
+            "21-23",
+            "24-26"
         ],
-        "field_88": "161-165",
+        "field_88": "171-175",
         "field_89": [
-            "161-165"
+            "150-160",
+            "161-165",
+            "166-170"
         ],
         "field_93": {
             "province": "浙江省",
@@ -37,51 +40,64 @@ Content-Type: application/json
         },
         "field_95": {
             "province": "浙江省",
-            "city": "温州市",
-            "district": "鹿城区",
+            "city": "杭州市",
+            "district": "其它",
             "street": ""
         },
         "field_96": {
             "province": "浙江省",
-            "city": "温州市",
-            "district": "鹿城区",
+            "city": "",
+            "district": "",
             "street": ""
         },
-        "field_97": "本科",
+        "field_97": "硕士",
         "field_17": [
             "大专",
-            "本科"
+            "本科",
+            "硕士",
+            "博士及以上"
         ],
-        "field_100": "体制内",
+        "field_100": "经商",
         "field_101": [
+            "学生",
             "体制内",
             "工薪族",
-            "经商"
+            "经商",
+            "自由职业"
         ],
-        "field_104": "10万-15万",
+        "field_104": "20万以上",
         "field_29": [
+            "3万以下",
             "3万-6万",
-            "6万-10万"
+            "6万-10万",
+            "10万-20万",
+            "20万以上"
         ],
-        "field_105": "基督教",
+        "field_105": "无神论者",
         "field_33": [
-            "基督教"
+            "佛教",
+            "道教",
+            "基督教",
+            "天主教",
+            "无神论者"
         ],
-        "field_42": [],
-        "field_83": "kikimiss0",
-        "x_field_weixin_nickname": "🤔 Street  view",
+        "field_42": [
+            "https://files.jinshuju.net/en/5cda267d46245d7940832f3a/475_42_IMG_5290.JPG?token=7NK_Z1IEoKaIY6I9RXzO4b9uQPwuwdvnlGbzHZmF:sUp7M7NgnlzI_YKuHNH21tCuG2w=:eyJTIjoiZmlsZXMuamluc2h1anUubmV0L2VuLzVjZGEyNjdkNDYyNDVkNzk0MDgzMmYzYS80NzVfNDJfSU1HXzUyOTAuSlBHKiIsIkUiOjE4NzMzNzAxMDR9&download"
+        ],
+        "field_83": "kongkong643082",
+        "x_field_weixin_nickname": "空空",
         "x_field_weixin_gender": "男",
         "x_field_weixin_country": "中国",
         "x_field_weixin_province_city": {
             "province": "浙江",
-            "city": "温州"
+            "city": "杭州"
         },
-        "x_field_weixin_openid": "oMzbs1AJteCaE7GovHBTnHADu6ho",
-        "x_field_weixin_headimgurl": "http://thirdwx.qlogo.cn/mmopen/vi_32/LSJWMxRwSdCG9JFBCPbwcTZpLarQuqRvTFG8o8BxObrico1xIjBM6yKe4aiaz8hNUJXzdStaON9InufftUjdDAfQ/132",
+        "x_field_weixin_openid": "oMzbs1EYKG60_jBEG__m52CKBEG8",
+        "x_field_weixin_headimgurl": "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLBgm6CNMIHTeG8ned78GeApAMKMQcq5wpkhbibhfH2LstgB1Z5vKpOVV2aMAHAIJzepH7SYjmHQ5A/132",
         "creator_name": "",
-        "created_at": "2019-05-05T06:50:27.292Z",
-        "updated_at": "2019-05-05T06:50:27.648Z",
-        "info_remote_ip": "61.164.136.35"
+        "created_at": "2019-05-14T02:23:03.485Z",
+        "updated_at": "2019-05-14T02:24:03.956Z",
+        "info_remote_ip": "60.181.30.89"
     }
 }
 
@@ -120,5 +136,104 @@ Content-Type: application/json
 GET http://localhost:8081/api/user-matches-regenerate
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU1NzI4OTkyMX0.YODAWrPcfW6cc12-iwx6K674nfV2_BavswbxpVw6JD4jTFBgPTEgHepJ635VmgMPUd-WMPFBC1KDNAAXyVTiEA
+
+###
+
+GET http://localhost:8081/wx/menu/wxba1e1e0cfc55f4a9/query-xy
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU1NzI4OTkyMX0.YODAWrPcfW6cc12-iwx6K674nfV2_BavswbxpVw6JD4jTFBgPTEgHepJ635VmgMPUd-WMPFBC1KDNAAXyVTiEA
+
+###
+
+#创建自定义菜单
+POST http://www.xiaoyimate.com/wx/menu/wxba1e1e0cfc55f4a9/create
+Content-Type: application/json
+
+{
+    "buttons": [
+        {
+            "type": null,
+            "name": "我要匹配",
+            "key": null,
+            "url": null,
+            "mediaId": null,
+            "appId": null,
+            "pagePath": null,
+            "subButtons": [
+                {
+                    "type": "view",
+                    "name": "基础表单",
+                    "key": null,
+                    "url": "https://jinshuju.net/f/nmTE0V",
+                    "mediaId": null,
+                    "appId": null,
+                    "pagePath": null,
+                    "subButtons": []
+                },
+                {
+                    "type": "view",
+                    "name": "性格表单",
+                    "key": null,
+                    "url": "https://jinshuju.net/f/NrgI5K",
+                    "mediaId": null,
+                    "appId": null,
+                    "pagePath": null,
+                    "subButtons": []
+                },
+                {
+                    "type": "view",
+                    "name": "观念&外表表单",
+                    "key": null,
+                    "url": "https://jinshuju.net/f/snsyEZ",
+                    "mediaId": null,
+                    "appId": null,
+                    "pagePath": null,
+                    "subButtons": []
+                },
+                {
+                    "type": "view",
+                    "name": "“旅行”主题表单",
+                    "key": null,
+                    "url": "https://jinshuju.net/f/AyCuXT",
+                    "mediaId": null,
+                    "appId": null,
+                    "pagePath": null,
+                    "subButtons": []
+                },
+                {
+                    "type": "view",
+                    "name": "“童趣”主题表单",
+                    "key": null,
+                    "url": "https://jinshuju.net/f/jvbBZk",
+                    "mediaId": null,
+                    "appId": null,
+                    "pagePath": null,
+                    "subButtons": []
+                }
+            ]
+        },
+        {
+            "type": "view",
+            "name": "查看记录",
+            "key": null,
+            "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxba1e1e0cfc55f4a9&redirect_uri=http%3A%2F%2Fwww.xiaoyimate.com%2Fwx%2Fredirect%2Fwxba1e1e0cfc55f4a9%2Fmatch-result-list&response_type=code&scope=snsapi_userinfo&state=&connect_redirect=1#wechat_redirect",
+            "mediaId": null,
+            "appId": null,
+            "pagePath": null,
+            "subButtons": []
+        },
+        {
+            "type": "view",
+            "name": "反馈意见",
+            "key": null,
+            "url": "https://jinshuju.net/f/6PomRo",
+            "mediaId": null,
+            "appId": null,
+            "pagePath": null,
+            "subButtons": []
+        }
+    ],
+    "matchRule": null
+}
 
 ###
